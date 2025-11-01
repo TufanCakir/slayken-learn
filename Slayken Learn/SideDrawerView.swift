@@ -139,11 +139,11 @@ private extension SideDrawerView {
         VStack(alignment: .leading, spacing: 4) {
             Text(section.title)
                 .font(.system(size: 16, weight: .semibold))
-                .foregroundColor(currentTheme?.accent ?? .white)
+                .foregroundColor(currentTheme?.text ?? .white)
 
             Text(section.description)
                 .font(.system(size: 13))
-                .foregroundColor((currentTheme?.accent ?? .white).opacity(0.7))
+                .foregroundColor((currentTheme?.text ?? .white).opacity(0.7))
         }
         .padding(.vertical, 10)
         .padding(.horizontal, 12)
@@ -184,7 +184,7 @@ private extension SideDrawerView {
                 .frame(maxWidth: .infinity)
                 .background(
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(currentTheme?.buttonBackground ?? .gray)
+                        .fill(currentTheme?.accent ?? .gray)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)

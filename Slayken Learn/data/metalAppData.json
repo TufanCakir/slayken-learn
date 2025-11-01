@@ -1,6 +1,24 @@
 [
+    {
+      "id": "metal_app_001",
+      "title": "Metal Shader einbinden",
+      "description": "Starte mit einem einfachen Metal-View für GPU-gerenderte Inhalte.",
+      "steps": [
+        "MetalKit importieren und MTKView verwenden.",
+        "Ein einfaches ClearColor-Rendering erstellen.",
+        "GPU Rendering vorbereiten für eigene Shader."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF9F0A", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\nimport MetalKit\n\nstruct MetalView: UIViewRepresentable {\n    func makeUIView(context: Context) -> MTKView {\n        let view = MTKView()\n        view.device = MTLCreateSystemDefaultDevice()\n        view.clearColor = MTLClearColor(red: 0.2, green: 0.2, blue: 0.25, alpha: 1)\n        return view\n    }\n    func updateUIView(_ uiView: MTKView, context: Context) {}\n}\n\nstruct MetalExampleView: View {\n    var body: some View {\n        MetalView()\n            .frame(height: 300)\n            .cornerRadius(12)\n            .padding()\n    }\n}\n\n#Preview { MetalExampleView() }",
+      "category": "Metal Setup",
+      "categoryIcon": "cpu.fill",
+      "categoryIconColor": "#FF9F0A"
+    },
   {
-    "id": "metal_app_001",
+    "id": "metal_app_002",
     "title": "Metal 2D Triangle App starten",
     "description": "Lerne, wie du dein erstes Metal-Projekt mit SwiftUI vollständig startest. Dieses Beispiel zeigt, wie du das MetalView aus deinem Renderer in eine echte App einbindest – mit SwiftUI, @main-App-Struktur und einem sauberen Einstiegspunkt.",
     "steps": [
@@ -20,7 +38,7 @@
     "categoryIconColor": "#00FF00"
   },
   {
-    "id": "metal_app_002",
+    "id": "metal_app_003",
     "title": "Metal 2D Cube App starten",
     "description": "Lerne, wie du dein zweites Metal-Projekt mit SwiftUI vollständig startest. Dieses Beispiel zeigt, wie du das MetalView aus deinem Renderer in eine echte App einbindest – mit SwiftUI, @main-App-Struktur und einem sauberen Einstiegspunkt.",
     "steps": [

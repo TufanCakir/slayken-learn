@@ -1,0 +1,43 @@
+[
+  {
+    "id": "metal_app_001",
+    "title": "Metal 2D Triangle App starten",
+    "description": "Lerne, wie du dein erstes Metal-Projekt mit SwiftUI vollständig startest. Dieses Beispiel zeigt, wie du das MetalView aus deinem Renderer in eine echte App einbindest – mit SwiftUI, @main-App-Struktur und einem sauberen Einstiegspunkt.",
+    "steps": [
+      "Erstelle die Datei `ContentView.swift` und importiere SwiftUI.",
+      "Füge das `MetalView()` in den Body der View ein.",
+      "Füge `.ignoresSafeArea()` hinzu, damit der Metal-Canvas den ganzen Bildschirm ausfüllt.",
+      "Erstelle in einer separaten Datei die `@main`-App-Struktur (`MetalHelloTriangleAppApp`).",
+      "Starte die App – dein erstes Metal-Dreieck erscheint auf dem iPhone- oder Mac-Simulator!"
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#FF0000", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "//  ContentView.swift\n//  MetalHelloTriangleApp\n//\n//  Created by Tufan Cakir on 16.10.25.\n//\n\nimport SwiftUI\n\nstruct ContentView: View {\n    var body: some View {\n        MetalView()\n            .ignoresSafeArea()\n    }\n}\n\n// App Einstiegspunkt\nimport SwiftUI\n\n@main\nstruct MetalHelloTriangleAppApp: App {\n    var body: some Scene {\n        WindowGroup {\n            ContentView()\n        }\n    }\n}",
+    "category": "Metal Setup",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#00FF00"
+  },
+  {
+    "id": "metal_app_002",
+    "title": "Metal 2D Cube App starten",
+    "description": "Lerne, wie du dein zweites Metal-Projekt mit SwiftUI vollständig startest. Dieses Beispiel zeigt, wie du das MetalView aus deinem Renderer in eine echte App einbindest – mit SwiftUI, @main-App-Struktur und einem sauberen Einstiegspunkt.",
+    "steps": [
+      "Erstelle die Datei `ContentView.swift` und importiere SwiftUI.",
+      "Füge das `MetalView()` in den Body der View ein.",
+      "Füge `.ignoresSafeArea()` hinzu, damit der Metal-Canvas den ganzen Bildschirm ausfüllt.",
+      "Erstelle in einer separaten Datei die `@main`-App-Struktur (`MetalHelloCubeAppApp`).",
+      "Starte die App – dein erstes Metal-Cube (2 Dreiecke) erscheint auf dem iPhone- oder Mac-Simulator!"
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#FFFF00", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "//  ContentView.swift\n//  MetalHelloTriangleApp\n//\n//  Created by Tufan Cakir on 16.10.25.\n//\n\nimport SwiftUI\n\nstruct ContentView: View {\n    var body: some View {\n        MetalView()\n            .ignoresSafeArea()\n    }\n}\n\n// App Einstiegspunkt\nimport SwiftUI\n\n@main\nstruct MetalHelloTriangleAppApp: App {\n    var body: some Scene {\n        WindowGroup {\n            ContentView()\n        }\n    }\n}",
+    "category": "Metal Setup",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#00FF00"
+  }
+]
+ 

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "metal_001",
+    "title": "2D Triangle mit Farbverlauf",
+    "description": "Erstelle dein erstes Metal-Programm mit SwiftUI und MTKView. Dieses Beispiel zeigt, wie du ein einfaches farbiges Dreieck direkt auf der GPU renderst.",
+    "steps": [
+      "Erstelle eine UIViewRepresentable-Struktur für MetalKit (MTKView).",
+      "Implementiere eine Renderer-Klasse, die MTKViewDelegate nutzt.",
+      "Erstelle einen Vertex-Buffer mit Position und Farbe.",
+      "Richte eine Render-Pipeline mit Vertex- und Fragment-Shadern ein.",
+      "Zeichne das Dreieck mit drawPrimitives()."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#0000FF", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport MetalKit\n\n// Unsere Haupt-Renderklasse\nfinal class Renderer: NSObject, MTKViewDelegate {\n    var device: MTLDevice!\n    var commandQueue: MTLCommandQueue!\n    var pipelineState: MTLRenderPipelineState!\n    var vertexBuffer: MTLBuffer!\n\n    init(mtkView: MTKView) {\n        super.init()\n        self.device = mtkView.device\n        self.commandQueue = device.makeCommandQueue()\n        \n        // Shader laden\n        let library = device.makeDefaultLibrary()\n        let vertexFunc = library?.makeFunction(name: \"vertex_main\")\n        let fragmentFunc = library?.makeFunction(name: \"fragment_main\")\n\n        // Render Pipeline Setup\n        let pipelineDescriptor = MTLRenderPipelineDescriptor()\n        pipelineDescriptor.vertexFunction = vertexFunc\n        pipelineDescriptor.fragmentFunction = fragmentFunc\n        pipelineDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat\n        pipelineState = try! device.makeRenderPipelineState(descriptor: pipelineDescriptor)\n\n        // Vertexdaten (x, y, z, r, g, b)\n        let vertices: [Float] = [\n            0.0,  0.5, 0.0,  1, 0, 0, // oben (rot)\n           -0.5, -0.5, 0.0,  0, 1, 0, // links (grün)\n            0.5, -0.5, 0.0,  0, 0, 1  // rechts (blau)\n        ]\n        vertexBuffer = device.makeBuffer(bytes: vertices,\n                                         length: MemoryLayout<Float>.size * vertices.count,\n                                         options: [])\n    }\n\n    func draw(in view: MTKView) {\n        guard let drawable = view.currentDrawable,\n              let descriptor = view.currentRenderPassDescriptor else { return }\n        \n        let commandBuffer = commandQueue.makeCommandBuffer()\n        let encoder = commandBuffer?.makeRenderCommandEncoder(descriptor: descriptor)\n        \n        encoder?.setRenderPipelineState(pipelineState)\n        encoder?.setVertexBuffer(vertexBuffer, offset: 0, index: 0)\n        encoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)\n        \n        encoder?.endEncoding()\n        commandBuffer?.present(drawable)\n        commandBuffer?.commit()\n    }\n\n    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}\n}\n\nstruct MetalView: UIViewRepresentable {\n    func makeUIView(context: Context) -> MTKView {\n        let view = MTKView()\n        view.device = MTLCreateSystemDefaultDevice()\n        view.clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)\n        let renderer = Renderer(mtkView: view)\n        view.delegate = renderer\n        context.coordinator.renderer = renderer\n        return view\n    }\n\n    func updateUIView(_ uiView: MTKView, context: Context) {}\n    func makeCoordinator() -> Coordinator { Coordinator() }\n\n    class Coordinator {\n        var renderer: Renderer?\n    }\n}",
+    "category": "Metal",
+    "categoryIcon": "cpu",
+    "categoryIconColor": "#800080"
+  },
+  {
+    "id": "metal_002",
+    "title": "2D Cube mit Farbverlauf (2 Dreiecke)",
+    "description": "Erstelle ein farbiges Quadrat in Metal, das aus zwei Dreiecken besteht. Jeder Eckpunkt erhält seine eigene Farbe, wodurch ein Farbverlauf entsteht.",
+    "steps": [
+      "Erweitere deinen Renderer, um 6 Vertices (2 Dreiecke) zu definieren.",
+      "Nutze pro Vertex Position (x, y, z) und Farbe (r, g, b).",
+      "Passe drawPrimitives() an, um 6 Vertices zu zeichnen.",
+      "Kombiniere die Dreiecke zu einem vollständigen 2D-Quad.",
+      "Experimentiere mit Farben und Größen für kreative Effekte."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#00FF00", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport MetalKit\n\nfinal class Renderer: NSObject, MTKViewDelegate {\n    var device: MTLDevice!\n    var commandQueue: MTLCommandQueue!\n    var pipelineState: MTLRenderPipelineState!\n    var vertexBuffer: MTLBuffer!\n\n    init(mtkView: MTKView) {\n        super.init()\n        device = mtkView.device\n        commandQueue = device.makeCommandQueue()\n        \n        // Shader laden\n        let library = device.makeDefaultLibrary()\n        let vertexFunc = library?.makeFunction(name: \"vertex_main\")\n        let fragmentFunc = library?.makeFunction(name: \"fragment_main\")\n        \n        // Render Pipeline Setup\n        let pipelineDescriptor = MTLRenderPipelineDescriptor()\n        pipelineDescriptor.vertexFunction = vertexFunc\n        pipelineDescriptor.fragmentFunction = fragmentFunc\n        pipelineDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat\n        pipelineState = try! device.makeRenderPipelineState(descriptor: pipelineDescriptor)\n        \n        // Quad (2 Dreiecke → 6 Vertices)\n        let vertices: [Float] = [\n            // Dreieck 1\n            -0.5,  0.5, 0.0,  1, 0, 0,   // oben links – rot\n             0.5,  0.5, 0.0,  0, 1, 0,   // oben rechts – grün\n            -0.5, -0.5, 0.0,  0, 0, 1,   // unten links – blau\n\n            // Dreieck 2\n             0.5,  0.5, 0.0,  0, 1, 0,   // oben rechts – grün\n             0.5, -0.5, 0.0,  1, 1, 0,   // unten rechts – gelb\n            -0.5, -0.5, 0.0,  0, 0, 1    // unten links – blau\n        ]\n        \n        vertexBuffer = device.makeBuffer(bytes: vertices,\n                                         length: MemoryLayout<Float>.stride * vertices.count,\n                                         options: [])\n    }\n\n    func draw(in view: MTKView) {\n        guard let drawable = view.currentDrawable,\n              let descriptor = view.currentRenderPassDescriptor else { return }\n        \n        let commandBuffer = commandQueue.makeCommandBuffer()\n        let encoder = commandBuffer?.makeRenderCommandEncoder(descriptor: descriptor)\n        \n        encoder?.setRenderPipelineState(pipelineState)\n        encoder?.setVertexBuffer(vertexBuffer, offset: 0, index: 0)\n        encoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)\n        \n        encoder?.endEncoding()\n        commandBuffer?.present(drawable)\n        commandBuffer?.commit()\n    }\n\n    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}\n}\n\nstruct MetalView: UIViewRepresentable {\n    func makeUIView(context: Context) -> MTKView {\n        let view = MTKView()\n        view.device = MTLCreateSystemDefaultDevice()\n        view.clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)\n        let renderer = Renderer(mtkView: view)\n        view.delegate = renderer\n        context.coordinator.renderer = renderer\n        return view\n    }\n\n    func updateUIView(_ uiView: MTKView, context: Context) {}\n    func makeCoordinator() -> Coordinator { Coordinator() }\n\n    class Coordinator {\n        var renderer: Renderer?\n    }\n}",
+    "category": "Metal",
+    "categoryIcon": "cpu",
+    "categoryIconColor": "#800080"
+  }
+]

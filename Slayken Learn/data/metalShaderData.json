@@ -1,0 +1,41 @@
+[
+  {
+    "id": "shader_001",
+    "title": "2D Triangle Shader (vertex_main & fragment_main)",
+    "description": "Dies ist der grundlegende Shader für dein erstes Metal-Dreieck. Er enthält einen Vertex-Shader, der Position und Farbe pro Vertex verarbeitet, sowie einen Fragment-Shader, der die Farbe auf die Pixel überträgt.",
+    "steps": [
+      "Importiere das Metal-Standard-Framework mit `#include <metal_stdlib>`.",
+      "Definiere eine Struktur `VertexOut`, um Daten zwischen Vertex- und Fragment-Shader zu übergeben.",
+      "Implementiere den `vertex_main`-Shader, der Position und Farbe aus dem Vertex-Array liest.",
+      "Implementiere den `fragment_main`-Shader, der die Farbe auf die GPU-Pixel rendert."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#0A84FF", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "#include <metal_stdlib>\nusing namespace metal;\n\n// Vertex-Eingabe\nstruct VertexOut {\n    float4 position [[position]];\n    float3 color;\n};\n\n// Vertex Shader\nvertex VertexOut vertex_main(const device float* vertexArray [[buffer(0)]],\n                             uint vertexId [[vertex_id]]) {\n    VertexOut out;\n    int stride = 6; // 3 Position + 3 Farbe\n    int i = int(vertexId * stride);\n    float3 position = float3(vertexArray[i + 0], vertexArray[i + 1], vertexArray[i + 2]);\n    float3 color    = float3(vertexArray[i + 3], vertexArray[i + 4], vertexArray[i + 5]);\n\n    out.position = float4(position, 1.0);\n    out.color = color;\n    return out;\n}\n\n// Fragment Shader\nfragment float4 fragment_main(VertexOut in [[stage_in]]) {\n    return float4(in.color, 1.0);\n}",
+    "category": "Metal Shader",
+    "categoryIcon": "sparkles",
+    "categoryIconColor": "#0A84FF"
+  },
+    {
+      "id": "shader_002",
+      "title": "2D Cube Shader (vertex_main & fragment_main)",
+      "description": "Dieser Shader wird für den 2D Cube verwendet, der aus zwei Dreiecken besteht. Er liest pro Vertex Position und Farbe aus dem Buffer und gibt sie an den Fragment-Shader weiter, der daraus einen Farbverlauf über die Fläche rendert.",
+      "steps": [
+        "Verwende denselben Aufbau wie beim Hello Triangle-Shader.",
+        "Der Vertex-Shader verarbeitet nun 6 Vertices (2 Dreiecke = 1 Quadrat).",
+        "Jeder Vertex besitzt Position (x, y, z) und Farbe (r, g, b).",
+        "Der Fragment-Shader gibt die interpolierte Farbe auf jedes Pixel aus.",
+        "Dieser Shader kann für beliebige 2D-Formen wiederverwendet werden."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF9500", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "#include <metal_stdlib>\nusing namespace metal;\n\nstruct VertexOut {\n    float4 position [[position]];\n    float3 color;\n};\n\nvertex VertexOut vertex_main(const device float* vertexArray [[buffer(0)]],\n                             uint vertexId [[vertex_id]]) {\n    VertexOut out;\n    int stride = 6; // 3 Position + 3 Farbe\n    int i = int(vertexId * stride);\n\n    float3 position = float3(vertexArray[i + 0], vertexArray[i + 1], vertexArray[i + 2]);\n    float3 color    = float3(vertexArray[i + 3], vertexArray[i + 4], vertexArray[i + 5]);\n\n    out.position = float4(position, 1.0);\n    out.color = color;\n    return out;\n}\n\nfragment float4 fragment_main(VertexOut in [[stage_in]]) {\n    return float4(in.color, 1.0);\n}",
+      "category": "Metal Shader",
+      "categoryIcon": "sparkles",
+      "categoryIconColor": "#FF9500"
+    }
+  ]

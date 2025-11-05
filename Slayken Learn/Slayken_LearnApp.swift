@@ -9,12 +9,14 @@ import SwiftUI
 
 @main
 struct Slayken_LearnApp: App {
+    @StateObject private var purchaseManager = PurchaseManager()
     @StateObject private var themeManager = ThemeManager()
     @StateObject private var profileManager = ProfileManager()
 
     var body: some Scene {
         WindowGroup {
             RootTabView()
+                .environmentObject(purchaseManager)
                 .environmentObject(themeManager)
                 .environmentObject(profileManager)
         }

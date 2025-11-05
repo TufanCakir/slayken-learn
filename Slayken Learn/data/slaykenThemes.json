@@ -168,7 +168,7 @@
     "id": "BBBB-2222",
     "name": "Mythic Gold",
     "background": { "type": "radial", "colors": ["#FFEB3B", "#FFC107", "#FF9800"] },
-    "textHex": "#000000",
+    "textHex": "#FFFFFF",
     "buttonBackgroundHex": "#FFF8E1",
     "buttonTextHex": "#FFFFFF",
     "accentHex": "#FFD740",

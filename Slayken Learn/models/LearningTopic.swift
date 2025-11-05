@@ -12,6 +12,7 @@ struct LearningTopic: Identifiable, Codable {
     let category: String
     let categoryIcon: String?
     let categoryIconColor: String?
+    let productID: String?    // ✅ Neu hinzugefügt
 }
 
 struct ColorInfo: Codable {
@@ -51,6 +52,10 @@ func loadMetalAppData() -> [LearningTopic] {
 }
 func loadReactNativeData() -> [LearningTopic] {
     loadLearningTopics(from: "reactNativeData")
+}
+
+func loadPurchasedData() -> [LearningTopic] {
+    loadLearningTopics(from: "purchasedContent")
 }
 
 

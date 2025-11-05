@@ -4,6 +4,7 @@ import StoreKit
 struct LearningListView: View {
     // MARK: - Environment
     @EnvironmentObject private var themeManager: ThemeManager
+    @EnvironmentObject private var purchaseManager: PurchaseManager
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -18,6 +19,7 @@ struct LearningListView: View {
     // MARK: - Persistent Data
     @AppStorage("favoriteIDs") private var favoriteIDs = ""
     @AppStorage("appLaunchCount") private var launchCount = 0
+    @AppStorage("openPurchasedTab") private var openPurchasedTab = false
 
     // MARK: - Computed
     private var favorites: Set<String> {
@@ -43,7 +45,6 @@ struct LearningListView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                // Hintergrund
                 backgroundLayer
 
                 VStack(spacing: 12) {
@@ -55,6 +56,8 @@ struct LearningListView: View {
                 .padding(.vertical, 8)
                 .onAppear(perform: onAppear)
             }
+            .navigationTitle("Lernen")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
@@ -134,11 +137,7 @@ private extension LearningListView {
         } label: {
             HStack(spacing: 6) {
                 if let icon = topics.first(where: { $0.category == category })?.categoryIcon {
-                    if icon.count == 1 {
-                        Text(icon)
-                    } else {
-                        Image(systemName: icon)
-                    }
+                    if icon.count == 1 { Text(icon) } else { Image(systemName: icon) }
                 }
                 Text(category)
             }
@@ -155,28 +154,34 @@ private extension LearningListView {
 
     // MARK: - Inhalte
     var contentList: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                LazyVGrid(columns: gridLayout, spacing: 16, pinnedViews: [.sectionHeaders]) {
-                    Section {
-                        if filteredTopics.isEmpty {
-                            emptyPlaceholder
+        ScrollView {
+            LazyVGrid(columns: gridLayout, spacing: 16) {
+                if filteredTopics.isEmpty {
+                    emptyPlaceholder
+                } else {
+                    ForEach(filteredTopics) { topic in
+                        // 🔒 Wenn Produkt vorhanden & nicht gekauft → Lock-View
+                        if let productID = topic.productID,
+                           topic.category == "Gekauft",
+                           !purchaseManager.isPurchased(productID) {
+                            LockedContentView(topic: topic)
+                                .cornerRadius(14)
+                                .shadow(color: .black.opacity(0.25), radius: 6, y: 3)
                         } else {
-                            ForEach(filteredTopics) { topic in
-                                NavigationLink(destination: LearningDetailView(topic: topic)) {
-                                    LearningCard(topic: topic)
-                                        .scaleEffect(hoverEffect(for: topic))
-                                        .animation(.easeInOut(duration: 0.2), value: topic.id)
-                                        .cornerRadius(14)
-                                        .shadow(color: .black.opacity(0.2), radius: 6, x: 0, y: 3)
-                                }
-                                .buttonStyle(.plain)
+                            // ✅ Freigeschaltete Inhalte
+                            NavigationLink(destination: LearningDetailView(topic: topic)) {
+                                LearningCard(topic: topic)
+                                    .scaleEffect(hoverEffect(for: topic))
+                                    .animation(.easeInOut(duration: 0.2), value: topic.id)
+                                    .cornerRadius(14)
+                                    .shadow(color: .black.opacity(0.25), radius: 6, y: 3)
                             }
+                            .buttonStyle(.plain)
                         }
                     }
                 }
-                .padding()
             }
+            .padding()
         }
     }
 
@@ -222,10 +227,19 @@ private extension LearningListView {
         loadAllTopics()
         setupCategories()
         askForReviewIfNeeded()
+
+        if openPurchasedTab {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
+                    selectedCategory = "Gekauft"
+                }
+                openPurchasedTab = false
+            }
+        }
     }
 
     func loadAllTopics() {
-        let files = ["learningTopics", "metalData", "metalShaderData", "metalAppData", "reactNativeData"]
+        let files = ["learningTopics", "metalData", "metalShaderData", "metalAppData", "reactNativeData", "purchasedContent"]
         topics = files.flatMap { loadLearningTopics(from: $0) }
     }
 
@@ -261,9 +275,19 @@ private extension LearningListView {
     }
 }
 
+// MARK: - Code Loader
+func loadCode(from fileName: String) -> String {
+    guard let url = Bundle.main.url(forResource: fileName, withExtension: nil),
+          let code = try? String(contentsOf: url, encoding: .utf8) else {
+        return "// Datei nicht gefunden: \(fileName)"
+    }
+    return code
+}
+
 // MARK: - Preview
 #Preview {
     LearningListView()
         .environmentObject(ThemeManager())
+        .environmentObject(PurchaseManager())
         .preferredColorScheme(.dark)
 }

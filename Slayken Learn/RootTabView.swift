@@ -6,6 +6,7 @@ struct RootTabView: View {
 
     @StateObject private var themeManager = ThemeManager()
     @StateObject private var profileManager = ProfileManager()
+    @StateObject private var purchaseManager = PurchaseManager() // 🛒 NEU
 
     // MARK: - Body
     var body: some View {
@@ -15,12 +16,23 @@ struct RootTabView: View {
                 HomeView()
                     .environmentObject(themeManager)
                     .environmentObject(profileManager)
+                    .environmentObject(purchaseManager)
             }
             .tabItem {
                 Label("Lernen", systemImage: "book.closed.fill")
             }
 
-            // 2️⃣ Themes
+            // 2️⃣ Code-Shop 🛍️
+            NavigationStack {
+                SlaykenCodeShopView()
+                    .environmentObject(themeManager)
+                    .environmentObject(purchaseManager)
+            }
+            .tabItem {
+                Label("Code-Shop", systemImage: "cart.fill")
+            }
+
+            // 3️⃣ Themes
             NavigationStack {
                 ThemePickerScreen()
                     .environmentObject(themeManager)
@@ -29,7 +41,7 @@ struct RootTabView: View {
                 Label("Themes", systemImage: "paintpalette.fill")
             }
 
-            // 3️⃣ Profil
+            // 4️⃣ Profil
             NavigationStack {
                 ProfileView()
                     .environmentObject(profileManager)
@@ -38,8 +50,9 @@ struct RootTabView: View {
             .tabItem {
                 Label("Profil", systemImage: "person.crop.circle")
             }
+            
 
-            // 4️⃣ Einstellungen
+            // 5️⃣ Einstellungen
             NavigationStack {
                 SettingsView()
                     .environmentObject(themeManager)
@@ -48,11 +61,14 @@ struct RootTabView: View {
                 Label("Einstellungen", systemImage: "gearshape.fill")
             }
         }
+        
+ 
         .preferredColorScheme(AppAppearance(rawValue: appearanceRaw)?.colorScheme)
         .environmentObject(themeManager)
         .environmentObject(profileManager)
+        .environmentObject(purchaseManager)
         .task {
-            await loadThemes() // async safe loading
+            await loadThemes()
         }
         .onAppear {
             if themeManager.currentTheme == nil {
@@ -63,11 +79,7 @@ struct RootTabView: View {
 
     // MARK: - Theme Loader
     private func loadThemes() async {
-        // Lade alle Theme-Dateien gleichzeitig
         let loadedThemes = loadAllThemes()
-
-    
-
         print("🎨 \(loadedThemes.count) Themes geladen und an ThemeManager übergeben.")
     }
 }

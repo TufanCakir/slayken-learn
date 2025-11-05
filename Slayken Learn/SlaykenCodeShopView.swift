@@ -1,391 +1,392 @@
-    //
-    //  SlaykenCodeShopView.swift
-    //  Slayken Learn
-    //
-    //  Created by Tufan Cakir on 2025-11-04.
-    //
+//
+//  SlaykenCodeShopView.swift
+//  Slayken Learn
+//
+//  Created by Tufan Cakir on 2025-11-04.
+//
 
-    import SwiftUI
-    import StoreKit
+import SwiftUI
+import StoreKit
 
-    // MARK: - Shop Model
-    struct ShopItem: Identifiable, Codable {
-        let id: String
-        let productID: String
-        let title: String
-        let description: String
-        let colors: ShopColors
-        let priceTier: String?
-        let previewImage: String?
-        let code: String?
-        let category: String
-        let categoryIcon: String
-        let categoryIconColor: String
+// MARK: - Shop Model
+struct ShopItem: Identifiable, Codable {
+let id: String
+let productID: String
+let title: String
+let description: String
+let colors: ShopColors
+let priceTier: String?
+let previewImage: String?
+let code: String?
+let category: String
+let categoryIcon: String
+let categoryIconColor: String
+}
+
+struct ShopColors: Codable {
+let backgroundColors: [String]
+let textColors: [String]
+}
+
+
+// MARK: - Hauptansicht
+@MainActor
+struct SlaykenCodeShopView: View {
+    // MARK: - Environment
+    @EnvironmentObject private var themeManager: ThemeManager
+    @EnvironmentObject private var purchaseManager: PurchaseManager
+
+    // MARK: - States
+    @State private var shopItems: [ShopItem] = []
+    @State private var products: [Product] = []
+    @State private var isLoading = true
+    @State private var errorMessage: String?
+    @State private var showRestoreToast = false
+    @State private var navigateToLearning = false
+    @State private var selectedCategory: String = "Alle"
+
+    // MARK: - Storage
+    @AppStorage("openPurchasedTab") private var openPurchasedTab = false
+
+    private var currentTheme: SlaykenTheme? { themeManager.currentTheme }
+
+    // MARK: - Gefilterte Items
+    private var filteredItems: [ShopItem] {
+        selectedCategory == "Alle"
+            ? shopItems
+            : shopItems.filter { $0.category == selectedCategory }
+    }
+    
+    // MARK: - Sortierte Kategorien (stabil & alphabetisch)
+    private var sortedCategories: [String] {
+        let allCategories = shopItems.map(\.category)
+        // "Alle" bleibt zuerst, danach alphabetisch sortiert
+        let unique = Array(Set(allCategories)).sorted()
+        return ["Alle"] + unique
     }
 
-    struct ShopColors: Codable {
-        let backgroundColors: [String]
-        let textColors: [String]
-    }
-
-    // MARK: - Hauptansicht
-    @MainActor
-    struct SlaykenCodeShopView: View {
-        // MARK: - Environment
-        @EnvironmentObject private var themeManager: ThemeManager
-        @EnvironmentObject private var purchaseManager: PurchaseManager
-
-        // MARK: - States
-        @State private var shopItems: [ShopItem] = []
-        @State private var products: [Product] = []
-        @State private var isLoading = true
-        @State private var errorMessage: String?
-        @State private var showRestoreToast = false
-        @State private var navigateToLearning = false
-        @State private var selectedCategory: String = "Alle"
-
-        // MARK: - Storage
-        @AppStorage("openPurchasedTab") private var openPurchasedTab = false
-
-        private var currentTheme: SlaykenTheme? { themeManager.currentTheme }
-
-        // MARK: - Gefilterte Items
-        private var filteredItems: [ShopItem] {
-            selectedCategory == "Alle"
-                ? shopItems
-                : shopItems.filter { $0.category == selectedCategory }
-        }
-        
-        // MARK: - Sortierte Kategorien (stabil & alphabetisch)
-        private var sortedCategories: [String] {
-            let allCategories = shopItems.map(\.category)
-            // "Alle" bleibt zuerst, danach alphabetisch sortiert
-            let unique = Array(Set(allCategories)).sorted()
-            return ["Alle"] + unique
-        }
-
-        // MARK: - Body
-        var body: some View {
-            NavigationStack {
-                ZStack {
-                    backgroundView
-                    contentView
-                }
-                .navigationTitle("Code-Shop")
-                .navigationBarTitleDisplayMode(.inline)
-                .task(id: purchaseManager.purchaseStateDidChange) {
-                    await setupShop()
-                }
-                .task {
-                    await setupShop()
-                }
-                .navigationDestination(isPresented: $navigateToLearning) {
-                    LearningListView()
-                        .environmentObject(themeManager)
-                        .environmentObject(purchaseManager)
-                }
-                .overlay(restoreToastView, alignment: .bottom)
+    // MARK: - Body
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                backgroundView
+                contentView
             }
+            .navigationTitle("Code-Shop")
+            .navigationBarTitleDisplayMode(.inline)
+            .task(id: purchaseManager.purchaseStateDidChange) {
+                await setupShop()
+            }
+            .task {
+                await setupShop()
+            }
+            .navigationDestination(isPresented: $navigateToLearning) {
+                LearningListView()
+                    .environmentObject(themeManager)
+                    .environmentObject(purchaseManager)
+            }
+            .overlay(restoreToastView, alignment: .bottom)
         }
     }
+}
 
 
 
 
-    // MARK: - Setup & Logik
-    private extension SlaykenCodeShopView {
-        func setupShop() async {
-            do {
-                isLoading = true
-                try await loadShopData()
-                try await loadProducts()
-                withAnimation(.easeInOut(duration: 0.3)) { isLoading = false }
-            } catch {
-                showError(error.localizedDescription)
-            }
-        }
-
-        func loadShopData() async throws {
-            guard let url = Bundle.main.url(forResource: "shopData", withExtension: "json") else {
-                throw URLError(.fileDoesNotExist,
-                    userInfo: [NSLocalizedDescriptionKey: "shopData.json nicht gefunden"])
-            }
-            let data = try Data(contentsOf: url)
-            shopItems = try JSONDecoder().decode([ShopItem].self, from: data)
-        }
-
-        func loadProducts() async throws {
-            let ids = shopItems.map(\.productID)
-            products = try await Product.products(for: ids)
-        }
-
-        func handlePurchase(_ product: Product) async {
-            do {
-                let result = try await product.purchase()
-                if case .success(let verification) = result,
-                   case .verified(let transaction) = verification {
-                    purchaseManager.markPurchased(transaction.productID)
-                    await transaction.finish()
-                    openPurchasedTab = true
-                    navigateToLearning = true
-                }
-            } catch {
-                showError("Fehler beim Kauf: \(error.localizedDescription)")
-            }
-        }
-
-        func showError(_ message: String) {
-            withAnimation { isLoading = false }
-            errorMessage = message
+// MARK: - Setup & Logik
+private extension SlaykenCodeShopView {
+    func setupShop() async {
+        do {
+            isLoading = true
+            try await loadShopData()
+            try await loadProducts()
+            withAnimation(.easeInOut(duration: 0.3)) { isLoading = false }
+        } catch {
+            showError(error.localizedDescription)
         }
     }
 
-    // MARK: - View Components
-    private extension SlaykenCodeShopView {
-        @ViewBuilder
-        var contentView: some View {
-            if isLoading {
-                VStack(spacing: 12) {
-                    ProgressView("Lade Code-Shop …")
-                        .progressViewStyle(.circular)
-                        .tint(currentTheme?.accent ?? .blue)
-                    Text("Bitte warten …")
-                        .foregroundColor(.white.opacity(0.7))
-                }
-                .transition(.opacity)
+    func loadShopData() async throws {
+        guard let url = Bundle.main.url(forResource: "shopData", withExtension: "json") else {
+            throw URLError(.fileDoesNotExist,
+                userInfo: [NSLocalizedDescriptionKey: "shopData.json nicht gefunden"])
+        }
+        let data = try Data(contentsOf: url)
+        shopItems = try JSONDecoder().decode([ShopItem].self, from: data)
+    }
 
-            } else if let errorMessage {
-                errorView(message: errorMessage)
+    func loadProducts() async throws {
+        let ids = shopItems.map(\.productID)
+        products = try await Product.products(for: ids)
+    }
 
-            } else {
-                ScrollView {
-                    VStack(spacing: 28) {
-                        restoreButton
+    func handlePurchase(_ product: Product) async {
+        do {
+            let result = try await product.purchase()
+            if case .success(let verification) = result,
+               case .verified(let transaction) = verification {
+                purchaseManager.markPurchased(transaction.productID)
+                await transaction.finish()
+                openPurchasedTab = true
+                navigateToLearning = true
+            }
+        } catch {
+            showError("Fehler beim Kauf: \(error.localizedDescription)")
+        }
+    }
 
-                        // MARK: Kategorie-Leiste
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 12) {
-                                ForEach(sortedCategories, id: \.self) { category in
-                                    let colorHex = shopItems.first(where: { $0.category == category })?.categoryIconColor ?? "#0A84FF"
-                                    categoryButton(title: category, color: Color(hex: colorHex))
-                                }
-                            }
-                            .padding(.horizontal)
-                            .padding(.vertical, 8)
-                        }
+    func showError(_ message: String) {
+        withAnimation { isLoading = false }
+        errorMessage = message
+    }
+}
 
-                        // MARK: Produkte
-                        LazyVStack(spacing: 22) {
-                            ForEach(filteredItems) { item in
-                                if let product = products.first(where: { $0.id == item.productID }) {
-                                    SlaykenShopCard(
-                                        item: item,
-                                        product: product,
-                                        purchased: purchaseManager.isPurchased(product.id),
-                                        accentColor: currentTheme?.accent ?? .blue
-                                    ) {
-                                        Task {
-                                            if purchaseManager.isPurchased(product.id) {
-                                                navigateToLearning = true
-                                            } else {
-                                                await handlePurchase(product)
-                                            }
-                                        }
-                                    }
-                                    .transition(.opacity.combined(with: .scale))
-                                }
+// MARK: - View Components
+private extension SlaykenCodeShopView {
+    @ViewBuilder
+    var contentView: some View {
+        if isLoading {
+            VStack(spacing: 12) {
+                ProgressView("Lade Code-Shop …")
+                    .progressViewStyle(.circular)
+                    .tint(currentTheme?.accent ?? .blue)
+                Text("Bitte warten …")
+                    .foregroundColor(.white.opacity(0.7))
+            }
+            .transition(.opacity)
+
+        } else if let errorMessage {
+            errorView(message: errorMessage)
+
+        } else {
+            ScrollView {
+                VStack(spacing: 28) {
+                    restoreButton
+
+                    // MARK: Kategorie-Leiste
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            ForEach(sortedCategories, id: \.self) { category in
+                                let colorHex = shopItems.first(where: { $0.category == category })?.categoryIconColor ?? "#0A84FF"
+                                categoryButton(title: category, color: Color(hex: colorHex))
                             }
                         }
                         .padding(.horizontal)
+                        .padding(.vertical, 8)
                     }
-                    .padding(.vertical, 20)
+
+                    // MARK: Produkte
+                    LazyVStack(spacing: 22) {
+                        ForEach(filteredItems) { item in
+                            if let product = products.first(where: { $0.id == item.productID }) {
+                                SlaykenShopCard(
+                                    item: item,
+                                    product: product,
+                                    purchased: purchaseManager.isPurchased(product.id),
+                                    accentColor: currentTheme?.accent ?? .blue
+                                ) {
+                                    Task {
+                                        if purchaseManager.isPurchased(product.id) {
+                                            navigateToLearning = true
+                                        } else {
+                                            await handlePurchase(product)
+                                        }
+                                    }
+                                }
+                                .transition(.opacity.combined(with: .scale))
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
                 }
+                .padding(.vertical, 20)
             }
         }
+    }
 
-        // MARK: Kategorie-Button
-        func categoryButton(title: String, color: Color) -> some View {
-            Button {
-                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                    selectedCategory = title
+    // MARK: Kategorie-Button
+    func categoryButton(title: String, color: Color) -> some View {
+        Button {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                selectedCategory = title
+            }
+        } label: {
+            HStack(spacing: 6) {
+                if let icon = shopItems.first(where: { $0.category == title })?.categoryIcon {
+                    Image(systemName: icon)
                 }
-            } label: {
-                HStack(spacing: 6) {
-                    if let icon = shopItems.first(where: { $0.category == title })?.categoryIcon {
-                        Image(systemName: icon)
-                    }
-                    Text(title)
-                        .font(.subheadline.bold())
+                Text(title)
+                    .font(.subheadline.bold())
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 8)
+            .background(
+                Capsule()
+                    .fill(selectedCategory == title ? color.opacity(0.85) : Color.white.opacity(0.1))
+            )
+            .overlay(
+                Capsule()
+                    .stroke(color.opacity(selectedCategory == title ? 1 : 0.3), lineWidth: 1.5)
+            )
+            .foregroundColor(.white)
+            .shadow(color: color.opacity(selectedCategory == title ? 0.5 : 0), radius: 4, y: 2)
+        }
+    }
+
+    // MARK: Hintergrund
+    var backgroundView: some View {
+        Group {
+            if let theme = currentTheme {
+                theme.fullBackgroundView()
+            } else {
+                LinearGradient(colors: [.black, .blue.opacity(0.9)],
+                               startPoint: .topLeading, endPoint: .bottomTrailing)
+            }
+        }
+        .ignoresSafeArea()
+        .overlay(Color.black.opacity(0.25))
+    }
+
+    // MARK: Fehleranzeige
+    func errorView(message: String) -> some View {
+        VStack(spacing: 12) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .font(.system(size: 42))
+                .foregroundColor(.yellow)
+            Text(message)
+                .multilineTextAlignment(.center)
+                .foregroundColor(.white)
+                .font(.subheadline)
+            Button("Erneut versuchen") {
+                Task { await setupShop() }
+            }
+            .padding(.top, 4)
+        }
+        .padding()
+    }
+
+    // MARK: Wiederherstellungs-Button
+    var restoreButton: some View {
+        Button {
+            Task {
+                await purchaseManager.restorePurchases()
+                withAnimation(.spring()) { showRestoreToast = true }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    withAnimation(.easeOut) { showRestoreToast = false }
                 }
+            }
+        } label: {
+            Label("Käufe wiederherstellen", systemImage: "arrow.clockwise.circle.fill")
+                .font(.subheadline.bold())
+                .foregroundColor(currentTheme?.accent ?? .blue)
+                .padding(.horizontal, 18)
+                .padding(.vertical, 10)
+                .background(.ultraThinMaterial)
+                .cornerRadius(12)
+                .shadow(color: .black.opacity(0.25), radius: 5, y: 2)
+        }
+    }
+
+    // MARK: Toast
+    @ViewBuilder
+    var restoreToastView: some View {
+        if showRestoreToast {
+            Text("✅ Käufe erfolgreich wiederhergestellt")
+                .font(.caption.bold())
                 .padding(.horizontal, 14)
                 .padding(.vertical, 8)
-                .background(
-                    Capsule()
-                        .fill(selectedCategory == title ? color.opacity(0.85) : Color.white.opacity(0.1))
-                )
-                .overlay(
-                    Capsule()
-                        .stroke(color.opacity(selectedCategory == title ? 1 : 0.3), lineWidth: 1.5)
-                )
+                .background(Color.green.opacity(0.9))
+                .cornerRadius(12)
                 .foregroundColor(.white)
-                .shadow(color: color.opacity(selectedCategory == title ? 0.5 : 0), radius: 4, y: 2)
-            }
+                .padding(.bottom, 22)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
         }
+    }
+}
 
-        // MARK: Hintergrund
-        var backgroundView: some View {
-            Group {
-                if let theme = currentTheme {
-                    theme.fullBackgroundView()
-                } else {
-                    LinearGradient(colors: [.black, .blue.opacity(0.9)],
-                                   startPoint: .topLeading, endPoint: .bottomTrailing)
-                }
-            }
-            .ignoresSafeArea()
-            .overlay(Color.black.opacity(0.25))
-        }
+// MARK: - Shop Card
+struct SlaykenShopCard: View {
+    let item: ShopItem
+    let product: ProductProtocol
+    let purchased: Bool
+    let accentColor: Color
+    let onBuy: () -> Void
 
-        // MARK: Fehleranzeige
-        func errorView(message: String) -> some View {
-            VStack(spacing: 12) {
-                Image(systemName: "exclamationmark.triangle.fill")
-                    .font(.system(size: 42))
-                    .foregroundColor(.yellow)
-                Text(message)
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(.white)
-                    .font(.subheadline)
-                Button("Erneut versuchen") {
-                    Task { await setupShop() }
-                }
-                .padding(.top, 4)
-            }
-            .padding()
-        }
-
-        // MARK: Wiederherstellungs-Button
-        var restoreButton: some View {
-            Button {
-                Task {
-                    await purchaseManager.restorePurchases()
-                    withAnimation(.spring()) { showRestoreToast = true }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        withAnimation(.easeOut) { showRestoreToast = false }
-                    }
-                }
-            } label: {
-                Label("Käufe wiederherstellen", systemImage: "arrow.clockwise.circle.fill")
-                    .font(.subheadline.bold())
-                    .foregroundColor(currentTheme?.accent ?? .blue)
-                    .padding(.horizontal, 18)
-                    .padding(.vertical, 10)
-                    .background(.ultraThinMaterial)
-                    .cornerRadius(12)
-                    .shadow(color: .black.opacity(0.25), radius: 5, y: 2)
-            }
-        }
-
-        // MARK: Toast
-        var restoreToastView: some View {
-            if showRestoreToast {
-                Text("✅ Käufe erfolgreich wiederhergestellt")
-                    .font(.caption.bold())
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 8)
-                    .background(Color.green.opacity(0.9))
-                    .cornerRadius(12)
-                    .foregroundColor(.white)
-                    .padding(.bottom, 22)
-                    .transition(.move(edge: .bottom).combined(with: .opacity)) as! EmptyView
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            // 🔹 Preview Image
+            if let imageName = item.previewImage,
+               let uiImage = UIImage(named: imageName) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 230)
+                    .cornerRadius(18)
+                    .shadow(color: .black.opacity(0.3), radius: 8, y: 4)
             } else {
-                EmptyView()
+                RoundedRectangle(cornerRadius: 18)
+                    .fill(Color.gray.opacity(0.2))
+                    .frame(height: 200)
+                    .overlay(
+                        Image(systemName: "photo")
+                            .font(.largeTitle)
+                            .foregroundColor(.white.opacity(0.6))
+                    )
             }
-        }
-    }
 
-    // MARK: - Shop Card
-    struct SlaykenShopCard: View {
-        let item: ShopItem
-        let product: ProductProtocol
-        let purchased: Bool
-        let accentColor: Color
-        let onBuy: () -> Void
-
-        var body: some View {
-            VStack(alignment: .leading, spacing: 10) {
-                // 🔹 Preview Image
-                if let imageName = item.previewImage,
-                   let uiImage = UIImage(named: imageName) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 230)
-                        .cornerRadius(18)
-                        .shadow(color: .black.opacity(0.3), radius: 8, y: 4)
-                } else {
-                    RoundedRectangle(cornerRadius: 18)
-                        .fill(Color.gray.opacity(0.2))
-                        .frame(height: 200)
-                        .overlay(
-                            Image(systemName: "photo")
-                                .font(.largeTitle)
-                                .foregroundColor(.white.opacity(0.6))
-                        )
+            // 🔹 Informationen
+            VStack(alignment: .leading, spacing: 6) {
+                HStack {
+                    Image(systemName: item.categoryIcon)
+                        .foregroundColor(Color(hex: item.categoryIconColor))
+                    Text(item.title)
+                        .font(.headline)
+                        .foregroundColor(.white)
                 }
 
-                // 🔹 Informationen
-                VStack(alignment: .leading, spacing: 6) {
-                    HStack {
-                        Image(systemName: item.categoryIcon)
-                            .foregroundColor(Color(hex: item.categoryIconColor))
-                        Text(item.title)
-                            .font(.headline)
-                            .foregroundColor(.white)
-                    }
+                Text(item.description)
+                    .font(.subheadline)
+                    .foregroundColor(.white.opacity(0.7))
+                    .lineLimit(2)
 
-                    Text(item.description)
-                        .font(.subheadline)
-                        .foregroundColor(.white.opacity(0.7))
-                        .lineLimit(2)
-
-                    HStack {
-                        Text(product.displayPrice)
-                            .fontWeight(.semibold)
-                            .foregroundColor(accentColor)
-                        Spacer()
-                        Button(purchased ? "Anzeigen 👀" : "Kaufen") {
-                            onBuy()
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(purchased ? .green : accentColor)
-                        .animation(.easeInOut, value: purchased)
+                HStack {
+                    Text(product.displayPrice)
+                        .fontWeight(.semibold)
+                        .foregroundColor(accentColor)
+                    Spacer()
+                    Button(purchased ? "Anzeigen 👀" : "Kaufen") {
+                        onBuy()
                     }
+                    .buttonStyle(.borderedProminent)
+                    .tint(purchased ? .green : accentColor)
+                    .animation(.easeInOut, value: purchased)
                 }
-                .padding(.horizontal, 8)
-                .padding(.bottom, 8)
             }
-            .background(.ultraThinMaterial)
-            .cornerRadius(22)
-            .shadow(color: .black.opacity(0.35), radius: 10, y: 5)
-            .padding(.horizontal)
+            .padding(.horizontal, 8)
+            .padding(.bottom, 8)
         }
+        .background(.ultraThinMaterial)
+        .cornerRadius(22)
+        .shadow(color: .black.opacity(0.35), radius: 10, y: 5)
+        .padding(.horizontal)
     }
+}
 
-    // MARK: - Product Protocol
-    protocol ProductProtocol {
-        var id: String { get }
-        var displayPrice: String { get }
-    }
+// MARK: - Product Protocol
+protocol ProductProtocol {
+    var id: String { get }
+    var displayPrice: String { get }
+}
 
-    extension Product: ProductProtocol {}
-    struct MockProduct: ProductProtocol { var id: String; var displayPrice: String }
+extension Product: ProductProtocol {}
+struct MockProduct: ProductProtocol { var id: String; var displayPrice: String }
 
-    // MARK: - Preview
-    #Preview {
-        SlaykenCodeShopView()
-            .environmentObject(ThemeManager())
-            .environmentObject(PurchaseManager())
-            .preferredColorScheme(.dark)
-    }
+// MARK: - Preview
+#Preview {
+    SlaykenCodeShopView()
+        .environmentObject(ThemeManager())
+        .environmentObject(PurchaseManager())
+        .preferredColorScheme(.dark)
+}
+

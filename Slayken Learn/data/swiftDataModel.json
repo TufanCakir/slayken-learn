@@ -1,0 +1,56 @@
+[
+  {
+    "id": "swiftdata_001",
+    "title": "Grundlagen von SwiftData",
+    "description": "Lerne, wie du ein einfaches SwiftData-Modell erstellst, speicherst und in SwiftUI anzeigst.",
+    "steps": [
+      "Importiere SwiftData.",
+      "Definiere ein @Model mit Properties.",
+      "Speichere und lade Daten mit ModelContext und @Query."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7209B7", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass Note {\n    var title: String\n    var createdAt: Date\n    init(title: String, createdAt: Date = .now) {\n        self.title = title\n        self.createdAt = createdAt\n    }\n}\n\n@main\nstruct SwiftDataApp: App {\n    var body: some Scene {\n        WindowGroup {\n            NotesView()\n        }\n        .modelContainer(for: Note.self)\n    }\n}\n\nstruct NotesView: View {\n    @Environment(\\.modelContext) private var context\n    @Query private var notes: [Note]\n    @State private var title = \"\"\n\n    var body: some View {\n        NavigationStack {\n            VStack(spacing: 16) {\n                TextField(\"Titel eingeben\", text: $title)\n                    .textFieldStyle(.roundedBorder)\n\n                Button(\"Speichern\") {\n                    let new = Note(title: title)\n                    context.insert(new)\n                    try? context.save()\n                    title = \"\"\n                }\n                .buttonStyle(.borderedProminent)\n\n                List(notes) { note in\n                    Text(note.title)\n                }\n            }\n            .padding()\n            .navigationTitle(\"SwiftData Notizen\")\n        }\n    }\n}\n\n#Preview { NotesView() }",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#0000FF"
+  },
+  {
+    "id": "swiftdata_002",
+    "title": "Beziehungen in SwiftData (One-to-Many)",
+    "description": "Erstelle Datenmodelle mit Beziehungen – z. B. ein Projekt mit mehreren Aufgaben.",
+    "steps": [
+      "Definiere zwei @Model-Klassen mit Relationship.",
+      "Nutze .cascade für automatisches Löschen.",
+      "Zeige verknüpfte Objekte mit @Query an."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#560BAD", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass Project {\n    var name: String\n    @Relationship(deleteRule: .cascade) var tasks: [TaskItem] = []\n    init(name: String) { self.name = name }\n}\n\n@Model\nclass TaskItem {\n    var title: String\n    var isDone: Bool = false\n    init(title: String) { self.title = title }\n}\n\nstruct ProjectListView: View {\n    @Environment(\\.modelContext) private var context\n    @Query private var projects: [Project]\n    @State private var newProject = \"\"\n\n    var body: some View {\n        NavigationStack {\n            VStack(spacing: 16) {\n                TextField(\"Projektname\", text: $newProject)\n                    .textFieldStyle(.roundedBorder)\n\n                Button(\"Projekt hinzufügen\") {\n                    let project = Project(name: newProject)\n                    context.insert(project)\n                    try? context.save()\n                    newProject = \"\"\n                }\n                .buttonStyle(.borderedProminent)\n\n                List(projects) { project in\n                    NavigationLink(destination: TaskListView(project: project)) {\n                        Text(project.name)\n                    }\n                }\n            }\n            .padding()\n            .navigationTitle(\"Projekte\")\n        }\n    }\n}\n\nstruct TaskListView: View {\n    @Environment(\\.modelContext) private var context\n    @Bindable var project: Project\n    @State private var newTask = \"\"\n\n    var body: some View {\n        VStack(spacing: 16) {\n            TextField(\"Neue Aufgabe\", text: $newTask)\n                .textFieldStyle(.roundedBorder)\n\n            Button(\"Hinzufügen\") {\n                let task = TaskItem(title: newTask)\n                project.tasks.append(task)\n                try? context.save()\n                newTask = \"\"\n            }\n            .buttonStyle(.borderedProminent)\n\n            List(project.tasks) { task in\n                HStack {\n                    Text(task.title)\n                    Spacer()\n                    Image(systemName: task.isDone ? \"checkmark.circle.fill\" : \"circle\")\n                        .onTapGesture {\n                            task.isDone.toggle()\n                            try? context.save()\n                        }\n                }\n            }\n        }\n        .padding()\n        .navigationTitle(project.name)\n    }\n}\n\n#Preview { ProjectListView() }",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#0000FF"
+  },
+  {
+    "id": "swiftdata_003",
+    "title": "Filter & Sortierung mit @Query",
+    "description": "Filtere und sortiere Daten direkt mit @Query – ganz ohne Core Data Predicate Syntax.",
+    "steps": [
+      "Verwende @Query mit einem SortDescriptor.",
+      "Nutze Predicate zur Filterung.",
+      "Ändere Filterbedingungen dynamisch."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#B5179E", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass Expense {\n    var title: String\n    var amount: Double\n    var date: Date\n    init(title: String, amount: Double, date: Date = .now) {\n        self.title = title\n        self.amount = amount\n        self.date = date\n    }\n}\n\nstruct FilteredListView: View {\n    @Environment(\\.modelContext) private var context\n    @Query(sort: [SortDescriptor(\\.amount, order: .reverse)], predicate: #Predicate { $0.amount > 50 }) private var expenses: [Expense]\n    @State private var title = \"\"\n    @State private var amount = \"\"\n\n    var body: some View {\n        VStack(spacing: 16) {\n            TextField(\"Titel\", text: $title)\n                .textFieldStyle(.roundedBorder)\n            TextField(\"Betrag\", text: $amount)\n                .keyboardType(.decimalPad)\n                .textFieldStyle(.roundedBorder)\n\n            Button(\"Speichern\") {\n                if let value = Double(amount) {\n                    let expense = Expense(title: title, amount: value)\n                    context.insert(expense)\n                    try? context.save()\n                    title = \"\"\n                    amount = \"\"\n                }\n            }\n            .buttonStyle(.borderedProminent)\n\n            List(expenses) { expense in\n                HStack {\n                    VStack(alignment: .leading) {\n                        Text(expense.title)\n                            .font(.headline)\n                        Text(expense.date, style: .date)\n                            .font(.caption)\n                            .foregroundColor(.gray)\n                    }\n                    Spacer()\n                    Text(String(format: \"%.2f €\", expense.amount))\n                        .bold()\n                }\n            }\n        }\n        .padding()\n        .navigationTitle(\"Ausgaben > 50€\")\n    }\n}\n\n#Preview { FilteredListView() }",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#0000FF"
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "vision_001",
+    "title": "Objekterkennung mit Vision",
+    "description": "Lerne, wie du mit dem Vision-Framework Bilder analysierst und Objekte erkennst.",
+    "steps": [
+      "Importiere Vision und CoreML.",
+      "Lade ein ML-Modell für die Bildklassifizierung.",
+      "Erstelle eine VNCoreMLRequest und führe sie auf einem Bild aus."
+    ],
+    "colors": {
+      "backgroundColors": [
+        "#000000",
+        "#7B2CBF",
+        "#000000"
+      ],
+      "textColors": [
+        "#FFFFFF"
+      ]
+    },
+    "code": "import Vision\nimport CoreML\nimport UIKit\n\nfunc detectObjects(in image: UIImage) {\n    guard let model = try? VNCoreMLModel(for: MobileNetV2().model) else {\n        print(\"❌ ML-Modell konnte nicht geladen werden\")\n        return\n    }\n\n    let request = VNCoreMLRequest(model: model) { request, _ in\n        if let results = request.results as? [VNClassificationObservation],\n           let topResult = results.first {\n            print(\"✅ Erkanntes Objekt: \\(topResult.identifier) – Vertrauen: \\(Int(topResult.confidence * 100))%\")\n        }\n    }\n\n    guard let cgImage = image.cgImage else { return }\n    let handler = VNImageRequestHandler(cgImage: cgImage)\n    try? handler.perform([request])\n}\n\n// Beispielaufruf (z. B. in einem SwiftUI-View):\n// detectObjects(in: UIImage(named: \"example.jpg\")!)",
+    "category": "Vision",
+    "categoryIcon": "vision.pro",
+    "categoryIconColor": "#7B2CBF"
+  }
+]

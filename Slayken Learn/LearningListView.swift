@@ -6,7 +6,6 @@ struct LearningListView: View {
     @EnvironmentObject private var themeManager: ThemeManager
     @EnvironmentObject private var purchaseManager: PurchaseManager
     @Environment(\.horizontalSizeClass) private var sizeClass
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     // MARK: - States
     @State private var topics: [LearningTopic] = []
@@ -16,7 +15,7 @@ struct LearningListView: View {
     @State private var selectedCategory = "Alle"
     @State private var hasAskedForReviewThisSession = false
 
-    // MARK: - Persistent Data
+    // MARK: - Persistent
     @AppStorage("favoriteIDs") private var favoriteIDs = ""
     @AppStorage("appLaunchCount") private var launchCount = 0
     @AppStorage("openPurchasedTab") private var openPurchasedTab = false
@@ -32,8 +31,7 @@ struct LearningListView: View {
         let trimmed = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
         return topics.filter { topic in
             let matchCategory = selectedCategory == "Alle" || topic.category == selectedCategory
-            let matchSearch =
-                trimmed.isEmpty ||
+            let matchSearch = trimmed.isEmpty ||
                 topic.title.localizedCaseInsensitiveContains(trimmed) ||
                 topic.description.localizedCaseInsensitiveContains(trimmed)
             let matchFav = !showFavoritesOnly || favorites.contains(topic.id)
@@ -46,7 +44,6 @@ struct LearningListView: View {
         NavigationStack {
             ZStack {
                 backgroundLayer
-
                 VStack(spacing: 12) {
                     searchBar
                     favoritesToggle
@@ -62,23 +59,21 @@ struct LearningListView: View {
     }
 }
 
+// MARK: - UI-Komponenten
 private extension LearningListView {
-    // MARK: - Hintergrund
     var backgroundLayer: some View {
         Group {
             if let theme = currentTheme {
                 theme.fullBackgroundView()
             } else {
                 LinearGradient(colors: [.black, .blue.opacity(0.8)],
-                               startPoint: .topLeading,
-                               endPoint: .bottomTrailing)
+                               startPoint: .topLeading, endPoint: .bottomTrailing)
             }
         }
         .ignoresSafeArea()
         .animation(.easeInOut(duration: 0.35), value: currentTheme?.id)
     }
 
-    // MARK: - Suchfeld
     var searchBar: some View {
         HStack {
             Image(systemName: "magnifyingglass")
@@ -103,7 +98,6 @@ private extension LearningListView {
         .padding(.horizontal, horizontalPadding)
     }
 
-    // MARK: - Favoriten-Toggle
     var favoritesToggle: some View {
         Toggle(isOn: $showFavoritesOnly) {
             Label("Nur Favoriten", systemImage: "heart.fill")
@@ -114,7 +108,6 @@ private extension LearningListView {
         .padding(.horizontal, horizontalPadding)
     }
 
-    // MARK: - Kategorien
     var categoryTabs: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
@@ -152,7 +145,6 @@ private extension LearningListView {
         .buttonStyle(.plain)
     }
 
-    // MARK: - Inhalte
     var contentList: some View {
         ScrollView {
             LazyVGrid(columns: gridLayout, spacing: 16) {
@@ -160,15 +152,12 @@ private extension LearningListView {
                     emptyPlaceholder
                 } else {
                     ForEach(filteredTopics) { topic in
-                        // 🔒 Wenn Produkt vorhanden & nicht gekauft → Lock-View
                         if let productID = topic.productID,
-                           topic.category == "Gekauft",
                            !purchaseManager.isPurchased(productID) {
                             LockedContentView(topic: topic)
                                 .cornerRadius(14)
                                 .shadow(color: .black.opacity(0.25), radius: 6, y: 3)
                         } else {
-                            // ✅ Freigeschaltete Inhalte
                             NavigationLink(destination: LearningDetailView(topic: topic)) {
                                 LearningCard(topic: topic)
                                     .scaleEffect(hoverEffect(for: topic))
@@ -189,7 +178,6 @@ private extension LearningListView {
         showFavoritesOnly && favorites.contains(topic.id) ? 1.02 : 1.0
     }
 
-    // MARK: - Leerer Zustand
     var emptyPlaceholder: some View {
         VStack(spacing: 12) {
             Image(systemName: "tray")
@@ -208,7 +196,7 @@ private extension LearningListView {
     }
 }
 
-// MARK: - Layout & Dynamik
+// MARK: - Layout
 private extension LearningListView {
     var horizontalPadding: CGFloat { sizeClass == .regular ? 30 : 16 }
     var fontSizeBase: CGFloat { sizeClass == .regular ? 18 : 16 }
@@ -218,6 +206,13 @@ private extension LearningListView {
         sizeClass == .regular
             ? [GridItem(.adaptive(minimum: 300), spacing: 16)]
             : [GridItem(.flexible())]
+    }
+}
+
+private extension Sequence where Element: Hashable {
+    func unique() -> [Element] {
+        var seen = Set<Element>()
+        return filter { seen.insert($0).inserted }
     }
 }
 
@@ -231,15 +226,32 @@ private extension LearningListView {
         if openPurchasedTab {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
-                    selectedCategory = "Gekauft"
+                    // 🔍 Kategorie dynamisch anhand der Topics erkennen
+                    if let dynamicCategory = topics
+                        .map(\.category)
+                        .unique()
+                        .first(where: { $0.localizedCaseInsensitiveContains("purch") || $0.localizedCaseInsensitiveContains("buy") || $0.localizedCaseInsensitiveContains("gekauft") }) {
+                        selectedCategory = dynamicCategory
+                    } else if let fallback = topics.map(\.category).unique().first(where: { $0.localizedCaseInsensitiveContains("shop") || $0.localizedCaseInsensitiveContains("store") }) {
+                        selectedCategory = fallback
+                    } else {
+                        selectedCategory = "Alle"
+                    }
                 }
                 openPurchasedTab = false
             }
         }
+
+
+
     }
 
+    
     func loadAllTopics() {
-        let files = ["learningTopics", "metalData", "metalShaderData", "metalAppData", "reactNativeData", "purchasedContent"]
+        let files = [
+            "learningTopics", "metalData", "metalShaderData",
+            "metalAppData", "reactNativeData", "purchasedContent", "swiftData", "arkitData", "healthkitData", "speechData", "visionData", "widgekitData", "swiftDataModel"
+        ]
         topics = files.flatMap { loadLearningTopics(from: $0) }
     }
 
@@ -254,8 +266,8 @@ private extension LearningListView {
     func askForReviewIfNeeded() {
         launchCount += 1
         guard topics.count > 3 else { return }
-
-        if (launchCount == 5 || launchCount % 10 == 0), !hasAskedForReviewThisSession {
+        if (launchCount == 5 || launchCount % 10 == 0),
+           !hasAskedForReviewThisSession {
             hasAskedForReviewThisSession = true
             requestAppStoreReview()
         }
@@ -278,7 +290,8 @@ private extension LearningListView {
 // MARK: - Code Loader
 func loadCode(from fileName: String) -> String {
     guard let url = Bundle.main.url(forResource: fileName, withExtension: nil),
-          let code = try? String(contentsOf: url, encoding: .utf8) else {
+          let code = try? String(contentsOf: url, encoding: .utf8)
+    else {
         return "// Datei nicht gefunden: \(fileName)"
     }
     return code

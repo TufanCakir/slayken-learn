@@ -1,0 +1,26 @@
+[
+  {
+    "id": "realitykit_001",
+    "title": "RealityKit 3D Objekt",
+    "description": "Zeige ein 3D-Objekt direkt in SwiftUI mit RealityKit und ARView.",
+    "steps": [
+      "Importiere RealityKit und ARKit.",
+      "Erstelle eine ARView in einem UIViewRepresentable.",
+      "Lade oder generiere ein 3D-Modell und füge es zur Szene hinzu."
+    ],
+    "colors": {
+      "backgroundColors": [
+        "#000000",
+        "#4895EF",
+        "#000000"
+      ],
+      "textColors": [
+        "#FFFFFF"
+      ]
+    },
+    "code": "import SwiftUI\nimport RealityKit\nimport ARKit\n\nstruct RealityKitView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let arView = ARView(frame: .zero)\n        let config = ARWorldTrackingConfiguration()\n        config.environmentTexturing = .automatic\n        arView.session.run(config)\n\n        // 🔹 Beispiel-Objekt (3D-Box)\n        let box = ModelEntity(mesh: .generateBox(size: 0.1))\n        box.model?.materials = [SimpleMaterial(color: .cyan, isMetallic: true)]\n\n        let anchor = AnchorEntity(world: [0, 0, -0.3])\n        anchor.addChild(box)\n        arView.scene.addAnchor(anchor)\n\n        return arView\n    }\n\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\nstruct RealityKitExampleView: View {\n    var body: some View {\n        RealityKitView()\n            .ignoresSafeArea()\n            .overlay(\n                Text(\"RealityKit 3D 🌐\")\n                    .font(.title)\n                    .foregroundColor(.white)\n                    .padding(),\n                alignment: .top\n            )\n    }\n}\n\n#Preview {\n    RealityKitExampleView()\n}",
+    "category": "RealityKit",
+    "categoryIcon": "cube.transparent.fill",
+    "categoryIconColor": "#4895EF"
+  }
+]

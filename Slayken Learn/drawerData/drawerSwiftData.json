@@ -1,0 +1,26 @@
+[
+  {
+    "id": "swift_001",
+    "title": "Variablen & Konstanten",
+    "description": "Lerne den Unterschied zwischen `let` und `var` in Swift und wie du Werte definierst.",
+    "steps": [
+      "Verwende `let` für Konstanten (unveränderbare Werte).",
+      "Verwende `var` für veränderbare Werte.",
+      "Achte auf Typinferenz – Swift erkennt Datentypen automatisch."
+    ],
+    "colors": {
+      "backgroundColors": [
+        "#000000",
+        "#F72585",
+        "#000000"
+      ],
+      "textColors": [
+        "#FFFFFF"
+      ]
+    },
+    "code": "import Foundation\n\n// ✅ Konstanten mit let\nlet maxSpeed = 120\n\n// ✅ Variablen mit var\nvar currentSpeed = 80\n\n// Werte ändern\ncurrentSpeed = 100\n\n// Ausgabe\nprint(\"Aktuelle Geschwindigkeit: \\(currentSpeed) km/h\")",
+    "category": "Swift",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#F72585"
+  }
+]

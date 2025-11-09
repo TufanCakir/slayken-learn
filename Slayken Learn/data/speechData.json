@@ -1,0 +1,28 @@
+[
+    {
+        "id": "speech_001",
+        "title": "Spracherkennung (Speech Framework)",
+        "description":
+            "Nutze Apples Speech API, um gesprochene Sprache in Text umzuwandeln.",
+        "steps": [
+            "Speech importieren und SFSpeechRecognizer erstellen.",
+            "Mikrofonzugriff anfordern.",
+            "AudioSession starten und Texterkennung aktivieren."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#30D158",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import Speech\n\nlet recognizer = SFSpeechRecognizer(locale: Locale(identifier: \"de-DE\"))!\nSFSpeechRecognizer.requestAuthorization { status in\n    if status == .authorized {\n        let request = SFSpeechURLRecognitionRequest(url: URL(filePath: \"audio.m4a\"))\n        recognizer.recognitionTask(with: request) { result, _ in\n            if let text = result?.bestTranscription.formattedString {\n                print(\"🗣 Erkannt: \\(text)\")\n            }\n        }\n    } else {\n        print(\"🚫 Kein Zugriff auf Spracherkennung\")\n    }\n}",
+        "category": "Speech",
+        "categoryIcon": "mic.fill",
+        "categoryIconColor": "#30D158"
+    },
+]

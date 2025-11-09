@@ -1,362 +1,910 @@
 [
-  {
-    "id": "rn_001",
-    "title": "Was ist React Native?",
-    "description": "Lerne, was React Native ist, wie es funktioniert und wofür es genutzt wird.",
-    "steps": [
-      "React Native basiert auf React, nutzt aber native iOS & Android APIs.",
-      "Geschrieben in JavaScript oder TypeScript.",
-      "Mit Expo oder Metro kannst du deine App starten und debuggen."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#61DAFB", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "// React Native Komponenten Beispiel\nimport { Text, View } from 'react-native';\n\nexport default function App() {\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>\n      <Text style={{ fontSize: 24 }}>Hello React Native 👋</Text>\n    </View>\n  );\n}",
-    "category": "React Native",
-    "categoryIcon": "react",
-    "categoryIconColor": "#61DAFB"
-  },
-  {
-    "id": "rn_002",
-    "title": "Grundstruktur einer App",
-    "description": "Verstehe den Aufbau einer React Native App und die Hauptkomponenten.",
-    "steps": [
-      "Jede App beginnt mit einer Hauptkomponente (z. B. App.js).",
-      "JSX beschreibt die UI-Struktur ähnlich wie HTML.",
-      "Styles werden mit JavaScript definiert."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#0A84FF", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import { StyleSheet, Text, View } from 'react-native';\n\nexport default function App() {\n  return (\n    <View style={styles.container}>\n      <Text>Willkommen zu React Native!</Text>\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    flex: 1,\n    justifyContent: 'center',\n    alignItems: 'center',\n    backgroundColor: '#000',\n  },\n});",
-    "category": "React Native",
-    "categoryIcon": "react",
-    "categoryIconColor": "#0A84FF"
-  },
-  {
-    "id": "rn_003",
-    "title": "JSX & Komponenten",
-    "description": "JSX kombiniert JavaScript und Layout. Du kannst UI-Komponenten wie Bausteine wiederverwenden.",
-    "steps": [
-      "JSX sieht aus wie HTML, ist aber JavaScript.",
-      "Erstelle eigene Komponenten als Funktionen.",
-      "Importiere und verwende sie in anderen Dateien."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#FF9500", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "function Greeting({ name }) {\n  return <Text>Hallo, {name}!</Text>;\n}\n\nexport default function App() {\n  return (\n    <View>\n      <Greeting name=\"Tufan\" />\n      <Greeting name=\"Swift & RN\" />\n    </View>\n  );\n}",
-    "category": "React Native",
-    "categoryIcon": "react",
-    "categoryIconColor": "#FF9500"
-  },
-  {
-    "id": "rn_004",
-    "title": "State & Props verstehen",
-    "description": "State speichert Daten innerhalb einer Komponente, Props werden von außen übergeben.",
-    "steps": [
-      "useState() verwaltet Zustände innerhalb einer Komponente.",
-      "Props werden wie Parameter an Komponenten übergeben.",
-      "Änderungen am State führen zu automatischen UI-Updates."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#30D158", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import { useState } from 'react';\nimport { View, Text, Button } from 'react-native';\n\nexport default function Counter() {\n  const [count, setCount] = useState(0);\n\n  return (\n    <View style={{ padding: 40 }}>\n      <Text style={{ fontSize: 22 }}>Zähler: {count}</Text>\n      <Button title=\"+1\" onPress={() => setCount(count + 1)} />\n    </View>\n  );\n}",
-    "category": "React Native",
-    "categoryIcon": "react",
-    "categoryIconColor": "#30D158"
-  },
-  {
-    "id": "rn_005",
-    "title": "StyleSheet & Layout (Flexbox)",
-    "description": "Nutze Flexbox für responsive Layouts und StyleSheet für sauberes Styling.",
-    "steps": [
-      "StyleSheet.create() für strukturierte Styles.",
-      "Flexbox-Layout: justifyContent, alignItems, flexDirection.",
-      "Farben, Abstände und Text-Stile einfach anpassbar."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#FF2D55", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import { StyleSheet, View } from 'react-native';\n\nexport default function LayoutExample() {\n  return (\n    <View style={styles.container}>\n      <View style={styles.box1} />\n      <View style={styles.box2} />\n      <View style={styles.box3} />\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    flex: 1,\n    flexDirection: 'row',\n    justifyContent: 'space-around',\n    alignItems: 'center',\n  },\n  box1: { width: 60, height: 60, backgroundColor: 'red' },\n  box2: { width: 60, height: 60, backgroundColor: 'green' },\n  box3: { width: 60, height: 60, backgroundColor: 'blue' },\n});",
-    "category": "React Native",
-    "categoryIcon": "react",
-    "categoryIconColor": "#FF2D55"
-  },
     {
-      "id": "rn_006",
-      "title": "React Hooks verstehen (useState, useEffect)",
-      "description": "Hooks sind das Herz moderner React Native Apps. Sie ermöglichen State und Logik in Funktionskomponenten.",
-      "steps": [
-        "useState() für Zustände.",
-        "useEffect() für Seiteneffekte (z. B. Daten laden).",
-        "Cleanup-Funktion für Timer oder Event Listener nutzen."
-      ],
-      "colors": {
-        "backgroundColors": ["#000000", "#61DAFB", "#000000"],
-        "textColors": ["#FFFFFF"]
-      },
-      "code": "import { useState, useEffect } from 'react';\nimport { View, Text } from 'react-native';\n\nexport default function HookExample() {\n  const [time, setTime] = useState(new Date().toLocaleTimeString());\n\n  useEffect(() => {\n    const interval = setInterval(() => {\n      setTime(new Date().toLocaleTimeString());\n    }, 1000);\n    return () => clearInterval(interval);\n  }, []);\n\n  return (\n    <View style={{ padding: 40 }}>\n      <Text style={{ fontSize: 22 }}>🕒 {time}</Text>\n    </View>\n  );\n}",
-      "category": "React Native Advanced",
-      "categoryIcon": "react",
-      "categoryIconColor": "#61DAFB"
-    },
-    {
-      "id": "rn_007",
-      "title": "Navigation mit React Navigation",
-      "description": "Wechsle zwischen Screens mit React Navigation – der Standard für Navigation in React Native.",
-      "steps": [
-        "Installation: `npm install @react-navigation/native @react-navigation/native-stack`",
-        "NavigationContainer als Root definieren.",
-        "Mit createNativeStackNavigator() neue Screens anlegen."
-      ],
-      "colors": {
-        "backgroundColors": ["#000000", "#0A84FF", "#000000"],
-        "textColors": ["#FFFFFF"]
-      },
-      "code": "import * as React from 'react';\nimport { NavigationContainer } from '@react-navigation/native';\nimport { createNativeStackNavigator } from '@react-navigation/native-stack';\nimport { Button, View, Text } from 'react-native';\n\nconst Stack = createNativeStackNavigator();\n\nfunction Home({ navigation }) {\n  return (\n    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>\n      <Text>🏠 Home</Text>\n      <Button title=\"Gehe zu Details\" onPress={() => navigation.navigate('Details')} />\n    </View>\n  );\n}\n\nfunction Details() {\n  return (\n    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>\n      <Text>📄 Detailseite</Text>\n    </View>\n  );\n}\n\nexport default function App() {\n  return (\n    <NavigationContainer>\n      <Stack.Navigator>\n        <Stack.Screen name=\"Home\" component={Home} />\n        <Stack.Screen name=\"Details\" component={Details} />\n      </Stack.Navigator>\n    </NavigationContainer>\n  );\n}",
-      "category": "React Native Advanced",
-      "categoryIcon": "react",
-      "categoryIconColor": "#0A84FF"
-    },
-    {
-      "id": "rn_008",
-      "title": "Daten speichern mit AsyncStorage",
-      "description": "Speichere kleine Datenmengen lokal auf dem Gerät – perfekt für Einstellungen, Tokens oder Favoriten.",
-      "steps": [
-        "AsyncStorage aus `@react-native-async-storage/async-storage` importieren.",
-        "Mit `setItem` speichern und `getItem` abrufen.",
-        "Ideal in Kombination mit useEffect."
-      ],
-      "colors": {
-        "backgroundColors": ["#000000", "#FF9500", "#000000"],
-        "textColors": ["#FFFFFF"]
-      },
-      "code": "import AsyncStorage from '@react-native-async-storage/async-storage';\nimport { useEffect, useState } from 'react';\nimport { View, Text, Button } from 'react-native';\n\nexport default function StorageExample() {\n  const [name, setName] = useState('');\n\n  useEffect(() => {\n    AsyncStorage.getItem('username').then(value => {\n      if (value) setName(value);\n    });\n  }, []);\n\n  const saveName = async () => {\n    await AsyncStorage.setItem('username', 'Tufan');\n    setName('Tufan');\n  };\n\n  return (\n    <View style={{ padding: 40 }}>\n      <Text style={{ fontSize: 22 }}>👋 Hallo, {name || 'Gast'}!</Text>\n      <Button title=\"Speichern\" onPress={saveName} />\n    </View>\n  );\n}",
-      "category": "React Native Advanced",
-      "categoryIcon": "react",
-      "categoryIconColor": "#FF9500"
-    },
-    {
-      "id": "rn_009",
-      "title": "Context API für globale Zustände",
-      "description": "Mit React Context kannst du Daten global verwalten, z. B. Theme, User oder Coins.",
-      "steps": [
-        "Context mit `createContext()` erstellen.",
-        "Provider um deine App legen.",
-        "Daten in beliebigen Komponenten mit `useContext()` abrufen."
-      ],
-      "colors": {
-        "backgroundColors": ["#000000", "#30D158", "#000000"],
-        "textColors": ["#FFFFFF"]
-      },
-      "code": "import React, { createContext, useContext, useState } from 'react';\nimport { View, Text, Button } from 'react-native';\n\nconst ThemeContext = createContext();\n\nfunction ThemeProvider({ children }) {\n  const [dark, setDark] = useState(false);\n  const toggle = () => setDark(!dark);\n  return (\n    <ThemeContext.Provider value={{ dark, toggle }}>\n      {children}\n    </ThemeContext.Provider>\n  );\n}\n\nfunction Home() {\n  const { dark, toggle } = useContext(ThemeContext);\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: dark ? '#000' : '#fff' }}>\n      <Text style={{ color: dark ? '#fff' : '#000' }}>{dark ? '🌙 Dark Mode' : '☀️ Light Mode'}</Text>\n      <Button title=\"Umschalten\" onPress={toggle} />\n    </View>\n  );\n}\n\nexport default function App() {\n  return (\n    <ThemeProvider>\n      <Home />\n    </ThemeProvider>\n  );\n}",
-      "category": "React Native Advanced",
-      "categoryIcon": "react",
-      "categoryIconColor": "#30D158"
-    },
-    {
-      "id": "rn_010",
-      "title": "Expo APIs (z. B. Kamera, Sensoren, Haptik)",
-      "description": "Nutze Expo Module für native Features – ohne Xcode oder Android Studio zu öffnen.",
-      "steps": [
-        "Expo liefert APIs wie Camera, Haptics, Location oder FileSystem.",
-        "Installation: `npx expo install expo-camera expo-haptics`",
-        "Erfordert Permissions (z. B. Camera.requestPermissionsAsync())."
-      ],
-      "colors": {
-        "backgroundColors": ["#000000", "#FF2D55", "#000000"],
-        "textColors": ["#FFFFFF"]
-      },
-      "code": "import { CameraView, useCameraPermissions } from 'expo-camera';\nimport * as Haptics from 'expo-haptics';\nimport { Button, View } from 'react-native';\n\nexport default function ExpoExample() {\n  const [permission, requestPermission] = useCameraPermissions();\n\n  if (!permission) return null;\n  if (!permission.granted) {\n    return <Button title=\"Kamera erlauben\" onPress={requestPermission} />;\n  }\n\n  return (\n    <View style={{ flex: 1 }}>\n      <CameraView style={{ flex: 1 }} />\n      <Button title=\"📸 Haptik auslösen\" onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} />\n    </View>\n  );\n}",
-      "category": "React Native Advanced",
-      "categoryIcon": "react",
-      "categoryIconColor": "#FF2D55"
-    },
-      {
-        "id": "rn_011",
-        "title": "Eigene Hooks erstellen (Custom Hooks)",
-        "description": "Baue deine eigenen Hooks, um Logik wiederverwendbar zu machen – z. B. für API Calls oder Timer.",
+        "id": "rn_001",
+        "title": "Was ist React Native?",
+        "description":
+            "Lerne, was React Native ist, wie es funktioniert und wofür es genutzt wird.",
         "steps": [
-          "Erstelle eine Funktion mit dem Prefix use.",
-          "Nutze andere Hooks (useState, useEffect) darin.",
-          "Exportiere sie und verwende sie in mehreren Komponenten."
+            "React Native basiert auf React, nutzt aber native iOS & Android APIs.",
+            "Geschrieben in JavaScript oder TypeScript.",
+            "Mit Expo oder Metro kannst du deine App starten und debuggen."
         ],
         "colors": {
-          "backgroundColors": ["#000000", "#61DAFB", "#000000"],
-          "textColors": ["#FFFFFF"]
+            "backgroundColors": [
+                "#000000",
+                "#61DAFB",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
         },
-        "code": "import { useState, useEffect } from 'react';\n\nexport function useTimer() {\n  const [seconds, setSeconds] = useState(0);\n  useEffect(() => {\n    const interval = setInterval(() => setSeconds(s => s + 1), 1000);\n    return () => clearInterval(interval);\n  }, []);\n  return seconds;\n}\n\n// Nutzung\nimport { View, Text } from 'react-native';\nimport { useTimer } from './useTimer';\n\nexport default function TimerScreen() {\n  const seconds = useTimer();\n  return <Text style={{ fontSize: 24 }}>⏱ {seconds}s</Text>;\n}",
-        "category": "React Native Advanced",
+        "code":
+            "// React Native Komponenten Beispiel\nimport { Text, View } from 'react-native';\n\nexport default function App() {\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>\n      <Text style={{ fontSize: 24 }}>Hello React Native 👋</Text>\n    </View>\n  );\n}",
+        "category": "React Native",
         "categoryIcon": "react",
         "categoryIconColor": "#61DAFB"
-      },
-      {
-        "id": "rn_012",
-        "title": "API Requests mit Fetch & Axios",
-        "description": "Hole Daten aus einer REST-API mit Fetch oder Axios und zeige sie in deiner App an.",
+    },
+    {
+        "id": "rn_002",
+        "title": "Grundstruktur einer App",
+        "description":
+            "Verstehe den Aufbau einer React Native App und die Hauptkomponenten.",
         "steps": [
-          "Verwende useEffect, um beim Laden Daten abzurufen.",
-          "Nutze Fetch oder Axios für API Requests.",
-          "Zeige Lade- und Fehlerzustände im UI an."
+            "Jede App beginnt mit einer Hauptkomponente (z. B. App.js).",
+            "JSX beschreibt die UI-Struktur ähnlich wie HTML.",
+            "Styles werden mit JavaScript definiert."
         ],
         "colors": {
-          "backgroundColors": ["#000000", "#0A84FF", "#000000"],
-          "textColors": ["#FFFFFF"]
+            "backgroundColors": [
+                "#000000",
+                "#0A84FF",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
         },
-        "code": "import { useState, useEffect } from 'react';\nimport { View, Text, ActivityIndicator } from 'react-native';\n\nexport default function ApiExample() {\n  const [data, setData] = useState(null);\n  const [loading, setLoading] = useState(true);\n\n  useEffect(() => {\n    fetch('https://jsonplaceholder.typicode.com/posts/1')\n      .then(res => res.json())\n      .then(json => setData(json))\n      .catch(err => console.error(err))\n      .finally(() => setLoading(false));\n  }, []);\n\n  if (loading) return <ActivityIndicator size=\"large\" />;\n\n  return (\n    <View style={{ padding: 20 }}>\n      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{data.title}</Text>\n      <Text>{data.body}</Text>\n    </View>\n  );\n}",
-        "category": "React Native Advanced",
+        "code":
+            "import { StyleSheet, Text, View } from 'react-native';\n\nexport default function App() {\n  return (\n    <View style={styles.container}>\n      <Text>Willkommen zu React Native!</Text>\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    flex: 1,\n    justifyContent: 'center',\n    alignItems: 'center',\n    backgroundColor: '#000',\n  },\n});",
+        "category": "React Native",
         "categoryIcon": "react",
         "categoryIconColor": "#0A84FF"
-      },
-      {
-        "id": "rn_013",
-        "title": "Animationen mit Reanimated & LayoutAnimation",
-        "description": "Füge flüssige, native Animationen hinzu – für Übergänge, Gesten oder Effekte.",
+    },
+    {
+        "id": "rn_003",
+        "title": "JSX & Komponenten",
+        "description":
+            "JSX kombiniert JavaScript und Layout. Du kannst UI-Komponenten wie Bausteine wiederverwenden.",
         "steps": [
-          "Mit Reanimated oder LayoutAnimation UI animieren.",
-          "useSharedValue für Werte, useAnimatedStyle für Styles.",
-          "Leistungsstarke GPU-basierte Bewegungen."
+            "JSX sieht aus wie HTML, ist aber JavaScript.",
+            "Erstelle eigene Komponenten als Funktionen.",
+            "Importiere und verwende sie in anderen Dateien."
         ],
         "colors": {
-          "backgroundColors": ["#000000", "#FF2D55", "#000000"],
-          "textColors": ["#FFFFFF"]
+            "backgroundColors": [
+                "#000000",
+                "#FF9500",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
         },
-        "code": "import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';\nimport { Button } from 'react-native';\nimport { useState } from 'react';\n\nexport default function AnimatedBox() {\n  const scale = useSharedValue(1);\n  const style = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));\n\n  return (\n    <>\n      <Animated.View style={[{ width: 100, height: 100, backgroundColor: 'orange', margin: 40 }, style]} />\n      <Button title=\"Bounce\" onPress={() => (scale.value = withSpring(scale.value === 1 ? 1.5 : 1))} />\n    </>\n  );\n}",
-        "category": "React Native Advanced",
-        "categoryIcon": "react",
-        "categoryIconColor": "#FF2D55"
-      },
-      {
-        "id": "rn_014",
-        "title": "Theme & Dark Mode umsetzen",
-        "description": "Erstelle ein globales Theme-System, das zwischen Light & Dark Mode wechseln kann.",
-        "steps": [
-          "useColorScheme() von React Native verwenden.",
-          "Ein eigenes Theme-Object mit Farben definieren.",
-          "Dynamisch Styles anpassen."
-        ],
-        "colors": {
-          "backgroundColors": ["#000000", "#30D158", "#000000"],
-          "textColors": ["#FFFFFF"]
-        },
-        "code": "import { useColorScheme, View, Text, StyleSheet } from 'react-native';\n\nexport default function ThemeExample() {\n  const scheme = useColorScheme();\n  const isDark = scheme === 'dark';\n\n  return (\n    <View style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }] }>\n      <Text style={{ color: isDark ? '#fff' : '#000' }}>\n        {isDark ? '🌙 Dark Mode aktiv' : '☀️ Light Mode aktiv'}\n      </Text>\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: { flex: 1, justifyContent: 'center', alignItems: 'center' }\n});",
-        "category": "React Native Advanced",
-        "categoryIcon": "react",
-        "categoryIconColor": "#30D158"
-      },
-      {
-        "id": "rn_015",
-        "title": "Dateien & Downloads mit expo-file-system",
-        "description": "Lade Dateien aus dem Internet herunter und speichere sie lokal – z. B. Bilder oder JSON-Daten.",
-        "steps": [
-          "expo-file-system installieren: `npx expo install expo-file-system`.",
-          "FileSystem.downloadAsync() nutzen.",
-          "Pfad und Status anzeigen."
-        ],
-        "colors": {
-          "backgroundColors": ["#000000", "#FF9500", "#000000"],
-          "textColors": ["#FFFFFF"]
-        },
-        "code": "import * as FileSystem from 'expo-file-system';\nimport { useState } from 'react';\nimport { Button, Text, View } from 'react-native';\n\nexport default function DownloadExample() {\n  const [path, setPath] = useState(null);\n\n  const download = async () => {\n    const result = await FileSystem.downloadAsync(\n      'https://picsum.photos/400',\n      FileSystem.documentDirectory + 'image.jpg'\n    );\n    setPath(result.uri);\n  };\n\n  return (\n    <View style={{ padding: 30 }}>\n      <Button title=\"Bild herunterladen\" onPress={download} />\n      {path && <Text style={{ marginTop: 10 }}>📁 Gespeichert unter: {path}</Text>}\n    </View>\n  );\n}",
-        "category": "React Native Advanced",
+        "code":
+            "function Greeting({ name }) {\n  return <Text>Hallo, {name}!</Text>;\n}\n\nexport default function App() {\n  return (\n    <View>\n      <Greeting name=\"Tufan\" />\n      <Greeting name=\"Swift & RN\" />\n    </View>\n  );\n}",
+        "category": "React Native",
         "categoryIcon": "react",
         "categoryIconColor": "#FF9500"
-      },
-        {
-          "id": "rn_016",
-          "title": "React Navigation Tabs & Drawer",
-          "description": "Erstelle eine moderne App-Navigation mit Tabs und Drawer-Menü.",
-          "steps": [
+    },
+    {
+        "id": "rn_004",
+        "title": "State & Props verstehen",
+        "description":
+            "State speichert Daten innerhalb einer Komponente, Props werden von außen übergeben.",
+        "steps": [
+            "useState() verwaltet Zustände innerhalb einer Komponente.",
+            "Props werden wie Parameter an Komponenten übergeben.",
+            "Änderungen am State führen zu automatischen UI-Updates."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#30D158",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import { useState } from 'react';\nimport { View, Text, Button } from 'react-native';\n\nexport default function Counter() {\n  const [count, setCount] = useState(0);\n\n  return (\n    <View style={{ padding: 40 }}>\n      <Text style={{ fontSize: 22 }}>Zähler: {count}</Text>\n      <Button title=\"+1\" onPress={() => setCount(count + 1)} />\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#30D158"
+    },
+    {
+        "id": "rn_005",
+        "title": "StyleSheet & Layout (Flexbox)",
+        "description":
+            "Nutze Flexbox für responsive Layouts und StyleSheet für sauberes Styling.",
+        "steps": [
+            "StyleSheet.create() für strukturierte Styles.",
+            "Flexbox-Layout: justifyContent, alignItems, flexDirection.",
+            "Farben, Abstände und Text-Stile einfach anpassbar."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF2D55",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import { StyleSheet, View } from 'react-native';\n\nexport default function LayoutExample() {\n  return (\n    <View style={styles.container}>\n      <View style={styles.box1} />\n      <View style={styles.box2} />\n      <View style={styles.box3} />\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    flex: 1,\n    flexDirection: 'row',\n    justifyContent: 'space-around',\n    alignItems: 'center',\n  },\n  box1: { width: 60, height: 60, backgroundColor: 'red' },\n  box2: { width: 60, height: 60, backgroundColor: 'green' },\n  box3: { width: 60, height: 60, backgroundColor: 'blue' },\n});",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#FF2D55"
+    },
+    {
+        "id": "rn_006",
+        "title": "React Hooks verstehen (useState, useEffect)",
+        "description":
+            "Hooks sind das Herz moderner React Native Apps. Sie ermöglichen State und Logik in Funktionskomponenten.",
+        "steps": [
+            "useState() für Zustände.",
+            "useEffect() für Seiteneffekte (z. B. Daten laden).",
+            "Cleanup-Funktion für Timer oder Event Listener nutzen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#61DAFB",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import { useState, useEffect } from 'react';\nimport { View, Text } from 'react-native';\n\nexport default function HookExample() {\n  const [time, setTime] = useState(new Date().toLocaleTimeString());\n\n  useEffect(() => {\n    const interval = setInterval(() => {\n      setTime(new Date().toLocaleTimeString());\n    }, 1000);\n    return () => clearInterval(interval);\n  }, []);\n\n  return (\n    <View style={{ padding: 40 }}>\n      <Text style={{ fontSize: 22 }}>🕒 {time}</Text>\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#61DAFB"
+    },
+    {
+        "id": "rn_007",
+        "title": "Navigation mit React Navigation",
+        "description": "Wechsle zwischen Screens mit React Navigation – der Standard für Navigation in React Native.",
+        "steps": [
+            "Installation: `npm install @react-navigation/native @react-navigation/native-stack`",
+            "NavigationContainer als Root definieren.",
+            "Mit createNativeStackNavigator() neue Screens anlegen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#0A84FF",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import * as React from 'react';\nimport { NavigationContainer } from '@react-navigation/native';\nimport { createNativeStackNavigator } from '@react-navigation/native-stack';\nimport { Button, View, Text } from 'react-native';\n\nconst Stack = createNativeStackNavigator();\n\nfunction Home({ navigation }) {\n  return (\n    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>\n      <Text>🏠 Home</Text>\n      <Button title=\"Gehe zu Details\" onPress={() => navigation.navigate('Details')} />\n    </View>\n  );\n}\n\nfunction Details() {\n  return (\n    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>\n      <Text>📄 Detailseite</Text>\n    </View>\n  );\n}\n\nexport default function App() {\n  return (\n    <NavigationContainer>\n      <Stack.Navigator>\n        <Stack.Screen name=\"Home\" component={Home} />\n        <Stack.Screen name=\"Details\" component={Details} />\n      </Stack.Navigator>\n    </NavigationContainer>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#0A84FF"
+    },
+    {
+        "id": "rn_008",
+        "title": "Daten speichern mit AsyncStorage",
+        "description":
+            "Speichere kleine Datenmengen lokal auf dem Gerät – perfekt für Einstellungen, Tokens oder Favoriten.",
+        "steps": [
+            "AsyncStorage aus `@react-native-async-storage/async-storage` importieren.",
+            "Mit `setItem` speichern und `getItem` abrufen.",
+            "Ideal in Kombination mit useEffect."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF9500",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import AsyncStorage from '@react-native-async-storage/async-storage';\nimport { useEffect, useState } from 'react';\nimport { View, Text, Button } from 'react-native';\n\nexport default function StorageExample() {\n  const [name, setName] = useState('');\n\n  useEffect(() => {\n    AsyncStorage.getItem('username').then(value => {\n      if (value) setName(value);\n    });\n  }, []);\n\n  const saveName = async () => {\n    await AsyncStorage.setItem('username', 'Tufan');\n    setName('Tufan');\n  };\n\n  return (\n    <View style={{ padding: 40 }}>\n      <Text style={{ fontSize: 22 }}>👋 Hallo, {name || 'Gast'}!</Text>\n      <Button title=\"Speichern\" onPress={saveName} />\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#FF9500"
+    },
+    {
+        "id": "rn_009",
+        "title": "Context API für globale Zustände",
+        "description":
+            "Mit React Context kannst du Daten global verwalten, z. B. Theme, User oder Coins.",
+        "steps": [
+            "Context mit `createContext()` erstellen.",
+            "Provider um deine App legen.",
+            "Daten in beliebigen Komponenten mit `useContext()` abrufen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#30D158",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import React, { createContext, useContext, useState } from 'react';\nimport { View, Text, Button } from 'react-native';\n\nconst ThemeContext = createContext();\n\nfunction ThemeProvider({ children }) {\n  const [dark, setDark] = useState(false);\n  const toggle = () => setDark(!dark);\n  return (\n    <ThemeContext.Provider value={{ dark, toggle }}>\n      {children}\n    </ThemeContext.Provider>\n  );\n}\n\nfunction Home() {\n  const { dark, toggle } = useContext(ThemeContext);\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: dark ? '#000' : '#fff' }}>\n      <Text style={{ color: dark ? '#fff' : '#000' }}>{dark ? '🌙 Dark Mode' : '☀️ Light Mode'}</Text>\n      <Button title=\"Umschalten\" onPress={toggle} />\n    </View>\n  );\n}\n\nexport default function App() {\n  return (\n    <ThemeProvider>\n      <Home />\n    </ThemeProvider>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#30D158"
+    },
+    {
+        "id": "rn_010",
+        "title": "Expo APIs (z. B. Kamera, Sensoren, Haptik)",
+        "description":
+            "Nutze Expo Module für native Features – ohne Xcode oder Android Studio zu öffnen.",
+        "steps": [
+            "Expo liefert APIs wie Camera, Haptics, Location oder FileSystem.",
+            "Installation: `npx expo install expo-camera expo-haptics`",
+            "Erfordert Permissions (z. B. Camera.requestPermissionsAsync())."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF2D55",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import { CameraView, useCameraPermissions } from 'expo-camera';\nimport * as Haptics from 'expo-haptics';\nimport { Button, View } from 'react-native';\n\nexport default function ExpoExample() {\n  const [permission, requestPermission] = useCameraPermissions();\n\n  if (!permission) return null;\n  if (!permission.granted) {\n    return <Button title=\"Kamera erlauben\" onPress={requestPermission} />;\n  }\n\n  return (\n    <View style={{ flex: 1 }}>\n      <CameraView style={{ flex: 1 }} />\n      <Button title=\"📸 Haptik auslösen\" onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} />\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#FF2D55"
+    },
+    {
+        "id": "rn_011",
+        "title": "Eigene Hooks erstellen (Custom Hooks)",
+        "description":
+            "Baue deine eigenen Hooks, um Logik wiederverwendbar zu machen – z. B. für API Calls oder Timer.",
+        "steps": [
+            "Erstelle eine Funktion mit dem Prefix use.",
+            "Nutze andere Hooks (useState, useEffect) darin.",
+            "Exportiere sie und verwende sie in mehreren Komponenten."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#61DAFB",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import { useState, useEffect } from 'react';\n\nexport function useTimer() {\n  const [seconds, setSeconds] = useState(0);\n  useEffect(() => {\n    const interval = setInterval(() => setSeconds(s => s + 1), 1000);\n    return () => clearInterval(interval);\n  }, []);\n  return seconds;\n}\n\n// Nutzung\nimport { View, Text } from 'react-native';\nimport { useTimer } from './useTimer';\n\nexport default function TimerScreen() {\n  const seconds = useTimer();\n  return <Text style={{ fontSize: 24 }}>⏱ {seconds}s</Text>;\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#61DAFB"
+    },
+    {
+        "id": "rn_012",
+        "title": "API Requests mit Fetch & Axios",
+        "description":
+            "Hole Daten aus einer REST-API mit Fetch oder Axios und zeige sie in deiner App an.",
+        "steps": [
+            "Verwende useEffect, um beim Laden Daten abzurufen.",
+            "Nutze Fetch oder Axios für API Requests.",
+            "Zeige Lade- und Fehlerzustände im UI an."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#0A84FF",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import { useState, useEffect } from 'react';\nimport { View, Text, ActivityIndicator } from 'react-native';\n\nexport default function ApiExample() {\n  const [data, setData] = useState(null);\n  const [loading, setLoading] = useState(true);\n\n  useEffect(() => {\n    fetch('https://jsonplaceholder.typicode.com/posts/1')\n      .then(res => res.json())\n      .then(json => setData(json))\n      .catch(err => console.error(err))\n      .finally(() => setLoading(false));\n  }, []);\n\n  if (loading) return <ActivityIndicator size=\"large\" />;\n\n  return (\n    <View style={{ padding: 20 }}>\n      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{data.title}</Text>\n      <Text>{data.body}</Text>\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#0A84FF"
+    },
+    {
+        "id": "rn_013",
+        "title": "Animationen mit Reanimated & LayoutAnimation",
+        "description":
+            "Füge flüssige, native Animationen hinzu – für Übergänge, Gesten oder Effekte.",
+        "steps": [
+            "Mit Reanimated oder LayoutAnimation UI animieren.",
+            "useSharedValue für Werte, useAnimatedStyle für Styles.",
+            "Leistungsstarke GPU-basierte Bewegungen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF2D55",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';\nimport { Button } from 'react-native';\nimport { useState } from 'react';\n\nexport default function AnimatedBox() {\n  const scale = useSharedValue(1);\n  const style = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));\n\n  return (\n    <>\n      <Animated.View style={[{ width: 100, height: 100, backgroundColor: 'orange', margin: 40 }, style]} />\n      <Button title=\"Bounce\" onPress={() => (scale.value = withSpring(scale.value === 1 ? 1.5 : 1))} />\n    </>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#FF2D55"
+    },
+    {
+        "id": "rn_014",
+        "title": "Theme & Dark Mode umsetzen",
+        "description":
+            "Erstelle ein globales Theme-System, das zwischen Light & Dark Mode wechseln kann.",
+        "steps": [
+            "useColorScheme() von React Native verwenden.",
+            "Ein eigenes Theme-Object mit Farben definieren.",
+            "Dynamisch Styles anpassen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#30D158",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import { useColorScheme, View, Text, StyleSheet } from 'react-native';\n\nexport default function ThemeExample() {\n  const scheme = useColorScheme();\n  const isDark = scheme === 'dark';\n\n  return (\n    <View style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }] }>\n      <Text style={{ color: isDark ? '#fff' : '#000' }}>\n        {isDark ? '🌙 Dark Mode aktiv' : '☀️ Light Mode aktiv'}\n      </Text>\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: { flex: 1, justifyContent: 'center', alignItems: 'center' }\n});",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#30D158"
+    },
+    {
+        "id": "rn_015",
+        "title": "Dateien & Downloads mit expo-file-system",
+        "description":
+            "Lade Dateien aus dem Internet herunter und speichere sie lokal – z. B. Bilder oder JSON-Daten.",
+        "steps": [
+            "expo-file-system installieren: `npx expo install expo-file-system`.",
+            "FileSystem.downloadAsync() nutzen.",
+            "Pfad und Status anzeigen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF9500",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import * as FileSystem from 'expo-file-system';\nimport { useState } from 'react';\nimport { Button, Text, View } from 'react-native';\n\nexport default function DownloadExample() {\n  const [path, setPath] = useState(null);\n\n  const download = async () => {\n    const result = await FileSystem.downloadAsync(\n      'https://picsum.photos/400',\n      FileSystem.documentDirectory + 'image.jpg'\n    );\n    setPath(result.uri);\n  };\n\n  return (\n    <View style={{ padding: 30 }}>\n      <Button title=\"Bild herunterladen\" onPress={download} />\n      {path && <Text style={{ marginTop: 10 }}>📁 Gespeichert unter: {path}</Text>}\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#FF9500"
+    },
+    {
+        "id": "rn_016",
+        "title": "React Navigation Tabs & Drawer",
+        "description":
+            "Erstelle eine moderne App-Navigation mit Tabs und Drawer-Menü.",
+        "steps": [
             "Verwende createBottomTabNavigator() und createDrawerNavigator().",
             "Icons mit react-native-vector-icons oder Expo Icons hinzufügen.",
             "Stile an dein Theme anpassen."
-          ],
-          "colors": {
-            "backgroundColors": ["#000000", "#0A84FF", "#000000"],
-            "textColors": ["#FFFFFF"]
-          },
-          "code": "import { NavigationContainer } from '@react-navigation/native';\nimport { createBottomTabNavigator } from '@react-navigation/bottom-tabs';\nimport { createDrawerNavigator } from '@react-navigation/drawer';\nimport { Text, View } from 'react-native';\n\nfunction Home() {\n  return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>🏠 Home</Text></View>;\n}\nfunction Settings() {\n  return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>⚙️ Einstellungen</Text></View>;\n}\n\nconst Tab = createBottomTabNavigator();\nconst Drawer = createDrawerNavigator();\n\nfunction Tabs() {\n  return (\n    <Tab.Navigator>\n      <Tab.Screen name=\"Home\" component={Home} />\n      <Tab.Screen name=\"Settings\" component={Settings} />\n    </Tab.Navigator>\n  );\n}\n\nexport default function App() {\n  return (\n    <NavigationContainer>\n      <Drawer.Navigator>\n        <Drawer.Screen name=\"Tabs\" component={Tabs} />\n      </Drawer.Navigator>\n    </NavigationContainer>\n  );\n}",
-          "category": "React Native Pro",
-          "categoryIcon": "react",
-          "categoryIconColor": "#0A84FF"
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#0A84FF",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
         },
-        {
-          "id": "rn_017",
-          "title": "FlatList & SectionList – effiziente Listen",
-          "description": "Zeige große Datenmengen performant mit FlatList und SectionList an.",
-          "steps": [
+        "code":
+            "import { NavigationContainer } from '@react-navigation/native';\nimport { createBottomTabNavigator } from '@react-navigation/bottom-tabs';\nimport { createDrawerNavigator } from '@react-navigation/drawer';\nimport { Text, View } from 'react-native';\n\nfunction Home() {\n  return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>🏠 Home</Text></View>;\n}\nfunction Settings() {\n  return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>⚙️ Einstellungen</Text></View>;\n}\n\nconst Tab = createBottomTabNavigator();\nconst Drawer = createDrawerNavigator();\n\nfunction Tabs() {\n  return (\n    <Tab.Navigator>\n      <Tab.Screen name=\"Home\" component={Home} />\n      <Tab.Screen name=\"Settings\" component={Settings} />\n    </Tab.Navigator>\n  );\n}\n\nexport default function App() {\n  return (\n    <NavigationContainer>\n      <Drawer.Navigator>\n        <Drawer.Screen name=\"Tabs\" component={Tabs} />\n      </Drawer.Navigator>\n    </NavigationContainer>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#0A84FF"
+    },
+    {
+        "id": "rn_017",
+        "title": "FlatList & SectionList – effiziente Listen",
+        "description":
+            "Zeige große Datenmengen performant mit FlatList und SectionList an.",
+        "steps": [
             "FlatList rendert nur sichtbare Elemente.",
             "Nutze keyExtractor und renderItem.",
             "SectionList für gruppierte Listen."
-          ],
-          "colors": {
-            "backgroundColors": ["#000000", "#61DAFB", "#000000"],
-            "textColors": ["#FFFFFF"]
-          },
-          "code": "import { FlatList, Text, View } from 'react-native';\n\nconst DATA = Array.from({ length: 100 }).map((_, i) => ({ id: i.toString(), title: `Eintrag #${i}` }));\n\nexport default function ListExample() {\n  return (\n    <FlatList\n      data={DATA}\n      keyExtractor={item => item.id}\n      renderItem={({ item }) => (\n        <View style={{ padding: 12, borderBottomWidth: 1, borderColor: '#333' }}>\n          <Text style={{ color: '#fff' }}>{item.title}</Text>\n        </View>\n      )}\n      style={{ backgroundColor: '#000' }}\n    />\n  );\n}",
-          "category": "React Native Pro",
-          "categoryIcon": "react",
-          "categoryIconColor": "#61DAFB"
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#61DAFB",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
         },
-        {
-          "id": "rn_018",
-          "title": "Performance optimieren mit memo & useCallback",
-          "description": "Vermeide unnötige Re-Renders durch Memoization und optimierte Callback-Funktionen.",
-          "steps": [
+        "code":
+            "import { FlatList, Text, View } from 'react-native';\n\nconst DATA = Array.from({ length: 100 }).map((_, i) => ({ id: i.toString(), title: `Eintrag #${i}` }));\n\nexport default function ListExample() {\n  return (\n    <FlatList\n      data={DATA}\n      keyExtractor={item => item.id}\n      renderItem={({ item }) => (\n        <View style={{ padding: 12, borderBottomWidth: 1, borderColor: '#333' }}>\n          <Text style={{ color: '#fff' }}>{item.title}</Text>\n        </View>\n      )}\n      style={{ backgroundColor: '#000' }}\n    />\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#61DAFB"
+    },
+    {
+        "id": "rn_018",
+        "title": "Performance optimieren mit memo & useCallback",
+        "description":
+            "Vermeide unnötige Re-Renders durch Memoization und optimierte Callback-Funktionen.",
+        "steps": [
             "React.memo() für Komponenten-Caching.",
             "useCallback() für stabile Callback-Referenzen.",
             "useMemo() für berechnete Werte."
-          ],
-          "colors": {
-            "backgroundColors": ["#000000", "#30D158", "#000000"],
-            "textColors": ["#FFFFFF"]
-          },
-          "code": "import React, { useState, useCallback, memo } from 'react';\nimport { View, Text, Button } from 'react-native';\n\nconst Child = memo(({ onPress }) => {\n  console.log('🔄 Child render');\n  return <Button title=\"+1\" onPress={onPress} />;\n});\n\nexport default function Optimized() {\n  const [count, setCount] = useState(0);\n  const increment = useCallback(() => setCount(c => c + 1), []);\n\n  return (\n    <View style={{ padding: 40 }}>\n      <Text style={{ fontSize: 22 }}>Count: {count}</Text>\n      <Child onPress={increment} />\n    </View>\n  );\n}",
-          "category": "React Native Pro",
-          "categoryIcon": "react",
-          "categoryIconColor": "#30D158"
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#30D158",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
         },
-        {
-          "id": "rn_019",
-          "title": "Modal- und Bottom-Sheet-Komponenten",
-          "description": "Zeige zusätzliche Inhalte mit Modals oder Bottom Sheets an – perfekt für Dialoge, Aktionen oder Menüs.",
-          "steps": [
+        "code":
+            "import React, { useState, useCallback, memo } from 'react';\nimport { View, Text, Button } from 'react-native';\n\nconst Child = memo(({ onPress }) => {\n  console.log('🔄 Child render');\n  return <Button title=\"+1\" onPress={onPress} />;\n});\n\nexport default function Optimized() {\n  const [count, setCount] = useState(0);\n  const increment = useCallback(() => setCount(c => c + 1), []);\n\n  return (\n    <View style={{ padding: 40 }}>\n      <Text style={{ fontSize: 22 }}>Count: {count}</Text>\n      <Child onPress={increment} />\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#30D158"
+    },
+    {
+        "id": "rn_019",
+        "title": "Modal- und Bottom-Sheet-Komponenten",
+        "description":
+            "Zeige zusätzliche Inhalte mit Modals oder Bottom Sheets an – perfekt für Dialoge, Aktionen oder Menüs.",
+        "steps": [
             "Nutze Modal aus react-native.",
             "Erstelle eigene Bottom-Sheet-Komponenten.",
             "Alternativ: react-native-bottom-sheet oder reanimated."
-          ],
-          "colors": {
-            "backgroundColors": ["#000000", "#FF9500", "#000000"],
-            "textColors": ["#FFFFFF"]
-          },
-          "code": "import { useState } from 'react';\nimport { Modal, View, Text, Button } from 'react-native';\n\nexport default function ModalExample() {\n  const [visible, setVisible] = useState(false);\n\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>\n      <Button title=\"Modal öffnen\" onPress={() => setVisible(true)} />\n      <Modal visible={visible} transparent animationType=\"slide\">\n        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.6)' }}>\n          <View style={{ backgroundColor: '#fff', padding: 24, borderRadius: 16 }}>\n            <Text>Hallo 👋</Text>\n            <Button title=\"Schließen\" onPress={() => setVisible(false)} />\n          </View>\n        </View>\n      </Modal>\n    </View>\n  );\n}",
-          "category": "React Native UI",
-          "categoryIcon": "react",
-          "categoryIconColor": "#FF9500"
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF9500",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
         },
-        {
-          "id": "rn_020",
-          "title": "Gestensteuerung mit react-native-gesture-handler",
-          "description": "Füge intuitive Wisch-, Drag- und Tap-Gesten hinzu.",
-          "steps": [
+        "code":
+            "import { useState } from 'react';\nimport { Modal, View, Text, Button } from 'react-native';\n\nexport default function ModalExample() {\n  const [visible, setVisible] = useState(false);\n\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>\n      <Button title=\"Modal öffnen\" onPress={() => setVisible(true)} />\n      <Modal visible={visible} transparent animationType=\"slide\">\n        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.6)' }}>\n          <View style={{ backgroundColor: '#fff', padding: 24, borderRadius: 16 }}>\n            <Text>Hallo 👋</Text>\n            <Button title=\"Schließen\" onPress={() => setVisible(false)} />\n          </View>\n        </View>\n      </Modal>\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#FF9500"
+    },
+    {
+        "id": "rn_020",
+        "title": "Gestensteuerung mit react-native-gesture-handler",
+        "description": "Füge intuitive Wisch-, Drag- und Tap-Gesten hinzu.",
+        "steps": [
             "Installation: `npx expo install react-native-gesture-handler`.",
             "PanGestureHandler oder TapGestureHandler nutzen.",
             "Perfekt in Kombination mit Reanimated."
-          ],
-          "colors": {
-            "backgroundColors": ["#000000", "#FF2D55", "#000000"],
-            "textColors": ["#FFFFFF"]
-          },
-          "code": "import { PanGestureHandler } from 'react-native-gesture-handler';\nimport Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';\nimport { View } from 'react-native';\n\nexport default function DragExample() {\n  const x = useSharedValue(0);\n  const y = useSharedValue(0);\n  const style = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }, { translateY: y.value }] }));\n\n  return (\n    <PanGestureHandler onGestureEvent={event => {\n      x.value = withSpring(event.translationX);\n      y.value = withSpring(event.translationY);\n    }}>\n      <Animated.View style={[{ width: 80, height: 80, backgroundColor: 'cyan', borderRadius: 10 }, style]} />\n    </PanGestureHandler>\n  );\n}",
-          "category": "React Native UI",
-          "categoryIcon": "react",
-          "categoryIconColor": "#FF2D55"
-        }
-      ]
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF2D55",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import { PanGestureHandler } from 'react-native-gesture-handler';\nimport Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';\nimport { View } from 'react-native';\n\nexport default function DragExample() {\n  const x = useSharedValue(0);\n  const y = useSharedValue(0);\n  const style = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }, { translateY: y.value }] }));\n\n  return (\n    <PanGestureHandler onGestureEvent={event => {\n      x.value = withSpring(event.translationX);\n      y.value = withSpring(event.translationY);\n    }}>\n      <Animated.View style={[{ width: 80, height: 80, backgroundColor: 'cyan', borderRadius: 10 }, style]} />\n    </PanGestureHandler>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#FF2D55"
+    },
+    {
+        "id": "rn_021",
+        "title": "Bilder & Icons einbinden",
+        "description":
+            "Lerne, wie du Bilder und Icons in deiner App nutzt – lokal oder aus dem Internet.",
+        "steps": [
+            "Verwende Image aus 'react-native' für lokale oder Remote-Bilder.",
+            "Nutze react-native-vector-icons oder Expo Icons für Symbole.",
+            "Achte auf Größe, Skalierung und Caching."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#61DAFB",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import { View, Image } from 'react-native';\nimport { Ionicons } from '@expo/vector-icons';\n\nexport default function ImageExample() {\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: 20 }}>\n      <Image source={require('./assets/logo.png')} style={{ width: 100, height: 100 }} />\n      <Image source={{ uri: 'https://picsum.photos/200' }} style={{ width: 100, height: 100, borderRadius: 20 }} />\n      <Ionicons name=\"rocket\" size={48} color=\"#61DAFB\" />\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#61DAFB"
+    },
+    {
+        "id": "rn_022",
+        "title": "Fonts & Custom Schriftarten",
+        "description":
+            "Importiere und verwende eigene Schriftarten, um deiner App einen individuellen Stil zu geben.",
+        "steps": [
+            "Platziere .ttf oder .otf Dateien im assets/fonts Ordner.",
+            "Nutze useFonts() aus 'expo-font' zum Laden.",
+            "Warte auf das Laden, bevor du Text rendert."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#0A84FF",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import { Text, View } from 'react-native';\nimport { useFonts } from 'expo-font';\n\nexport default function FontExample() {\n  const [fontsLoaded] = useFonts({\n    Montserrat: require('./assets/fonts/Montserrat-Bold.ttf'),\n  });\n\n  if (!fontsLoaded) return null;\n\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>\n      <Text style={{ fontFamily: 'Montserrat', fontSize: 24 }}>Custom Font ✔️</Text>\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#0A84FF"
+    },
+    {
+        "id": "rn_023",
+        "title": "Lottie Animationen einbinden",
+        "description":
+            "Verwende animierte JSON-Dateien mit Lottie, um lebendige UI-Animationen hinzuzufügen.",
+        "steps": [
+            "Installiere `lottie-react-native` oder `lottie-react` (bei Expo).",
+            "Importiere deine .json Animation.",
+            "Passe Größe und Loop an."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF9500",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import LottieView from 'lottie-react-native';\nimport { View } from 'react-native';\n\nexport default function LottieExample() {\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>\n      <LottieView source={require('./assets/animation.json')} autoPlay loop style={{ width: 200, height: 200 }} />\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#FF9500"
+    },
+    {
+        "id": "rn_024",
+        "title": "Push Notifications mit Expo",
+        "description":
+            "Lerne, wie du Benachrichtigungen mit Expo Notifications einrichtest und empfängst.",
+        "steps": [
+            "Installation: `npx expo install expo-notifications`.",
+            "Erlaube Berechtigungen mit `requestPermissionsAsync()`.",
+            "Sende lokale oder Remote-Notifications."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF2D55",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import * as Notifications from 'expo-notifications';\nimport { Button, View } from 'react-native';\n\nexport default function NotificationExample() {\n  const sendNotification = async () => {\n    await Notifications.scheduleNotificationAsync({\n      content: { title: '👋 Hallo von Expo!', body: 'Dies ist eine Test-Benachrichtigung.' },\n      trigger: null,\n    });\n  };\n\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>\n      <Button title=\"Benachrichtigung senden\" onPress={sendNotification} />\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#FF2D55"
+    },
+    {
+        "id": "rn_025",
+        "title": "App Publishing – iOS & Android",
+        "description":
+            "Erfahre, wie du deine App für den App Store oder Google Play vorbereitest und veröffentlichst.",
+        "steps": [
+            "Für Expo: `eas build` und `eas submit` verwenden.",
+            "App-Icon, Splash Screen, Version und Bundle-ID anpassen.",
+            "Metadaten und Screenshots in App Store Connect bzw. Play Console eintragen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#30D158",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "// Kein direkter Code, aber ein Expo-Build Beispiel\n// Terminal-Befehle:\n// 1️⃣ Login:  npx expo login\n// 2️⃣ Build:  eas build -p ios --profile production\n// 3️⃣ Upload: eas submit -p ios --latest\n\n// Danach erfolgt die Einreichung über App Store Connect.",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#30D158"
+    },
+    {
+        "id": "rn_026",
+        "title": "Testing mit Jest & React Native Testing Library",
+        "description":
+            "Lerne, wie du deine React Native Komponenten mit Jest und Testing Library testest.",
+        "steps": [
+            "Installiere Jest & React Native Testing Library.",
+            "Schreibe Tests für Komponenten und Hooks.",
+            "Nutze Snapshot-Tests und Interaktions-Tests."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#61DAFB",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "// Beispiel: Button-Komponente testen\nimport { render, fireEvent } from '@testing-library/react-native';\nimport { Button, Text } from 'react-native';\n\ntest('Button reagiert auf Klick', () => {\n  const onPressMock = jest.fn();\n  const { getByText } = render(<Button title=\"Klick mich\" onPress={onPressMock} />);\n  fireEvent.press(getByText('Klick mich'));\n  expect(onPressMock).toHaveBeenCalled();\n});",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#61DAFB"
+    },
+    {
+        "id": "rn_027",
+        "title": "Performance Profiling & Optimierung",
+        "description":
+            "Analysiere und verbessere die Performance deiner App mit Profiler und useMemo.",
+        "steps": [
+            "Nutze den React Profiler in Flipper oder Expo DevTools.",
+            "Identifiziere unnötige Re-Renders.",
+            "Verwende FlatList optimiert mit keyExtractor und memoized RenderItems."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF9500",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import React, { memo } from 'react';\nimport { FlatList, Text } from 'react-native';\n\nconst Item = memo(({ title }) => <Text style={{ color: '#fff', padding: 8 }}>{title}</Text>);\n\nexport default function FastList() {\n  const data = Array.from({ length: 500 }).map((_, i) => `Eintrag ${i}`);\n  return <FlatList data={data} renderItem={({ item }) => <Item title={item} />} keyExtractor={(item, i) => i.toString()} />;\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#FF9500"
+    },
+    {
+        "id": "rn_028",
+        "title": "Sicherheit & Sensible Daten",
+        "description":
+            "Schütze sensible Informationen mit sicheren Speicherlösungen und Permissions.",
+        "steps": [
+            "Vermeide Klartext-Speicherung in AsyncStorage.",
+            "Nutze SecureStore oder Keychain für Passwörter.",
+            "Achte auf Permissions und Datenschutzrichtlinien (z. B. Kamera, Standort)."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF2D55",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import * as SecureStore from 'expo-secure-store';\nimport { Button, View, Text } from 'react-native';\n\nexport default function SecureExample() {\n  const saveSecret = async () => {\n    await SecureStore.setItemAsync('token', '12345');\n  };\n  const loadSecret = async () => {\n    const token = await SecureStore.getItemAsync('token');\n    alert(`🔐 Token: ${token}`);\n  };\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: 10 }}>\n      <Button title=\"Speichern\" onPress={saveSecret} />\n      <Button title=\"Laden\" onPress={loadSecret} />\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#FF2D55"
+    },
+    {
+        "id": "rn_029",
+        "title": "Native Module einbinden (Swift / Kotlin)",
+        "description":
+            "Erweitere deine App mit eigenen nativen Modulen in Swift oder Kotlin.",
+        "steps": [
+            "Erstelle ein Native Module im iOS- oder Android-Ordner.",
+            "Exportiere Funktionen an JavaScript mit NativeModules.",
+            "Nutze Expo oder Bare Workflow für tiefe Integration."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#0A84FF",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "// JS-Seite\nimport { NativeModules, Button } from 'react-native';\n\nconst { DeviceModule } = NativeModules;\n\nexport default function NativeExample() {\n  return <Button title=\"Geräteinfo\" onPress={() => alert(DeviceModule.getDeviceName())} />;\n}\n\n// iOS (Swift): DeviceModule.swift\n// @objc(DeviceModule)\n// class DeviceModule: NSObject {\n//   @objc func getDeviceName() -> String {\n//     return UIDevice.current.name\n//   }\n// }",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#0A84FF"
+    },
+    {
+        "id": "rn_030",
+        "title": "CI/CD mit Expo & GitHub Actions",
+        "description":
+            "Automatisiere Builds, Tests und Deployments deiner React Native App.",
+        "steps": [
+            "Nutze Expo Application Services (EAS Build, Submit, Update).",
+            "Erstelle GitHub Actions für automatische Builds.",
+            "Sichere deine Tokens und Variablen in GitHub Secrets."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#30D158",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "name: Expo CI/CD\n\non:\n  push:\n    branches: [ main ]\n\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v3\n      - uses: expo/expo-github-action@v8\n        with:\n          eas-version: latest\n          expo-cache: true\n      - run: eas build --platform ios --non-interactive\n      - run: eas submit -p ios --latest",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#30D158"
+    },
+    {
+        "id": "rn_031",
+        "title": "Zustandsmanagement mit Zustand & Jotai",
+        "description":
+            "Lerne, wie du komplexe Zustände außerhalb von Context API verwaltest – mit modernen Libraries wie Zustand oder Jotai.",
+        "steps": [
+            "Installation: `npm install zustand` oder `npm install jotai`.",
+            "Erstelle ein globales Store-Objekt.",
+            "Nutze Hooks wie `useStore` oder `useAtom` für reaktives State-Management."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#61DAFB",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "// Beispiel mit Zustand\nimport create from 'zustand';\nimport { Button, Text, View } from 'react-native';\n\nconst useCounterStore = create(set => ({\n  count: 0,\n  increment: () => set(state => ({ count: state.count + 1 }))\n}));\n\nexport default function StoreExample() {\n  const { count, increment } = useCounterStore();\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>\n      <Text style={{ color: '#fff', fontSize: 22 }}>Count: {count}</Text>\n      <Button title=\"+1\" onPress={increment} />\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#61DAFB"
+    },
+    {
+        "id": "rn_032",
+        "title": "Deep Links & URL Routing",
+        "description":
+            "Ermögliche es, deine App über Links oder QR-Codes direkt zu öffnen – z. B. slayken://profile/1.",
+        "steps": [
+            "Konfiguriere Linking in deiner App.",
+            "Verwende `Linking.addEventListener` zum Reagieren auf URLs.",
+            "Definiere Pfade für Navigation mit Parametern."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#0A84FF",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import * as Linking from 'expo-linking';\nimport { useEffect } from 'react';\nimport { Text, View } from 'react-native';\n\nexport default function DeepLinkExample() {\n  useEffect(() => {\n    const subscription = Linking.addEventListener('url', ({ url }) => alert(`📲 Link geöffnet: ${url}`));\n    return () => subscription.remove();\n  }, []);\n\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>\n      <Text style={{ color: '#fff' }}>Öffne slayken://test in Safari!</Text>\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#0A84FF"
+    },
+    {
+        "id": "rn_033",
+        "title": "Dynamische Themes & Farbmodi",
+        "description":
+            "Erstelle mehrere Themes (z. B. Fire, Ice, Void) und wechsle sie dynamisch mit Context oder Zustand.",
+        "steps": [
+            "Definiere Theme-Objekte mit Farbwerten.",
+            "Verwalte das aktive Theme über Context oder Zustand.",
+            "Passe UI-Elemente automatisch an das Theme an."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF9500",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import { createContext, useContext, useState } from 'react';\nimport { View, Text, Button } from 'react-native';\n\nconst themes = {\n  fire: { background: '#FF3B30', text: '#fff' },\n  ice: { background: '#5AC8FA', text: '#000' }\n};\nconst ThemeContext = createContext();\n\nexport default function ThemedApp() {\n  const [theme, setTheme] = useState('fire');\n  return (\n    <ThemeContext.Provider value={{ theme, setTheme }}>\n      <Screen />\n    </ThemeContext.Provider>\n  );\n}\n\nfunction Screen() {\n  const { theme, setTheme } = useContext(ThemeContext);\n  const t = themes[theme];\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: t.background }}>\n      <Text style={{ color: t.text }}>🔥 Aktuelles Theme: {theme}</Text>\n      <Button title=\"Wechsel zu Ice\" onPress={() => setTheme(theme === 'fire' ? 'ice' : 'fire')} />\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#FF9500"
+    },
+    {
+        "id": "rn_034",
+        "title": "Lokalisierung (Mehrsprachigkeit)",
+        "description":
+            "Füge deiner App Unterstützung für mehrere Sprachen hinzu (Deutsch, Englisch usw.).",
+        "steps": [
+            "Nutze `expo-localization` und `i18n-js`.",
+            "Erstelle JSON-Dateien mit Übersetzungen.",
+            "Wechsle Sprache dynamisch über Settings."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#30D158",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import * as Localization from 'expo-localization';\nimport i18n from 'i18n-js';\nimport { View, Text } from 'react-native';\n\ni18n.translations = {\n  de: { hello: 'Hallo Welt!' },\n  en: { hello: 'Hello World!' }\n};\ni18n.locale = Localization.locale;\ni18n.fallbacks = true;\n\nexport default function LocaleExample() {\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>\n      <Text style={{ fontSize: 24 }}>{i18n.t('hello')}</Text>\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#30D158"
+    },
+    {
+        "id": "rn_035",
+        "title": "AR & KI-Integration (z. B. Vision Camera + ML Kit)",
+        "description":
+            "Kombiniere Kamera mit Machine Learning, um AR- oder KI-Funktionen wie Objekterkennung zu nutzen.",
+        "steps": [
+            "Nutze `vision-camera` oder `expo-camera` für Zugriff auf das Kamerabild.",
+            "Verwende ML Kit oder TensorFlow.js für Bilderkennung.",
+            "Erstelle Echtzeit-Overlays für erkannte Objekte."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF2D55",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import { CameraView } from 'expo-camera';\nimport { Text, View } from 'react-native';\n\nexport default function AICameraExample() {\n  return (\n    <View style={{ flex: 1 }}>\n      <CameraView style={{ flex: 1 }} />\n      <View style={{ position: 'absolute', bottom: 40, alignSelf: 'center' }}>\n        <Text style={{ color: '#fff', fontSize: 18 }}>🤖 Objekte werden analysiert...</Text>\n      </View>\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "react",
+        "categoryIconColor": "#FF2D55"
+    }
+]

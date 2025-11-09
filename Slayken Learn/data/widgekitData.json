@@ -1,0 +1,28 @@
+[
+    {
+        "id": "widgetkit_001",
+        "title": "WidgetKit (Homescreen Widgets)",
+        "description":
+            "Erstelle ein einfaches iOS Widget mit SwiftUI und WidgetKit.",
+        "steps": [
+            "Widget-Erweiterung im Xcode-Projekt anlegen.",
+            "TimelineProvider implementieren.",
+            "Ein SwiftUI View für das Widget-Layout erstellen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#0A84FF",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import WidgetKit\nimport SwiftUI\n\nstruct SimpleEntry: TimelineEntry {\n    let date: Date\n}\n\nstruct Provider: TimelineProvider {\n    func placeholder(in context: Context) -> SimpleEntry { SimpleEntry(date: Date()) }\n    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {\n        completion(SimpleEntry(date: Date()))\n    }\n    func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> ()) {\n        let entries = [SimpleEntry(date: .now)]\n        completion(Timeline(entries: entries, policy: .after(.now.addingTimeInterval(60))))\n    }\n}\n\nstruct MyWidgetEntryView: View {\n    var entry: Provider.Entry\n    var body: some View {\n        VStack {\n            Text(entry.date, style: .time)\n                .font(.title)\n            Text(\"⏰ Swift Widget!\")\n        }\n    }\n}\n\n@main\nstruct MyWidget: Widget {\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: \"my_widget\", provider: Provider()) { entry in\n            MyWidgetEntryView(entry: entry)\n        }\n        .configurationDisplayName(\"Zeit Widget\")\n        .description(\"Zeigt die aktuelle Uhrzeit an.\")\n    }\n}",
+        "category": "WidgetKit",
+        "categoryIcon": "square.grid.2x2.fill",
+        "categoryIconColor": "#0A84FF"
+    },
+]

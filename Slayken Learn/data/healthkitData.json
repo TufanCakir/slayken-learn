@@ -1,0 +1,28 @@
+[
+    {
+        "id": "healthkit_001",
+        "title": "HealthKit Daten lesen",
+        "description":
+            "Greife sicher auf Gesundheitsdaten wie Schritte oder Puls zu.",
+        "steps": [
+            "HealthKit importieren und HKHealthStore erstellen.",
+            "Zugriff auf gewünschte Daten anfordern.",
+            "Beispiel: Schrittzahl auslesen und anzeigen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF3B30",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import HealthKit\n\nlet healthStore = HKHealthStore()\n\nif HKHealthStore.isHealthDataAvailable() {\n    let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount)!\n    healthStore.requestAuthorization(toShare: [], read: [stepType]) { success, error in\n        if success {\n            let predicate = HKQuery.predicateForSamples(withStart: .now.addingTimeInterval(-86400), end: .now)\n            let query = HKStatisticsQuery(quantityType: stepType, quantitySamplePredicate: predicate, options: .cumulativeSum) { _, result, _ in\n                if let sum = result?.sumQuantity() {\n                    print(\"🚶 Schritte: \\(sum.doubleValue(for: .count()))\")\n                }\n            }\n            healthStore.execute(query)\n        }\n    }\n}",
+        "category": "HealthKit",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#FF3B30"
+    },
+]

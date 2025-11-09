@@ -1,1097 +1,856 @@
 [
     {
-      "id": "swift_001",
-      "title": "Optionals verstehen",
-      "description": "Erfahre, wie Optionals in Swift funktionieren und wie man sie sicher entpackt.",
-      "steps": ["Deklariere eine optionale Variable","Überprüfe mit if let","Nutze optional chaining"],
-      "colors": {
-        "backgroundColors": ["#000000", "#FF6D2D", "#000000"],
-        "textColors": ["#FFFFFF"]
-      },
-      "code": "var name: String? = \"Tufan\"\nif let unwrapped = name { print(unwrapped) }",
-      "category": "Swift",
-      "categoryIcon": "swift",
-      "categoryIconColor": "#FF6D2D"
-    },
-    {
-      "id": "struct_001",
-      "title": "Structs verstehen",
-      "description": "Lerne, wie man in Swift Strukturen erstellt, um eigene Datentypen zu definieren.",
-      "steps": [
-        "Struct mit `struct`-Keyword deklarieren.",
-        "Eigene Properties und Methoden hinzufügen.",
-        "Instanz erzeugen und auf Eigenschaften zugreifen."
-      ],
-      "colors": {
-        "backgroundColors": ["#000000", "#FF9F0A", "#000000"],
-        "textColors": ["#FFFFFF"]
-      },
-      "code": "struct User {\n    var name: String\n    var age: Int\n\n    func greet() {\n        print(\"Hallo, \\(name)!\")\n    }\n}\n\nlet person = User(name: \"Tufan\", age: 30)\nperson.greet()",
-      "category": "Swift",
-      "categoryIcon": "swift",
-      "categoryIconColor": "#FF6D2D"
-    },
-    {
-      "id": "class_001",
-      "title": "Klassen & Vererbung",
-      "description": "Lerne den Unterschied zwischen Klassen und Structs und wie Vererbung funktioniert.",
-      "steps": [
-        "Klasse mit `class`-Keyword erstellen.",
-        "Eigenschaften & Methoden definieren.",
-        "Unterklasse ableiten und überschreiben."
-      ],
-      "colors": {
-        "backgroundColors": ["#000000", "#FF375F", "#000000"],
-        "textColors": ["#FFFFFF"]
-      },
-      "code": "class Animal {\n    var name: String\n    init(name: String) { self.name = name }\n    func makeSound() { print(\"🐾 Geräusch\") }\n}\n\nclass Dog: Animal {\n    override func makeSound() { print(\"🐶 Wuff!\") }\n}\n\nlet dog = Dog(name: \"Bello\")\ndog.makeSound()",
-      "category": "Swift",
-      "categoryIcon": "swift",
-      "categoryIconColor": "#FF6D2D"
-    },
-    {
-      "id": "enum_001",
-      "title": "Enums & Switch",
-      "description": "Nutze Aufzählungstypen (Enums) für feste Wertemengen und kombiniere sie mit Switch.",
-      "steps": [
-        "Enum mit `enum`-Keyword deklarieren.",
-        "Fälle definieren.",
-        "Switch verwenden, um je nach Wert zu reagieren."
-      ],
-      "colors": {
-        "backgroundColors": ["#000000", "#5E5CE6", "#000000"],
-        "textColors": ["#FFFFFF"]
-      },
-      "code": "enum Direction {\n    case north, south, east, west\n}\n\nlet move = Direction.north\n\nswitch move {\ncase .north: print(\"⬆️ Norden\")\ncase .south: print(\"⬇️ Süden\")\ncase .east: print(\"➡️ Osten\")\ncase .west: print(\"⬅️ Westen\")\n}",
-      "category": "Swift",
-      "categoryIcon": "swift",
-      "categoryIconColor": "#5E5CE6"
-    },
-    {
-      "id": "protocol_001",
-      "title": "Protokolle (Interfaces)",
-      "description": "Definiere Schnittstellen, die Klassen und Structs implementieren können.",
-      "steps": [
-        "Protocol mit Anforderungen deklarieren.",
-        "Struct oder Class implementieren.",
-        "Instanz nutzen."
-      ],
-      "colors": {
-        "backgroundColors": ["#000000", "#30D158", "#000000"],
-        "textColors": ["#FFFFFF"]
-      },
-      "code": "protocol Greetable {\n    func greet()\n}\n\nstruct Person: Greetable {\n    var name: String\n    func greet() { print(\"Hallo, \\(name)!\") }\n}\n\nlet me = Person(name: \"Tufan\")\nme.greet()",
-      "category": "Swift",
-      "categoryIcon": "swift",
-      "categoryIconColor": "#30D158"
-    },
-    {
-      "id": "extension_001",
-      "title": "Extensions nutzen",
-      "description": "Erweitere bestehende Typen um neue Funktionen ohne den Original-Code zu verändern.",
-      "steps": [
-        "Mit `extension` bestehende Typen erweitern.",
-        "Neue Methoden oder Properties hinzufügen."
-      ],
-      "colors": {
-        "backgroundColors": ["#000000", "#FF9500", "#000000"],
-        "textColors": ["#FFFFFF"]
-      },
-      "code": "extension String {\n    var isLong: Bool { self.count > 5 }\n}\n\nprint(\"Hallo\".isLong) // false\nprint(\"Hallo Welt\".isLong) // true",
-      "category": "Swift",
-      "categoryIcon": "swift",
-      "categoryIconColor": "#FF9500"
-    },
-    {
-      "id": "error_001",
-      "title": "Error Handling",
-      "description": "Lerne, wie man Fehler in Swift definiert und behandelt.",
-      "steps": [
-        "Eigenen Error-Typ definieren.",
-        "Funktionen mit `throws` markieren.",
-        "Mit `do`-`try`-`catch` abfangen."
-      ],
-      "colors": {
-        "backgroundColors": ["#000000", "#FF3B30", "#000000"],
-        "textColors": ["#FFFFFF"]
-      },
-      "code": "enum LoginError: Error {\n    case wrongPassword\n}\n\nfunc login(password: String) throws {\n    if password != \"1234\" { throw LoginError.wrongPassword }\n    print(\"✅ Eingeloggt\")\n}\n\ndo {\n    try login(password: \"0000\")\n} catch {\n    print(\"Fehler: \\(error)\")\n}",
-      "category": "Swift",
-      "categoryIcon": "swift",
-      "categoryIconColor": "#FF3B30"
-    },
-    {
-      "id": "closure_001",
-      "title": "Closures & Funktionen",
-      "description": "Nutze anonyme Funktionen (Closures) für Callbacks und Funktionsparameter.",
-      "steps": [
-        "Closure-Syntax kennenlernen.",
-        "Closure an eine Funktion übergeben.",
-        "Kurzschreibweise nutzen."
-      ],
-      "colors": {
-        "backgroundColors": ["#000000", "#FF9F0A", "#000000"],
-        "textColors": ["#FFFFFF"]
-      },
-      "code": "func fetchData(completion: (String) -> Void) {\n    completion(\"📦 Daten geladen\")\n}\n\nfetchData { message in\n    print(message)\n}",
-      "category": "Swift",
-      "categoryIcon": "swift",
-      "categoryIconColor": "#FF9F0A"
-    },
-      {
         "id": "swiftui_001",
         "title": "State & Binding verstehen",
-        "description": "Lerne, wie du Zustände und Bindings in SwiftUI benutzt, um Views reaktiv zu machen.",
-        "steps": ["Erstelle eine @State Variable", "Nutze $Variable für Bindings", "Teste Live-Updates im Preview"],
+        "description":
+            "Lerne, wie du Zustände und Bindings in SwiftUI benutzt, um Views reaktiv zu machen.",
+        "steps": [
+            "Erstelle eine @State Variable",
+            "Nutze $Variable für Bindings",
+            "Teste Live-Updates im Preview"
+        ],
         "colors": {
-          "backgroundColors": ["#000000", "#0000FF", "000000"],
-          "textColors": ["#FFFFFF"]
+            "backgroundColors": [
+                "#000000",
+                "#0000FF",
+                "000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
         },
-        "code": "struct ContentView: View {\n @State private var name = \"\" \n var body: some View { TextField(\"Name\", text: $name) } }",
+        "code":
+            "struct ContentView: View {\n @State private var name = \"\" \n var body: some View { TextField(\"Name\", text: $name) } }",
         "category": "SwiftUI",
         "categoryIcon": "swift",
         "categoryIconColor": "#0000FF"
-      },
+    },
     {
         "id": "create_view_001",
         "title": "Eine einfache View erstellen",
-        "description": "So erstellst du eine einfache SwiftUI View mit Text, Hintergrundfarbe und dynamischen Farben.",
+        "description":
+            "So erstellst du eine einfache SwiftUI View mit Text, Hintergrundfarbe und dynamischen Farben.",
         "steps": [
             "Neue SwiftUI View Datei anlegen (z.B. `MyFirstView.swift`).",
             "Struct erstellen, das das `View`-Protokoll erfüllt.",
             "`body`-Property implementieren und UI definieren."
         ],
         "colors": {
-            "backgroundColors": ["#000000", "#FF0000", "#000000"],
-            "textColors": ["#FFFFFF", "#FFFFFF"]
+            "backgroundColors": [
+                "#000000",
+                "#FF0000",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF",
+                "#FFFFFF"
+            ]
         },
-        "code": "import SwiftUI\n\nstruct MyFirstView: View {\n    let bgColors = [Color(\"#F5F5F5\"), Color(\"#E0E0E0\")]\n    let textColors = [Color.black, Color.gray]\n\n    var body: some View {\n        ZStack {\n            LinearGradient(gradient: Gradient(colors: bgColors), startPoint: .top, endPoint: .bottom)\n                .ignoresSafeArea()\n            Text(\"Hallo SwiftUI!\")\n                .font(.title)\n                .foregroundColor(textColors.randomElement() ?? .black)\n                .padding()\n        }\n    }\n}\n\n#Preview {\n    MyFirstView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "create_view_002",
-    "title": "View mit dynamischem Hintergrund",
-    "description": "So kannst du mehrere Farben im Hintergrund mischen und dynamisch wechseln.",
-    "steps": [
-      "Array mit Farben anlegen.",
-      "Gradient verwenden (LinearGradient oder RadialGradient)."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#FFA500", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\n\nstruct DynamicBackgroundView: View {\n    let gradientColors = [Color.red, Color.orange, Color.yellow]\n    \n    var body: some View {\n        ZStack {\n            LinearGradient(gradient: Gradient(colors: gradientColors), startPoint: .topLeading, endPoint: .bottomTrailing)\n                .ignoresSafeArea()\n            Text(\"Dynamischer Hintergrund\")\n                .font(.headline)\n                .foregroundColor(.white)\n                .padding()\n        }\n    }\n}\n\n#Preview {\n    DynamicBackgroundView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "list_001",
-    "title": "Eine Liste erstellen",
-    "description": "So zeigst du eine dynamische Liste von Elementen in SwiftUI.",
-    "steps": [
-      "Ein Array von Daten erstellen.",
-      "Mit `List` alle Elemente anzeigen.",
-      "Optional NavigationLink hinzufügen."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#0A84FF", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\n\nstruct SimpleListView: View {\n    let fruits = [\"Apfel\", \"Banane\", \"Orange\", \"Traube\"]\n\n    var body: some View {\n        List(fruits, id: \\.self) { fruit in\n            Text(fruit)\n        }\n        .navigationTitle(\"Früchte\")\n    }\n}\n\n#Preview {\n    NavigationStack { SimpleListView() }\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "navigation_001",
-    "title": "Navigation zwischen Views",
-    "description": "Mit NavigationStack und NavigationLink kannst du zwischen Bildschirmen wechseln.",
-    "steps": [
-      "Eine NavigationStack als Wurzel verwenden.",
-      "NavigationLink einfügen, um zur DetailView zu springen."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#30D158", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\n\nstruct NavigationExampleView: View {\n    var body: some View {\n        NavigationStack {\n            VStack {\n                Text(\"Home Screen\")\n                    .font(.largeTitle)\n                NavigationLink(\"Zur Detailseite\", destination: DetailView())\n                    .buttonStyle(.borderedProminent)\n            }\n            .navigationTitle(\"Navigation\")\n        }\n    }\n}\n\nstruct DetailView: View {\n    var body: some View {\n        Text(\"Hallo Detailseite!\")\n            .font(.title)\n    }\n}\n\n#Preview {\n    NavigationExampleView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "textfield_001",
-    "title": "TextField und Benutzereingabe",
-    "description": "Mit TextField kannst du Eingaben vom Nutzer abfragen und anzeigen.",
-    "steps": [
-      "Eine @State-Variable für den Text anlegen.",
-      "TextField binden und Ausgabe anzeigen."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#5E5CE6", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\n\nstruct TextFieldExampleView: View {\n    @State private var name = \"\"\n\n    var body: some View {\n        VStack(spacing: 20) {\n            TextField(\"Dein Name\", text: $name)\n                .textFieldStyle(.roundedBorder)\n                .padding()\n\n            Text(\"Hallo, \\(name)\")\n                .font(.headline)\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    TextFieldExampleView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "button_001",
-    "title": "Button erstellen",
-    "description": "So fügst du einen Button hinzu und führst eine Aktion beim Tippen aus.",
-    "steps": [
-      "Button mit Label und Action erstellen.",
-      "Farbe und Stil anpassen."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#FF3B30", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\n\nstruct ButtonExampleView: View {\n    var body: some View {\n        Button(action: {\n            print(\"Button wurde gedrückt!\")\n        }) {\n            Text(\"Klick mich\")\n                .padding()\n                .background(Color.red)\n                .foregroundColor(.white)\n                .cornerRadius(8)\n        }\n    }\n}\n\n#Preview {\n    ButtonExampleView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "tabbar_001",
-    "title": "TabBar Navigation",
-    "description": "Mit einer TabView kannst du mehrere Tabs (z. B. Home, Einstellungen) erstellen.",
-    "steps": [
-      "Eine TabView als Container verwenden.",
-      "Innerhalb der TabView mehrere Views hinzufügen.",
-      "Für jede View ein TabItem definieren."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#0A84FF", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\n\nstruct TabBarExampleView: View {\n    var body: some View {\n        TabView {\n            Text(\"🏠 Home\")\n                .tabItem {\n                    Image(systemName: \"house.fill\")\n                    Text(\"Home\")\n                }\n\n            Text(\"⚙️ Einstellungen\")\n                .tabItem {\n                    Image(systemName: \"gear\")\n                    Text(\"Settings\")\n                }\n        }\n    }\n}\n\n#Preview {\n    TabBarExampleView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "toggle_001",
-    "title": "Toggle (Switch)",
-    "description": "Mit Toggle kannst du einen Schalter erstellen, z. B. um Dark Mode zu aktivieren.",
-    "steps": [
-      "Eine @State-Variable für den Schalterwert anlegen.",
-      "Toggle mit Binding auf diese Variable verbinden.",
-      "Optional eine Aktion beim Umschalten ausführen."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#5E5CE6", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\n\nstruct ToggleExampleView: View {\n    @State private var isDarkMode = false\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Toggle(\"Dark Mode\", isOn: $isDarkMode)\n                .padding()\n\n            Text(isDarkMode ? \"🌙 Dark Mode\" : \"☀️ Light Mode\")\n                .font(.title)\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    ToggleExampleView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "slider_001",
-    "title": "Slider für Werte",
-    "description": "Mit Slider kannst du stufenlos einen Wert einstellen, z. B. Lautstärke oder Helligkeit.",
-    "steps": [
-      "Eine @State-Variable für den Wert anlegen.",
-      "Slider mit diesem Wert verbinden.",
-      "Den aktuellen Wert dynamisch anzeigen."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#30D158", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\n\nstruct SliderExampleView: View {\n    @State private var volume: Double = 50\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Text(\"Lautstärke: \\(Int(volume))%\")\n                .font(.headline)\n\n            Slider(value: $volume, in: 0...100)\n                .padding()\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    SliderExampleView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "alert_001",
-    "title": "Alert anzeigen",
-    "description": "Zeigt ein Pop-Up an, z. B. um eine Meldung oder Warnung anzuzeigen.",
-    "steps": [
-      "Eine @State-Variable für das Anzeigen des Alerts anlegen.",
-      "Mit .alert() an die View binden.",
-      "Titel und Buttons im Alert definieren."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#FF3B30", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\n\nstruct AlertExampleView: View {\n    @State private var showAlert = false\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Button(\"Zeige Alert\") {\n                showAlert = true\n            }\n            .alert(\"Achtung!\", isPresented: $showAlert) {\n                Button(\"OK\", role: .cancel) {}\n                Button(\"Löschen\", role: .destructive) {}\n            } message: {\n                Text(\"Diese Aktion kann nicht rückgängig gemacht werden.\")\n            }\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    AlertExampleView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "sheet_001",
-    "title": "Sheet / Modal anzeigen",
-    "description": "Öffnet ein modales Sheet von unten, z. B. für Einstellungen oder Detailansichten.",
-    "steps": [
-      "Eine @State-Variable für das Anzeigen des Sheets anlegen.",
-      "Mit .sheet() das Sheet an die View binden.",
-      "Im Sheet eine eigene View anzeigen."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#5AC8FA", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\n\nstruct SheetExampleView: View {\n    @State private var showSheet = false\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Button(\"Sheet öffnen\") {\n                showSheet = true\n            }\n            .sheet(isPresented: $showSheet) {\n                VStack(spacing: 20) {\n                    Text(\"Hallo aus dem Sheet!\")\n                        .font(.title)\n                    Button(\"Schließen\") {\n                        showSheet = false\n                    }\n                }\n                .padding()\n            }\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    SheetExampleView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "animation_001",
-    "title": "Einfache Animation",
-    "description": "Bewege, vergrößere oder verändere Elemente mit SwiftUI Animationen.",
-    "steps": [
-      "Eine @State-Variable für die Animation anlegen.",
-      "Mit withAnimation{} Änderungen animieren.",
-      "Beispiele: Farbe, Position oder Größe ändern."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#FF9500", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\n\nstruct AnimationExampleView: View {\n    @State private var isExpanded = false\n\n    var body: some View {\n        VStack(spacing: 40) {\n            Circle()\n                .fill(isExpanded ? .orange : .blue)\n                .frame(width: isExpanded ? 200 : 100, height: isExpanded ? 200 : 100)\n                .animation(.spring(), value: isExpanded)\n\n            Button(\"Animate\") {\n                isExpanded.toggle()\n            }\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    AnimationExampleView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "gesture_001",
-    "title": "Gestensteuerung",
-    "description": "Reagiere auf Drag- oder Tap-Gesten, um UI interaktiver zu machen.",
-    "steps": [
-      "DragGesture oder TapGesture hinzufügen.",
-      "Mit .gesture() an ein Element anhängen.",
-      "Position oder Zustand verändern, wenn die Geste erkannt wird."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#A2845E", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\n\nstruct GestureExampleView: View {\n    @State private var offset = CGSize.zero\n\n    var body: some View {\n        Circle()\n            .fill(.green)\n            .frame(width: 100, height: 100)\n            .offset(offset)\n            .gesture(\n                DragGesture()\n                    .onChanged { value in offset = value.translation }\n                    .onEnded { _ in withAnimation { offset = .zero } }\n            )\n            .padding()\n    }\n}\n\n#Preview {\n    GestureExampleView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "progress_001",
-    "title": "ProgressView",
-    "description": "Zeigt einen Ladebalken oder Fortschrittskreis an.",
-    "steps": [
-      "ProgressView erstellen.",
-      "Optional einen festen Wert angeben (0.0 bis 1.0).",
-      "Design und Stil anpassen."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#30D158", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\n\nstruct ProgressExampleView: View {\n    @State private var progress = 0.3\n\n    var body: some View {\n        VStack(spacing: 20) {\n            ProgressView(value: progress)\n                .padding()\n\n            Button(\"Mehr Fortschritt\") {\n                withAnimation { progress = min(progress + 0.1, 1.0) }\n            }\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    ProgressExampleView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "appstorage_001",
-    "title": "AppStorage verwenden",
-    "description": "Speichere einfache Werte dauerhaft auf dem Gerät, z. B. Dark Mode oder Username.",
-    "steps": [
-      "Mit @AppStorage eine persistente Variable anlegen.",
-      "Der Wert bleibt beim App-Neustart erhalten.",
-      "Ideal für User Settings."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#FF9F0A", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\n\nstruct AppStorageExampleView: View {\n    @AppStorage(\"username\") private var username = \"Gast\"\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Text(\"Willkommen, \\(username)!\")\n                .font(.headline)\n\n            TextField(\"Neuer Name\", text: $username)\n                .textFieldStyle(.roundedBorder)\n                .padding()\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    AppStorageExampleView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "json_001",
-    "title": "JSON laden",
-    "description": "Lese lokale JSON-Dateien ein und verwende sie für deine App-Daten.",
-    "steps": [
-      "Ein Datenmodell erstellen, das Codable ist.",
-      "JSON-Datei im Bundle speichern.",
-      "Mit JSONDecoder einlesen."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#0A84FF", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\n\nstruct Fruit: Codable, Identifiable {\n    let id = UUID()\n    let name: String\n}\n\nfunc loadFruits() -> [Fruit] {\n    guard let url = Bundle.main.url(forResource: \"fruits\", withExtension: \"json\"),\n          let data = try? Data(contentsOf: url) else {\n        return []\n    }\n    return (try? JSONDecoder().decode([Fruit].self, from: data)) ?? []\n}\n\nstruct JSONExampleView: View {\n    let fruits = loadFruits()\n\n    var body: some View {\n        List(fruits) { fruit in\n            Text(fruit.name)\n        }\n    }\n}\n\n#Preview {\n    JSONExampleView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "haptics_001",
-    "title": "Haptisches Feedback",
-    "description": "Füge haptisches Feedback hinzu, wenn Buttons oder Aktionen ausgelöst werden.",
-    "steps": [
-      "UIImpactFeedbackGenerator oder UINotificationFeedbackGenerator verwenden.",
-      "Im Button-Action auslösen."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#FF3B30", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\n\nstruct HapticsExampleView: View {\n    var body: some View {\n        Button(\"Haptik testen\") {\n            let generator = UIImpactFeedbackGenerator(style: .medium)\n            generator.impactOccurred()\n        }\n        .padding()\n        .background(Color.red)\n        .foregroundColor(.white)\n        .cornerRadius(10)\n    }\n}\n\n#Preview {\n    HapticsExampleView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "userdefaults_001",
-    "title": "UserDefaults verwenden",
-    "description": "Speichere und lade Werte manuell mit UserDefaults.",
-    "steps": [
-      "UserDefaults.standard verwenden.",
-      "Wert setzen und auslesen.",
-      "Ideal für einfache App Settings."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#5E5CE6", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\n\nstruct UserDefaultsExampleView: View {\n    @State private var username = UserDefaults.standard.string(forKey: \"username\") ?? \"Gast\"\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Text(\"Willkommen, \\(username)!\")\n                .font(.headline)\n\n            TextField(\"Neuer Name\", text: $username)\n                .textFieldStyle(.roundedBorder)\n                .padding()\n\n            Button(\"Speichern\") {\n                UserDefaults.standard.set(username, forKey: \"username\")\n            }\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    UserDefaultsExampleView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "asyncimage_001",
-    "title": "AsyncImage (Bilder aus dem Internet)",
-    "description": "Lade Bilder von einer URL mit Platzhalter und automatischem Caching.",
-    "steps": [
-      "AsyncImage verwenden, URL angeben.",
-      "Placeholder für Ladezustand definieren.",
-      "Optionale Resizing- und Clipping-Optionen hinzufügen."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#34C759", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\n\nstruct AsyncImageExampleView: View {\n    var body: some View {\n        AsyncImage(url: URL(string: \"https://picsum.photos/300\")) { image in\n            image.resizable().scaledToFit().cornerRadius(12)\n        } placeholder: {\n            ProgressView()\n        }\n        .frame(width: 200, height: 200)\n        .padding()\n    }\n}\n\n#Preview {\n    AsyncImageExampleView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "mapkit_001",
-    "title": "Karte anzeigen (MapKit)",
-    "description": "Zeige eine interaktive Apple Map mit Annotationen und Position.",
-    "steps": [
-      "MapKit importieren und Map verwenden.",
-      "Region als @State anlegen.",
-      "AnnotationItems für Pins definieren."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#0A84FF", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\nimport MapKit\n\nstruct MapExampleView: View {\n    @State private var region = MKCoordinateRegion(\n        center: CLLocationCoordinate2D(latitude: 48.137, longitude: 11.575),\n        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)\n    )\n\n    var body: some View {\n        Map(coordinateRegion: $region, annotationItems: [AnnotationItem()]) { item in\n            MapPin(coordinate: item.coordinate, tint: .blue)\n        }\n        .ignoresSafeArea()\n    }\n}\n\nstruct AnnotationItem: Identifiable {\n    let id = UUID()\n    let coordinate = CLLocationCoordinate2D(latitude: 48.137, longitude: 11.575)\n}\n\n#Preview {\n    MapExampleView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "camera_001",
-    "title": "Kamera & Fotoaufnahme",
-    "description": "Zeigt ein Kamera-Preview und ermöglicht das Aufnehmen von Fotos mit dem neuen PhotosPicker.",
-    "steps": [
-      "PhotosUI importieren.",
-      "PhotosPicker verwenden, um Bilder aufzunehmen oder auszuwählen.",
-      "Optional Kamera-Only konfigurieren."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#FF2D55", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\nimport PhotosUI\n\nstruct CameraExampleView: View {\n    @State private var selectedImage: PhotosPickerItem?\n    @State private var image: Image?\n\n    var body: some View {\n        VStack(spacing: 20) {\n            if let image = image {\n                image\n                    .resizable()\n                    .scaledToFit()\n                    .frame(height: 300)\n                    .cornerRadius(12)\n            } else {\n                Rectangle().fill(.gray.opacity(0.3)).frame(height: 300).cornerRadius(12)\n            }\n\n            PhotosPicker(selection: $selectedImage, matching: .images) {\n                Label(\"Foto aufnehmen oder wählen\", systemImage: \"camera\")\n            }\n            .onChange(of: selectedImage) { newItem in\n                Task {\n                    if let data = try? await newItem?.loadTransferable(type: Data.self),\n                       let uiImage = UIImage(data: data) {\n                        image = Image(uiImage: uiImage)\n                    }\n                }\n            }\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    CameraExampleView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "coredata_001",
-    "title": "Core Data verwenden",
-    "description": "Speichere Daten dauerhaft lokal mit Core Data und zeige sie in einer Liste.",
-    "steps": [
-      "PersistenceController erstellen (Core Data Stack).",
-      "NSManagedObjectContext aus @Environment holen.",
-      "FetchRequest verwenden, um Daten anzuzeigen."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#5AC8FA", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\nimport CoreData\n\nstruct CoreDataExampleView: View {\n    @Environment(\\.managedObjectContext) private var viewContext\n    @FetchRequest(\n        sortDescriptors: [NSSortDescriptor(keyPath: \\Item.timestamp, ascending: true)],\n        animation: .default)\n    private var items: FetchedResults<Item>\n\n    var body: some View {\n        NavigationStack {\n            List {\n                ForEach(items) { item in\n                    Text(item.timestamp!, formatter: dateFormatter)\n                }\n                .onDelete(perform: deleteItems)\n            }\n            .navigationTitle(\"Core Data\")\n            .toolbar {\n                ToolbarItem(placement: .navigationBarTrailing) {\n                    Button(action: addItem) {\n                        Label(\"Add\", systemImage: \"plus\")\n                    }\n                }\n            }\n        }\n    }\n\n    private func addItem() {\n        let newItem = Item(context: viewContext)\n        newItem.timestamp = Date()\n        try? viewContext.save()\n    }\n\n    private func deleteItems(offsets: IndexSet) {\n        for index in offsets { viewContext.delete(items[index]) }\n        try? viewContext.save()\n    }\n}\n\nprivate let dateFormatter: DateFormatter = {\n    let formatter = DateFormatter()\n    formatter.dateStyle = .short\n    formatter.timeStyle = .short\n    return formatter\n}()\n\n#Preview {\n    CoreDataExampleView().environment(\\.managedObjectContext, PersistenceController.preview.container.viewContext)\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-  {
-    "id": "charts_001",
-    "title": "Charts erstellen",
-    "description": "Zeige einfache Diagramme mit dem Swift Charts Framework.",
-    "steps": [
-      "Charts importieren.",
-      "Datenmodell definieren.",
-      "Chart-View erstellen und Daten visualisieren."
-    ],
-    "colors": {
-      "backgroundColors": ["#000000", "#FF9500", "#000000"],
-      "textColors": ["#FFFFFF"]
-    },
-    "code": "import SwiftUI\nimport Charts\n\nstruct Sales: Identifiable {\n    let id = UUID()\n    let month: String\n    let amount: Double\n}\n\nstruct ChartsExampleView: View {\n    let data = [\n        Sales(month: \"Jan\", amount: 120),\n        Sales(month: \"Feb\", amount: 200),\n        Sales(month: \"Mär\", amount: 150)\n    ]\n\n    var body: some View {\n        Chart(data) { item in\n            BarMark(\n                x: .value(\"Monat\", item.month),\n                y: .value(\"Verkäufe\", item.amount)\n            )\n            .foregroundStyle(.orange)\n        }\n        .frame(height: 300)\n        .padding()\n    }\n}\n\n#Preview {\n    ChartsExampleView()\n}",
-    "category": "SwiftUI",
-    "categoryIcon": "swift",
-  },
-    {
-      "id": "generics_001",
-      "title": "Generics verstehen",
-      "description": "Nutze Generics, um Funktionen und Typen für verschiedene Datentypen wiederverwendbar zu machen.",
-      "steps": [
-        "Funktion mit Platzhalter-Typ <T> definieren.",
-        "Mit beliebigen Datentypen aufrufen.",
-        "Sichert Typprüfung und vermeidet Code-Duplikate."
-      ],
-      "colors": {
-        "backgroundColors": ["#000000", "#BF5AF2", "#000000"],
-        "textColors": ["#FFFFFF"]
-      },
-      "code": "func swapValues<T>(_ a: inout T, _ b: inout T) {\n    let temp = a\n    a = b\n    b = temp\n}\n\nvar x = 5\nvar y = 10\nswapValues(&x, &y)\nprint(x, y) // 10 5",
-      "category": "Swift",
-      "categoryIcon": "swift",
-      "categoryIconColor": "#BF5AF2"
+        "code":
+            "import SwiftUI\n\nstruct MyFirstView: View {\n    let bgColors = [Color(\"#F5F5F5\"), Color(\"#E0E0E0\")]\n    let textColors = [Color.black, Color.gray]\n\n    var body: some View {\n        ZStack {\n            LinearGradient(gradient: Gradient(colors: bgColors), startPoint: .top, endPoint: .bottom)\n                .ignoresSafeArea()\n            Text(\"Hallo SwiftUI!\")\n                .font(.title)\n                .foregroundColor(textColors.randomElement() ?? .black)\n                .padding()\n        }\n    }\n}\n\n#Preview {\n    MyFirstView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
     },
     {
-      "id": "observableobject_001",
-      "title": "ObservableObject & @Published",
-      "description": "Baue reaktive ViewModels, die automatisch UI-Updates triggern, wenn sich Daten ändern.",
-      "steps": [
-        "Klasse mit ObservableObject-Protokoll erstellen.",
-        "@Published für veränderliche Properties verwenden.",
-        "View mit @StateObject oder @ObservedObject verbinden."
-      ],
-      "colors": {
-        "backgroundColors": ["#000000", "#0A84FF", "#000000"],
-        "textColors": ["#FFFFFF"]
-      },
-      "code": "import SwiftUI\n\nclass CounterViewModel: ObservableObject {\n    @Published var count = 0\n    func increment() { count += 1 }\n}\n\nstruct CounterView: View {\n    @StateObject private var vm = CounterViewModel()\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Text(\"Zähler: \\(vm.count)\")\n                .font(.largeTitle)\n            Button(\"+1\") { vm.increment() }\n                .buttonStyle(.borderedProminent)\n        }\n    }\n}\n\n#Preview { CounterView() }",
-      "category": "SwiftUI",
-      "categoryIcon": "swift",
-      "categoryIconColor": "#0A84FF"
-    },
-    {
-      "id": "matchedgeometryeffect_001",
-      "title": "MatchedGeometryEffect Animation",
-      "description": "Erstelle sanfte Übergänge zwischen Views, z. B. für Karten oder Detailansichten.",
-      "steps": [
-        "Namespace für Animation anlegen.",
-        "matchedGeometryEffect(id:, in:) in beiden Views nutzen.",
-        "Mit Animation beim State-Wechsel arbeiten."
-      ],
-      "colors": {
-        "backgroundColors": ["#000000", "#FF2D55", "#000000"],
-        "textColors": ["#FFFFFF"]
-      },
-      "code": "import SwiftUI\n\nstruct MatchedGeometryExampleView: View {\n    @Namespace private var ns\n    @State private var expanded = false\n\n    var body: some View {\n        VStack {\n            if expanded {\n                RoundedRectangle(cornerRadius: 25)\n                    .fill(.pink)\n                    .matchedGeometryEffect(id: \"card\", in: ns)\n                    .frame(width: 300, height: 300)\n            } else {\n                RoundedRectangle(cornerRadius: 25)\n                    .fill(.pink)\n                    .matchedGeometryEffect(id: \"card\", in: ns)\n                    .frame(width: 100, height: 100)\n            }\n        }\n        .onTapGesture {\n            withAnimation(.spring()) { expanded.toggle() }\n        }\n    }\n}\n\n#Preview { MatchedGeometryExampleView() }",
-      "category": "SwiftUI",
-      "categoryIcon": "swift",
-      "categoryIconColor": "#FF2D55"
-    },
-      {
-        "id": "observableobject_002",
-        "title": "EnvironmentObject verstehen",
-        "description": "Teile ein ViewModel über mehrere Views hinweg, ohne es manuell weiterzugeben.",
+        "id": "create_view_002",
+        "title": "View mit dynamischem Hintergrund",
+        "description":
+            "So kannst du mehrere Farben im Hintergrund mischen und dynamisch wechseln.",
         "steps": [
-          "Ein ViewModel mit ObservableObject erstellen.",
-          "Es im obersten View mit .environmentObject() einfügen.",
-          "In untergeordneten Views mit @EnvironmentObject darauf zugreifen."
+            "Array mit Farben anlegen.",
+            "Gradient verwenden (LinearGradient oder RadialGradient)."
         ],
         "colors": {
-          "backgroundColors": ["#000000", "#30D158", "#000000"],
-          "textColors": ["#FFFFFF"]
+            "backgroundColors": [
+                "#000000",
+                "#FFA500",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
         },
-        "code": "import SwiftUI\n\nclass UserSettings: ObservableObject {\n    @Published var username = \"Gast\"\n}\n\nstruct RootView: View {\n    @StateObject private var settings = UserSettings()\n\n    var body: some View {\n        NavigationStack {\n            VStack(spacing: 20) {\n                TextField(\"Name\", text: $settings.username)\n                    .textFieldStyle(.roundedBorder)\n                    .padding()\n                NavigationLink(\"Zur Profilseite\", destination: ProfileView())\n            }\n        }\n        .environmentObject(settings)\n    }\n}\n\nstruct ProfileView: View {\n    @EnvironmentObject var settings: UserSettings\n\n    var body: some View {\n        Text(\"Willkommen, \\(settings.username)!\")\n            .font(.largeTitle)\n    }\n}\n\n#Preview { RootView() }",
+        "code":
+            "import SwiftUI\n\nstruct DynamicBackgroundView: View {\n    let gradientColors = [Color.red, Color.orange, Color.yellow]\n    \n    var body: some View {\n        ZStack {\n            LinearGradient(gradient: Gradient(colors: gradientColors), startPoint: .topLeading, endPoint: .bottomTrailing)\n                .ignoresSafeArea()\n            Text(\"Dynamischer Hintergrund\")\n                .font(.headline)\n                .foregroundColor(.white)\n                .padding()\n        }\n    }\n}\n\n#Preview {\n    DynamicBackgroundView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "list_001",
+        "title": "Eine Liste erstellen",
+        "description":
+            "So zeigst du eine dynamische Liste von Elementen in SwiftUI.",
+        "steps": [
+            "Ein Array von Daten erstellen.",
+            "Mit `List` alle Elemente anzeigen.",
+            "Optional NavigationLink hinzufügen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#0A84FF",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct SimpleListView: View {\n    let fruits = [\"Apfel\", \"Banane\", \"Orange\", \"Traube\"]\n\n    var body: some View {\n        List(fruits, id: \\.self) { fruit in\n            Text(fruit)\n        }\n        .navigationTitle(\"Früchte\")\n    }\n}\n\n#Preview {\n    NavigationStack { SimpleListView() }\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "navigation_001",
+        "title": "Navigation zwischen Views",
+        "description":
+            "Mit NavigationStack und NavigationLink kannst du zwischen Bildschirmen wechseln.",
+        "steps": [
+            "Eine NavigationStack als Wurzel verwenden.",
+            "NavigationLink einfügen, um zur DetailView zu springen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#30D158",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct NavigationExampleView: View {\n    var body: some View {\n        NavigationStack {\n            VStack {\n                Text(\"Home Screen\")\n                    .font(.largeTitle)\n                NavigationLink(\"Zur Detailseite\", destination: DetailView())\n                    .buttonStyle(.borderedProminent)\n            }\n            .navigationTitle(\"Navigation\")\n        }\n    }\n}\n\nstruct DetailView: View {\n    var body: some View {\n        Text(\"Hallo Detailseite!\")\n            .font(.title)\n    }\n}\n\n#Preview {\n    NavigationExampleView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "textfield_001",
+        "title": "TextField und Benutzereingabe",
+        "description":
+            "Mit TextField kannst du Eingaben vom Nutzer abfragen und anzeigen.",
+        "steps": [
+            "Eine @State-Variable für den Text anlegen.",
+            "TextField binden und Ausgabe anzeigen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#5E5CE6",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct TextFieldExampleView: View {\n    @State private var name = \"\"\n\n    var body: some View {\n        VStack(spacing: 20) {\n            TextField(\"Dein Name\", text: $name)\n                .textFieldStyle(.roundedBorder)\n                .padding()\n\n            Text(\"Hallo, \\(name)\")\n                .font(.headline)\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    TextFieldExampleView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "button_001",
+        "title": "Button erstellen",
+        "description":
+            "So fügst du einen Button hinzu und führst eine Aktion beim Tippen aus.",
+        "steps": [
+            "Button mit Label und Action erstellen.",
+            "Farbe und Stil anpassen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF3B30",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct ButtonExampleView: View {\n    var body: some View {\n        Button(action: {\n            print(\"Button wurde gedrückt!\")\n        }) {\n            Text(\"Klick mich\")\n                .padding()\n                .background(Color.red)\n                .foregroundColor(.white)\n                .cornerRadius(8)\n        }\n    }\n}\n\n#Preview {\n    ButtonExampleView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "tabbar_001",
+        "title": "TabBar Navigation",
+        "description":
+            "Mit einer TabView kannst du mehrere Tabs (z. B. Home, Einstellungen) erstellen.",
+        "steps": [
+            "Eine TabView als Container verwenden.",
+            "Innerhalb der TabView mehrere Views hinzufügen.",
+            "Für jede View ein TabItem definieren."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#0A84FF",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct TabBarExampleView: View {\n    var body: some View {\n        TabView {\n            Text(\"🏠 Home\")\n                .tabItem {\n                    Image(systemName: \"house.fill\")\n                    Text(\"Home\")\n                }\n\n            Text(\"⚙️ Einstellungen\")\n                .tabItem {\n                    Image(systemName: \"gear\")\n                    Text(\"Settings\")\n                }\n        }\n    }\n}\n\n#Preview {\n    TabBarExampleView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "toggle_001",
+        "title": "Toggle (Switch)",
+        "description":
+            "Mit Toggle kannst du einen Schalter erstellen, z. B. um Dark Mode zu aktivieren.",
+        "steps": [
+            "Eine @State-Variable für den Schalterwert anlegen.",
+            "Toggle mit Binding auf diese Variable verbinden.",
+            "Optional eine Aktion beim Umschalten ausführen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#5E5CE6",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct ToggleExampleView: View {\n    @State private var isDarkMode = false\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Toggle(\"Dark Mode\", isOn: $isDarkMode)\n                .padding()\n\n            Text(isDarkMode ? \"🌙 Dark Mode\" : \"☀️ Light Mode\")\n                .font(.title)\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    ToggleExampleView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "slider_001",
+        "title": "Slider für Werte",
+        "description":
+            "Mit Slider kannst du stufenlos einen Wert einstellen, z. B. Lautstärke oder Helligkeit.",
+        "steps": [
+            "Eine @State-Variable für den Wert anlegen.",
+            "Slider mit diesem Wert verbinden.",
+            "Den aktuellen Wert dynamisch anzeigen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#30D158",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct SliderExampleView: View {\n    @State private var volume: Double = 50\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Text(\"Lautstärke: \\(Int(volume))%\")\n                .font(.headline)\n\n            Slider(value: $volume, in: 0...100)\n                .padding()\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    SliderExampleView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "alert_001",
+        "title": "Alert anzeigen",
+        "description":
+            "Zeigt ein Pop-Up an, z. B. um eine Meldung oder Warnung anzuzeigen.",
+        "steps": [
+            "Eine @State-Variable für das Anzeigen des Alerts anlegen.",
+            "Mit .alert() an die View binden.",
+            "Titel und Buttons im Alert definieren."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF3B30",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct AlertExampleView: View {\n    @State private var showAlert = false\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Button(\"Zeige Alert\") {\n                showAlert = true\n            }\n            .alert(\"Achtung!\", isPresented: $showAlert) {\n                Button(\"OK\", role: .cancel) {}\n                Button(\"Löschen\", role: .destructive) {}\n            } message: {\n                Text(\"Diese Aktion kann nicht rückgängig gemacht werden.\")\n            }\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    AlertExampleView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "sheet_001",
+        "title": "Sheet / Modal anzeigen",
+        "description":
+            "Öffnet ein modales Sheet von unten, z. B. für Einstellungen oder Detailansichten.",
+        "steps": [
+            "Eine @State-Variable für das Anzeigen des Sheets anlegen.",
+            "Mit .sheet() das Sheet an die View binden.",
+            "Im Sheet eine eigene View anzeigen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#5AC8FA",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct SheetExampleView: View {\n    @State private var showSheet = false\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Button(\"Sheet öffnen\") {\n                showSheet = true\n            }\n            .sheet(isPresented: $showSheet) {\n                VStack(spacing: 20) {\n                    Text(\"Hallo aus dem Sheet!\")\n                        .font(.title)\n                    Button(\"Schließen\") {\n                        showSheet = false\n                    }\n                }\n                .padding()\n            }\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    SheetExampleView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "animation_001",
+        "title": "Einfache Animation",
+        "description":
+            "Bewege, vergrößere oder verändere Elemente mit SwiftUI Animationen.",
+        "steps": [
+            "Eine @State-Variable für die Animation anlegen.",
+            "Mit withAnimation{} Änderungen animieren.",
+            "Beispiele: Farbe, Position oder Größe ändern."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF9500",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct AnimationExampleView: View {\n    @State private var isExpanded = false\n\n    var body: some View {\n        VStack(spacing: 40) {\n            Circle()\n                .fill(isExpanded ? .orange : .blue)\n                .frame(width: isExpanded ? 200 : 100, height: isExpanded ? 200 : 100)\n                .animation(.spring(), value: isExpanded)\n\n            Button(\"Animate\") {\n                isExpanded.toggle()\n            }\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    AnimationExampleView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "gesture_001",
+        "title": "Gestensteuerung",
+        "description":
+            "Reagiere auf Drag- oder Tap-Gesten, um UI interaktiver zu machen.",
+        "steps": [
+            "DragGesture oder TapGesture hinzufügen.",
+            "Mit .gesture() an ein Element anhängen.",
+            "Position oder Zustand verändern, wenn die Geste erkannt wird."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#A2845E",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct GestureExampleView: View {\n    @State private var offset = CGSize.zero\n\n    var body: some View {\n        Circle()\n            .fill(.green)\n            .frame(width: 100, height: 100)\n            .offset(offset)\n            .gesture(\n                DragGesture()\n                    .onChanged { value in offset = value.translation }\n                    .onEnded { _ in withAnimation { offset = .zero } }\n            )\n            .padding()\n    }\n}\n\n#Preview {\n    GestureExampleView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "progress_001",
+        "title": "ProgressView",
+        "description": "Zeigt einen Ladebalken oder Fortschrittskreis an.",
+        "steps": [
+            "ProgressView erstellen.",
+            "Optional einen festen Wert angeben (0.0 bis 1.0).",
+            "Design und Stil anpassen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#30D158",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct ProgressExampleView: View {\n    @State private var progress = 0.3\n\n    var body: some View {\n        VStack(spacing: 20) {\n            ProgressView(value: progress)\n                .padding()\n\n            Button(\"Mehr Fortschritt\") {\n                withAnimation { progress = min(progress + 0.1, 1.0) }\n            }\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    ProgressExampleView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "appstorage_001",
+        "title": "AppStorage verwenden",
+        "description":
+            "Speichere einfache Werte dauerhaft auf dem Gerät, z. B. Dark Mode oder Username.",
+        "steps": [
+            "Mit @AppStorage eine persistente Variable anlegen.",
+            "Der Wert bleibt beim App-Neustart erhalten.",
+            "Ideal für User Settings."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF9F0A",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct AppStorageExampleView: View {\n    @AppStorage(\"username\") private var username = \"Gast\"\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Text(\"Willkommen, \\(username)!\")\n                .font(.headline)\n\n            TextField(\"Neuer Name\", text: $username)\n                .textFieldStyle(.roundedBorder)\n                .padding()\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    AppStorageExampleView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "json_001",
+        "title": "JSON laden",
+        "description":
+            "Lese lokale JSON-Dateien ein und verwende sie für deine App-Daten.",
+        "steps": [
+            "Ein Datenmodell erstellen, das Codable ist.",
+            "JSON-Datei im Bundle speichern.",
+            "Mit JSONDecoder einlesen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#0A84FF",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct Fruit: Codable, Identifiable {\n    let id = UUID()\n    let name: String\n}\n\nfunc loadFruits() -> [Fruit] {\n    guard let url = Bundle.main.url(forResource: \"fruits\", withExtension: \"json\"),\n          let data = try? Data(contentsOf: url) else {\n        return []\n    }\n    return (try? JSONDecoder().decode([Fruit].self, from: data)) ?? []\n}\n\nstruct JSONExampleView: View {\n    let fruits = loadFruits()\n\n    var body: some View {\n        List(fruits) { fruit in\n            Text(fruit.name)\n        }\n    }\n}\n\n#Preview {\n    JSONExampleView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "haptics_001",
+        "title": "Haptisches Feedback",
+        "description":
+            "Füge haptisches Feedback hinzu, wenn Buttons oder Aktionen ausgelöst werden.",
+        "steps": [
+            "UIImpactFeedbackGenerator oder UINotificationFeedbackGenerator verwenden.",
+            "Im Button-Action auslösen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF3B30",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct HapticsExampleView: View {\n    var body: some View {\n        Button(\"Haptik testen\") {\n            let generator = UIImpactFeedbackGenerator(style: .medium)\n            generator.impactOccurred()\n        }\n        .padding()\n        .background(Color.red)\n        .foregroundColor(.white)\n        .cornerRadius(10)\n    }\n}\n\n#Preview {\n    HapticsExampleView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "userdefaults_001",
+        "title": "UserDefaults verwenden",
+        "description": "Speichere und lade Werte manuell mit UserDefaults.",
+        "steps": [
+            "UserDefaults.standard verwenden.",
+            "Wert setzen und auslesen.",
+            "Ideal für einfache App Settings."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#5E5CE6",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct UserDefaultsExampleView: View {\n    @State private var username = UserDefaults.standard.string(forKey: \"username\") ?? \"Gast\"\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Text(\"Willkommen, \\(username)!\")\n                .font(.headline)\n\n            TextField(\"Neuer Name\", text: $username)\n                .textFieldStyle(.roundedBorder)\n                .padding()\n\n            Button(\"Speichern\") {\n                UserDefaults.standard.set(username, forKey: \"username\")\n            }\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    UserDefaultsExampleView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "asyncimage_001",
+        "title": "AsyncImage (Bilder aus dem Internet)",
+        "description":
+            "Lade Bilder von einer URL mit Platzhalter und automatischem Caching.",
+        "steps": [
+            "AsyncImage verwenden, URL angeben.",
+            "Placeholder für Ladezustand definieren.",
+            "Optionale Resizing- und Clipping-Optionen hinzufügen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#34C759",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct AsyncImageExampleView: View {\n    var body: some View {\n        AsyncImage(url: URL(string: \"https://picsum.photos/300\")) { image in\n            image.resizable().scaledToFit().cornerRadius(12)\n        } placeholder: {\n            ProgressView()\n        }\n        .frame(width: 200, height: 200)\n        .padding()\n    }\n}\n\n#Preview {\n    AsyncImageExampleView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "mapkit_001",
+        "title": "Karte anzeigen (MapKit)",
+        "description":
+            "Zeige eine interaktive Apple Map mit Annotationen und Position.",
+        "steps": [
+            "MapKit importieren und Map verwenden.",
+            "Region als @State anlegen.",
+            "AnnotationItems für Pins definieren."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#0A84FF",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\nimport MapKit\n\nstruct MapExampleView: View {\n    @State private var region = MKCoordinateRegion(\n        center: CLLocationCoordinate2D(latitude: 48.137, longitude: 11.575),\n        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)\n    )\n\n    var body: some View {\n        Map(coordinateRegion: $region, annotationItems: [AnnotationItem()]) { item in\n            MapPin(coordinate: item.coordinate, tint: .blue)\n        }\n        .ignoresSafeArea()\n    }\n}\n\nstruct AnnotationItem: Identifiable {\n    let id = UUID()\n    let coordinate = CLLocationCoordinate2D(latitude: 48.137, longitude: 11.575)\n}\n\n#Preview {\n    MapExampleView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "camera_001",
+        "title": "Kamera & Fotoaufnahme",
+        "description":
+            "Zeigt ein Kamera-Preview und ermöglicht das Aufnehmen von Fotos mit dem neuen PhotosPicker.",
+        "steps": [
+            "PhotosUI importieren.",
+            "PhotosPicker verwenden, um Bilder aufzunehmen oder auszuwählen.",
+            "Optional Kamera-Only konfigurieren."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF2D55",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\nimport PhotosUI\n\nstruct CameraExampleView: View {\n    @State private var selectedImage: PhotosPickerItem?\n    @State private var image: Image?\n\n    var body: some View {\n        VStack(spacing: 20) {\n            if let image = image {\n                image\n                    .resizable()\n                    .scaledToFit()\n                    .frame(height: 300)\n                    .cornerRadius(12)\n            } else {\n                Rectangle().fill(.gray.opacity(0.3)).frame(height: 300).cornerRadius(12)\n            }\n\n            PhotosPicker(selection: $selectedImage, matching: .images) {\n                Label(\"Foto aufnehmen oder wählen\", systemImage: \"camera\")\n            }\n            .onChange(of: selectedImage) { newItem in\n                Task {\n                    if let data = try? await newItem?.loadTransferable(type: Data.self),\n                       let uiImage = UIImage(data: data) {\n                        image = Image(uiImage: uiImage)\n                    }\n                }\n            }\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    CameraExampleView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "coredata_001",
+        "title": "Core Data verwenden",
+        "description":
+            "Speichere Daten dauerhaft lokal mit Core Data und zeige sie in einer Liste.",
+        "steps": [
+            "PersistenceController erstellen (Core Data Stack).",
+            "NSManagedObjectContext aus @Environment holen.",
+            "FetchRequest verwenden, um Daten anzuzeigen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#5AC8FA",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\nimport CoreData\n\nstruct CoreDataExampleView: View {\n    @Environment(\\.managedObjectContext) private var viewContext\n    @FetchRequest(\n        sortDescriptors: [NSSortDescriptor(keyPath: \\Item.timestamp, ascending: true)],\n        animation: .default)\n    private var items: FetchedResults<Item>\n\n    var body: some View {\n        NavigationStack {\n            List {\n                ForEach(items) { item in\n                    Text(item.timestamp!, formatter: dateFormatter)\n                }\n                .onDelete(perform: deleteItems)\n            }\n            .navigationTitle(\"Core Data\")\n            .toolbar {\n                ToolbarItem(placement: .navigationBarTrailing) {\n                    Button(action: addItem) {\n                        Label(\"Add\", systemImage: \"plus\")\n                    }\n                }\n            }\n        }\n    }\n\n    private func addItem() {\n        let newItem = Item(context: viewContext)\n        newItem.timestamp = Date()\n        try? viewContext.save()\n    }\n\n    private func deleteItems(offsets: IndexSet) {\n        for index in offsets { viewContext.delete(items[index]) }\n        try? viewContext.save()\n    }\n}\n\nprivate let dateFormatter: DateFormatter = {\n    let formatter = DateFormatter()\n    formatter.dateStyle = .short\n    formatter.timeStyle = .short\n    return formatter\n}()\n\n#Preview {\n    CoreDataExampleView().environment(\\.managedObjectContext, PersistenceController.preview.container.viewContext)\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "charts_001",
+        "title": "Charts erstellen",
+        "description":
+            "Zeige einfache Diagramme mit dem Swift Charts Framework.",
+        "steps": [
+            "Charts importieren.",
+            "Datenmodell definieren.",
+            "Chart-View erstellen und Daten visualisieren."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF9500",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\nimport Charts\n\nstruct Sales: Identifiable {\n    let id = UUID()\n    let month: String\n    let amount: Double\n}\n\nstruct ChartsExampleView: View {\n    let data = [\n        Sales(month: \"Jan\", amount: 120),\n        Sales(month: \"Feb\", amount: 200),\n        Sales(month: \"Mär\", amount: 150)\n    ]\n\n    var body: some View {\n        Chart(data) { item in\n            BarMark(\n                x: .value(\"Monat\", item.month),\n                y: .value(\"Verkäufe\", item.amount)\n            )\n            .foregroundStyle(.orange)\n        }\n        .frame(height: 300)\n        .padding()\n    }\n}\n\n#Preview {\n    ChartsExampleView()\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+    },
+    {
+        "id": "observableobject_001",
+        "title": "ObservableObject & @Published",
+        "description":
+            "Baue reaktive ViewModels, die automatisch UI-Updates triggern, wenn sich Daten ändern.",
+        "steps": [
+            "Klasse mit ObservableObject-Protokoll erstellen.",
+            "@Published für veränderliche Properties verwenden.",
+            "View mit @StateObject oder @ObservedObject verbinden."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#0A84FF",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nclass CounterViewModel: ObservableObject {\n    @Published var count = 0\n    func increment() { count += 1 }\n}\n\nstruct CounterView: View {\n    @StateObject private var vm = CounterViewModel()\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Text(\"Zähler: \\(vm.count)\")\n                .font(.largeTitle)\n            Button(\"+1\") { vm.increment() }\n                .buttonStyle(.borderedProminent)\n        }\n    }\n}\n\n#Preview { CounterView() }",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#0A84FF"
+    },
+    {
+        "id": "matchedgeometryeffect_001",
+        "title": "MatchedGeometryEffect Animation",
+        "description":
+            "Erstelle sanfte Übergänge zwischen Views, z. B. für Karten oder Detailansichten.",
+        "steps": [
+            "Namespace für Animation anlegen.",
+            "matchedGeometryEffect(id:, in:) in beiden Views nutzen.",
+            "Mit Animation beim State-Wechsel arbeiten."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF2D55",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct MatchedGeometryExampleView: View {\n    @Namespace private var ns\n    @State private var expanded = false\n\n    var body: some View {\n        VStack {\n            if expanded {\n                RoundedRectangle(cornerRadius: 25)\n                    .fill(.pink)\n                    .matchedGeometryEffect(id: \"card\", in: ns)\n                    .frame(width: 300, height: 300)\n            } else {\n                RoundedRectangle(cornerRadius: 25)\n                    .fill(.pink)\n                    .matchedGeometryEffect(id: \"card\", in: ns)\n                    .frame(width: 100, height: 100)\n            }\n        }\n        .onTapGesture {\n            withAnimation(.spring()) { expanded.toggle() }\n        }\n    }\n}\n\n#Preview { MatchedGeometryExampleView() }",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#FF2D55"
+    },
+    {
+        "id": "observableobject_002",
+        "title": "EnvironmentObject verstehen",
+        "description":
+            "Teile ein ViewModel über mehrere Views hinweg, ohne es manuell weiterzugeben.",
+        "steps": [
+            "Ein ViewModel mit ObservableObject erstellen.",
+            "Es im obersten View mit .environmentObject() einfügen.",
+            "In untergeordneten Views mit @EnvironmentObject darauf zugreifen."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#30D158",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nclass UserSettings: ObservableObject {\n    @Published var username = \"Gast\"\n}\n\nstruct RootView: View {\n    @StateObject private var settings = UserSettings()\n\n    var body: some View {\n        NavigationStack {\n            VStack(spacing: 20) {\n                TextField(\"Name\", text: $settings.username)\n                    .textFieldStyle(.roundedBorder)\n                    .padding()\n                NavigationLink(\"Zur Profilseite\", destination: ProfileView())\n            }\n        }\n        .environmentObject(settings)\n    }\n}\n\nstruct ProfileView: View {\n    @EnvironmentObject var settings: UserSettings\n\n    var body: some View {\n        Text(\"Willkommen, \\(settings.username)!\")\n            .font(.largeTitle)\n    }\n}\n\n#Preview { RootView() }",
         "category": "SwiftUI",
         "categoryIcon": "swift",
         "categoryIconColor": "#30D158"
-      },
-      {
-        "id": "asyncawait_001",
-        "title": "Async / Await & Concurrency",
-        "description": "Lerne, wie du asynchrone Aufgaben in Swift mit async/await modern und sicher schreibst.",
-        "steps": [
-          "Mit async Funktionen erstellen, die await verwenden.",
-          "Daten mit URLSession laden.",
-          "Fehler mit do-catch behandeln."
-        ],
-        "colors": {
-          "backgroundColors": ["#000000", "#0A84FF", "#000000"],
-          "textColors": ["#FFFFFF"]
-        },
-        "code": "import SwiftUI\n\nstruct AsyncAwaitExampleView: View {\n    @State private var joke = \"Lade Witz...\"\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Text(joke)\n                .multilineTextAlignment(.center)\n                .padding()\n\n            Button(\"Neuen Witz laden\") {\n                Task { await loadJoke() }\n            }\n            .buttonStyle(.borderedProminent)\n        }\n        .padding()\n    }\n\n    func loadJoke() async {\n        guard let url = URL(string: \"https://official-joke-api.appspot.com/random_joke\") else { return }\n        do {\n            let (data, _) = try await URLSession.shared.data(from: url)\n            if let decoded = try? JSONDecoder().decode(Joke.self, from: data) {\n                joke = \"\\(decoded.setup)\\n\\n💬 \\(decoded.punchline)\"\n            }\n        } catch {\n            joke = \"Fehler beim Laden 😅\"\n        }\n    }\n}\n\nstruct Joke: Codable {\n    let setup: String\n    let punchline: String\n}\n\n#Preview { AsyncAwaitExampleView() }",
-        "category": "Swift",
-        "categoryIcon": "swift",
-        "categoryIconColor": "#0A84FF"
-      },
-      {
+    },
+    {
         "id": "timelineview_001",
         "title": "TimelineView (Live-Updates)",
-        "description": "Erstelle Views, die automatisch in Intervallen oder bei jeder Frame-Aktualisierung neu gerendert werden.",
+        "description":
+            "Erstelle Views, die automatisch in Intervallen oder bei jeder Frame-Aktualisierung neu gerendert werden.",
         "steps": [
-          "TimelineView importieren und Typ auswählen (z. B. Animation).",
-          "Den aktuellen Zeitpunkt in der View verwenden.",
-          "Ideal für Timer, Uhren oder Animationen."
+            "TimelineView importieren und Typ auswählen (z. B. Animation).",
+            "Den aktuellen Zeitpunkt in der View verwenden.",
+            "Ideal für Timer, Uhren oder Animationen."
         ],
         "colors": {
-          "backgroundColors": ["#000000", "#FF9F0A", "#000000"],
-          "textColors": ["#FFFFFF"]
+            "backgroundColors": [
+                "#000000",
+                "#FF9F0A",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
         },
-        "code": "import SwiftUI\n\nstruct TimelineClockView: View {\n    var body: some View {\n        TimelineView(.animation) { context in\n            VStack(spacing: 20) {\n                Text(context.date, style: .time)\n                    .font(.largeTitle)\n                    .monospacedDigit()\n\n                Circle()\n                    .trim(from: 0, to: CGFloat(Calendar.current.component(.second, from: context.date)) / 60)\n                    .stroke(.orange, style: StrokeStyle(lineWidth: 8, lineCap: .round))\n                    .frame(width: 120, height: 120)\n                    .rotationEffect(.degrees(-90))\n                    .animation(.easeInOut, value: context.date)\n            }\n            .padding()\n        }\n    }\n}\n\n#Preview { TimelineClockView() }",
+        "code":
+            "import SwiftUI\n\nstruct TimelineClockView: View {\n    var body: some View {\n        TimelineView(.animation) { context in\n            VStack(spacing: 20) {\n                Text(context.date, style: .time)\n                    .font(.largeTitle)\n                    .monospacedDigit()\n\n                Circle()\n                    .trim(from: 0, to: CGFloat(Calendar.current.component(.second, from: context.date)) / 60)\n                    .stroke(.orange, style: StrokeStyle(lineWidth: 8, lineCap: .round))\n                    .frame(width: 120, height: 120)\n                    .rotationEffect(.degrees(-90))\n                    .animation(.easeInOut, value: context.date)\n            }\n            .padding()\n        }\n    }\n}\n\n#Preview { TimelineClockView() }",
         "category": "SwiftUI",
         "categoryIcon": "swift",
         "categoryIconColor": "#FF9F0A"
-      },
-        {
-          "id": "debugging_001",
-          "title": "Debugging & Print Statements",
-          "description": "Lerne, wie du deinen Code mit print(), dump() und Debugging-Werkzeugen besser verstehst.",
-          "steps": [
-            "Nutze print() für einfache Ausgaben in der Konsole.",
-            "Mit dump() kannst du komplexe Objekte anzeigen.",
-            "Verwende #file, #line und #function für genaue Fehlersuche."
-          ],
-          "colors": {
-            "backgroundColors": ["#000000", "#0A84FF", "#000000"],
-            "textColors": ["#FFFFFF"]
-          },
-          "code": "struct User {\n    var name: String\n    var level: Int\n}\n\nlet player = User(name: \"Tufan\", level: 42)\n\nprint(\"🧠 Spielername:\", player.name)\ndump(player)\n\nfunc logMessage(_ message: String, file: String = #file, line: Int = #line, function: String = #function) {\n    print(\"[LOG] \\(message) — in \\(function) (Zeile \\(line))\")\n}\n\nlogMessage(\"Spiel gestartet\")",
-          "category": "Swift",
-          "categoryIcon": "terminal",
-          "categoryIconColor": "#0A84FF"
-        },
-        {
-          "id": "errorhandling_002",
-          "title": "Bug Fix & Fehlerbehandlung",
-          "description": "So gehst du mit Fehlern um, findest Bugs und verhinderst Abstürze mit do-catch und guard.",
-          "steps": [
-            "Erstelle eigene Error-Typen.",
-            "Nutze do-try-catch für Fehlerbehandlung.",
-            "Verwende guard let, um Fehler frühzeitig abzufangen."
-          ],
-          "colors": {
-            "backgroundColors": ["#000000", "#FF3B30", "#000000"],
-            "textColors": ["#FFFFFF"]
-          },
-          "code": "enum LoginError: Error {\n    case emptyUsername\n    case wrongPassword\n}\n\nfunc login(username: String, password: String) throws {\n    guard !username.isEmpty else { throw LoginError.emptyUsername }\n    guard password == \"1234\" else { throw LoginError.wrongPassword }\n    print(\"✅ Willkommen, \\(username)\")\n}\n\ndo {\n    try login(username: \"Tufan\", password: \"0000\")\n} catch LoginError.emptyUsername {\n    print(\"❌ Kein Benutzername angegeben.\")\n} catch LoginError.wrongPassword {\n    print(\"🚫 Falsches Passwort.\")\n} catch {\n    print(\"🔴 Unbekannter Fehler: \\(error)\")\n}",
-          "category": "Swift",
-          "categoryIcon": "ant.fill",
-          "categoryIconColor": "#FF3B30"
-        },
-        {
-          "id": "logging_001",
-          "title": "Besseres Logging mit Date und Levels",
-          "description": "Organisiere Log-Ausgaben mit Zeitstempel und Level (Info, Warnung, Fehler).",
-          "steps": [
-            "Definiere ein LogLevel-Enum mit verschiedenen Stufen.",
-            "Erstelle eine Funktion, die Zeitstempel und Nachricht kombiniert.",
-            "Nutze switch, um je nach Level farbige Symbole anzuzeigen."
-          ],
-          "colors": {
-            "backgroundColors": ["#000000", "#FF9500", "#000000"],
-            "textColors": ["#FFFFFF"]
-          },
-          "code": "import Foundation\n\nenum LogLevel: String {\n    case info = \"ℹ️\"\n    case warning = \"⚠️\"\n    case error = \"🛑\"\n}\n\nfunc log(_ message: String, level: LogLevel = .info) {\n    let date = ISO8601DateFormatter().string(from: Date())\n    print(\"\\(level.rawValue) [\\(date)] - \\(message)\")\n}\n\nlog(\"App gestartet\", level: .info)\nlog(\"Verbindung langsam\", level: .warning)\nlog(\"Server nicht erreichbar\", level: .error)",
-          "category": "Swift",
-          "categoryIcon": "ant.circle.fill",
-          "categoryIconColor": "#FF9500"
-        },
-          {
-            "id": "profiling_001",
-            "title": "Performance messen mit Zeitstempel",
-            "description": "Miss die Ausführungszeit deines Codes mit CFAbsoluteTime und analysiere langsame Funktionen.",
-            "steps": [
-              "Verwende CFAbsoluteTimeGetCurrent(), um Start- und Endzeit zu erfassen.",
-              "Berechne die Differenz, um die Laufzeit in Sekunden zu erhalten.",
-              "Perfekt zum Profilen von Loops oder Netzwerkoperationen."
+    },
+    {
+        "id": "swiftdata_001",
+        "title": "SwiftData (iOS 17+)",
+        "description":
+            "Speichere und verwalte Daten modern mit SwiftData statt Core Data.",
+        "steps": [
+            "Ein Modell mit dem `@Model`-Attribut erstellen.",
+            "Mit `@Query` automatisch Daten abrufen.",
+            "Änderungen direkt speichern – ganz ohne manuelle FetchRequests."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#BF5AF2",
+                "#000000"
             ],
-            "colors": {
-              "backgroundColors": ["#000000", "#30D158", "#000000"],
-              "textColors": ["#FFFFFF"]
-            },
-            "code": "import Foundation\n\nlet startTime = CFAbsoluteTimeGetCurrent()\n\n// Beispiel: Aufwändige Schleife\nvar result = 0\nfor i in 0..<1_000_000 {\n    result += i\n}\n\nlet endTime = CFAbsoluteTimeGetCurrent()\nlet elapsed = endTime - startTime\n\nprint(\"✅ Ergebnis: \\(result)\")\nprint(String(format: \"⏱ Laufzeit: %.5f Sekunden\", elapsed))",
-            "category": "Swift",
-            "categoryIcon": "gauge",
-            "categoryIconColor": "#30D158"
-          },
-          {
-            "id": "benchmark_001",
-            "title": "Array vs Set Benchmark",
-            "description": "Vergleiche die Geschwindigkeit von Array- und Set-Suchen, um Datenstrukturen besser zu verstehen.",
-            "steps": [
-              "Erstelle ein großes Array und ein Set mit denselben Elementen.",
-              "Suche einen bestimmten Wert mit contains().",
-              "Miss die Zeit für beide Strukturen – Sets sind meist deutlich schneller."
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\nimport SwiftData\n\n@Model\nclass Note {\n    var title: String\n    var createdAt: Date\n    init(title: String) {\n        self.title = title\n        self.createdAt = Date()\n    }\n}\n\nstruct SwiftDataExampleView: View {\n    @Environment(\\.modelContext) private var context\n    @Query(sort: \\Note.createdAt) private var notes: [Note]\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Button(\"Neue Notiz speichern\") {\n                let note = Note(title: \"Neue Notiz – \\(Date())\")\n                context.insert(note)\n            }\n            List(notes) { note in\n                Text(note.title)\n            }\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    SwiftDataExampleView()\n        .modelContainer(for: Note.self)\n}",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#BF5AF2"
+    },
+    {
+        "id": "swift_044",
+        "title": "DatePicker verwenden",
+        "description":
+            "Ermögliche Benutzern, ein Datum oder eine Uhrzeit auszuwählen.",
+        "steps": [
+            "Erstelle eine @State Variable für das Datum",
+            "Verwende DatePicker()",
+            "Gestalte das Picker-Design"
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#4CC9F0",
+                "#000000"
             ],
-            "colors": {
-              "backgroundColors": ["#000000", "#0A84FF", "#000000"],
-              "textColors": ["#FFFFFF"]
-            },
-            "code": "import Foundation\n\nlet numbers = Array(0...1_000_000)\nlet numberSet = Set(numbers)\n\nlet target = 999_999\n\nlet startArray = CFAbsoluteTimeGetCurrent()\nlet _ = numbers.contains(target)\nlet endArray = CFAbsoluteTimeGetCurrent()\n\nlet startSet = CFAbsoluteTimeGetCurrent()\nlet _ = numberSet.contains(target)\nlet endSet = CFAbsoluteTimeGetCurrent()\n\nprint(String(format: \"🔍 Array-Suche: %.5f s\", endArray - startArray))\nprint(String(format: \"⚡️ Set-Suche: %.5f s\", endSet - startSet))",
-            "category": "Swift",
-            "categoryIcon": "speedometer",
-            "categoryIconColor": "#0A84FF"
-          },
-          {
-            "id": "memory_001",
-            "title": "Struct vs Class Performance",
-            "description": "Verstehe den Unterschied zwischen Value Types (Structs) und Reference Types (Classes) in Bezug auf Speicher und Kopien.",
-            "steps": [
-              "Erstelle ein Struct und eine Class mit denselben Properties.",
-              "Teste Kopierverhalten und Speichernutzung.",
-              "Structs werden kopiert, Classes referenziert – das beeinflusst Performance."
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct DatePickerExampleView: View {\n    @State private var selectedDate = Date()\n\n    var body: some View {\n        VStack(spacing: 20) {\n            DatePicker(\"Wähle ein Datum\", selection: $selectedDate, displayedComponents: .date)\n                .datePickerStyle(.graphical)\n                .padding()\n\n            Text(\"Gewähltes Datum: \\(selectedDate.formatted(date: .abbreviated, time: .omitted))\")\n                .font(.headline)\n        }\n        .padding()\n    }\n}\n\n#Preview { DatePickerExampleView() }",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#4CC9F0"
+    },
+    {
+        "id": "swift_045",
+        "title": "Stepper verwenden",
+        "description": "Erhöhe oder verringere Zahlenwerte mit einem Stepper.",
+        "steps": [
+            "Erstelle @State Variable",
+            "Verwende Stepper()",
+            "Zeige den aktuellen Wert an"
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#F72585",
+                "#000000"
             ],
-            "colors": {
-              "backgroundColors": ["#000000", "#FF9500", "#000000"],
-              "textColors": ["#FFFFFF"]
-            },
-            "code": "import Foundation\n\nstruct PlayerStruct {\n    var name: String\n    var score: Int\n}\n\nclass PlayerClass {\n    var name: String\n    var score: Int\n    init(name: String, score: Int) {\n        self.name = name\n        self.score = score\n    }\n}\n\nvar structA = PlayerStruct(name: \"Tufan\", score: 100)\nvar structB = structA // Kopie\nstructB.score = 200\nprint(\"Struct A Score: \\(structA.score) – Struct B Score: \\(structB.score)\")\n\nlet classA = PlayerClass(name: \"Tufan\", score: 100)\nlet classB = classA // Referenz\nclassB.score = 200\nprint(\"Class A Score: \\(classA.score) – Class B Score: \\(classB.score)\")",
-            "category": "Swift",
-            "categoryIcon": "memorychip",
-            "categoryIconColor": "#FF9500"
-          },
-            {
-              "id": "cli_001",
-              "title": "Kommandozeilenargumente lesen",
-              "description": "Lerne, wie du Eingaben aus der Konsole mit CommandLine.arguments verarbeitest, um interaktive Tools zu erstellen.",
-              "steps": [
-                "Verwende CommandLine.arguments, um übergebene Parameter zu erhalten.",
-                "Überprüfe die Anzahl der Argumente mit count.",
-                "Nutze diese Eingaben, um dein Programm dynamisch zu steuern."
-              ],
-              "colors": {
-                "backgroundColors": ["#000000", "#0A84FF", "#000000"],
-                "textColors": ["#FFFFFF"]
-              },
-              "code": "import Foundation\n\nlet args = CommandLine.arguments\n\nif args.count < 2 {\n    print(\"⚙️ Nutzung: swift main.swift <Name>\")\n} else {\n    let name = args[1]\n    print(\"👋 Hallo, \\(name)! Willkommen in Swift CLI!\")\n}",
-              "category": "Swift",
-              "categoryIcon": "terminal",
-              "categoryIconColor": "#0A84FF"
-            },
-            {
-              "id": "cli_002",
-              "title": "Dateien lesen & schreiben",
-              "description": "Speichere und lade Textdateien in der Konsole, um einfache CLI-Tools zu erstellen.",
-              "steps": [
-                "Nutze FileManager oder write(to:) zum Schreiben.",
-                "Verwende String(contentsOfFile:) zum Lesen.",
-                "Fehler mit do-try-catch behandeln, um Abstürze zu vermeiden."
-              ],
-              "colors": {
-                "backgroundColors": ["#000000", "#30D158", "#000000"],
-                "textColors": ["#FFFFFF"]
-              },
-              "code": "import Foundation\n\nlet fileURL = URL(fileURLWithPath: \"output.txt\")\nlet text = \"🚀 Swift CLI schreibt in Dateien!\"\n\ndo {\n    try text.write(to: fileURL, atomically: true, encoding: .utf8)\n    let content = try String(contentsOf: fileURL)\n    print(\"📄 Dateiinhalt: \\n\\(content)\")\n} catch {\n    print(\"❌ Fehler beim Datei-Zugriff: \\(error)\")\n}",
-              "category": "Swift",
-              "categoryIcon": "doc.text.fill",
-              "categoryIconColor": "#30D158"
-            },
-            {
-              "id": "cli_003",
-              "title": "JSON verarbeiten in der Konsole",
-              "description": "Erstelle ein Swift-Tool, das JSON-Dateien liest, decodiert und formatiert ausgibt.",
-              "steps": [
-                "Definiere eine Codable-Struktur, die das JSON-Schema abbildet.",
-                "Nutze JSONDecoder, um die Datei in Swift-Objekte umzuwandeln.",
-                "Verwende JSONEncoder, um lesbare JSON-Strings zu erzeugen."
-              ],
-              "colors": {
-                "backgroundColors": ["#000000", "#FF9500", "#000000"],
-                "textColors": ["#FFFFFF"]
-              },
-              "code": "import Foundation\n\nstruct User: Codable {\n    let name: String\n    let age: Int\n}\n\nlet jsonString = \"\"\"{\n    \\\"name\\\": \\\"Tufan\\\",\n    \\\"age\\\": 30\n}\"\"\"\n\nlet data = Data(jsonString.utf8)\n\nif let user = try? JSONDecoder().decode(User.self, from: data) {\n    print(\"✅ Name: \\(user.name), Alter: \\(user.age)\")\n}\n\nif let jsonData = try? JSONEncoder().encode(user),\n   let jsonString = String(data: jsonData, encoding: .utf8) {\n    print(\"\\n📦 JSON Ausgabe:\\n\\(jsonString)\")\n}",
-              "category": "Swift",
-              "categoryIcon": "square.and.arrow.down",
-              "categoryIconColor": "#FF9500"
-            },
-              {
-                "id": "networking_001",
-                "title": "Einfache API-Abfrage mit URLSession",
-                "description": "Lerne, wie du mit URLSession Daten aus dem Internet abrufst und in Swift verwendest.",
-                "steps": [
-                  "Erstelle eine URL und starte eine URLSession dataTask.",
-                  "Verarbeite die empfangenen Daten als String oder JSON.",
-                  "Nutze do-try-catch für sauberes Fehlerhandling."
-                ],
-                "colors": {
-                  "backgroundColors": ["#000000", "#0A84FF", "#000000"],
-                  "textColors": ["#FFFFFF"]
-                },
-                "code": "import Foundation\n\nguard let url = URL(string: \"https://jsonplaceholder.typicode.com/posts/1\") else {\n    fatalError(\"❌ Ungültige URL\")\n}\n\nlet task = URLSession.shared.dataTask(with: url) { data, _, error in\n    if let error = error {\n        print(\"🚫 Fehler: \\(error)\")\n        return\n    }\n    if let data = data, let text = String(data: data, encoding: .utf8) {\n        print(\"✅ Antwort:\\n\\(text)\")\n    }\n}\n\ntask.resume()\n\nRunLoop.main.run() // Für CLI-Programme nötig",
-                "category": "Swift",
-                "categoryIcon": "network",
-                "categoryIconColor": "#0A84FF"
-              },
-              {
-                "id": "networking_002",
-                "title": "API mit Codable & JSONDecoder",
-                "description": "Lade Daten aus einer API und dekodiere sie direkt in Swift-Strukturen mit Codable.",
-                "steps": [
-                  "Definiere ein Datenmodell mit Codable.",
-                  "Dekodiere das empfangene JSON mit JSONDecoder.",
-                  "Verarbeite die Daten im Completion Handler."
-                ],
-                "colors": {
-                  "backgroundColors": ["#000000", "#30D158", "#000000"],
-                  "textColors": ["#FFFFFF"]
-                },
-                "code": "import Foundation\n\nstruct Post: Codable {\n    let id: Int\n    let title: String\n    let body: String\n}\n\nguard let url = URL(string: \"https://jsonplaceholder.typicode.com/posts/1\") else {\n    fatalError(\"❌ Ungültige URL\")\n}\n\nURLSession.shared.dataTask(with: url) { data, _, error in\n    guard let data = data else { return }\n    do {\n        let post = try JSONDecoder().decode(Post.self, from: data)\n        print(\"📝 Titel: \\(post.title)\")\n        print(\"💬 Inhalt: \\(post.body)\")\n    } catch {\n        print(\"🚫 JSON-Fehler: \\(error)\")\n    }\n}.resume()\n\nRunLoop.main.run()",
-                "category": "Swift",
-                "categoryIcon": "cloud.fill",
-                "categoryIconColor": "#30D158"
-              },
-              {
-                "id": "networking_003",
-                "title": "Async/Await API-Call mit Swift Concurrency",
-                "description": "Verwende async/await für moderne, saubere API-Aufrufe mit Swift Concurrency.",
-                "steps": [
-                  "Deklariere eine asynchrone Funktion mit async throws.",
-                  "Nutze URLSession.shared.data(from:) für den API-Call.",
-                  "Dekodiere die Daten mit JSONDecoder im modernen Stil."
-                ],
-                "colors": {
-                  "backgroundColors": ["#000000", "#FF9500", "#000000"],
-                  "textColors": ["#FFFFFF"]
-                },
-                "code": "import Foundation\n\nstruct User: Codable {\n    let id: Int\n    let name: String\n    let email: String\n}\n\nfunc fetchUser() async throws {\n    let url = URL(string: \"https://jsonplaceholder.typicode.com/users/1\")!\n    let (data, _) = try await URLSession.shared.data(from: url)\n    let user = try JSONDecoder().decode(User.self, from: data)\n    print(\"👤 Nutzer: \\(user.name) – 📧 \\(user.email)\")\n}\n\nTask {\n    do {\n        try await fetchUser()\n    } catch {\n        print(\"🚫 Fehler: \\(error)\")\n    }\n}\n\nRunLoop.main.run()",
-                "category": "Swift",
-                "categoryIcon": "bolt.horizontal.circle.fill",
-                "categoryIconColor": "#FF9500"
-              },
-                {
-                  "id": "concurrency_001",
-                  "title": "TaskGroup & Parallelität",
-                  "description": "Starte mehrere asynchrone Tasks parallel mit TaskGroup und sammle ihre Ergebnisse.",
-                  "steps": [
-                    "Verwende `withTaskGroup` für parallele Aufgaben.",
-                    "Starte mehrere async Tasks gleichzeitig.",
-                    "Sammle die Ergebnisse mit `for await` ein."
-                  ],
-                  "colors": {
-                    "backgroundColors": ["#000000", "#0A84FF", "#000000"],
-                    "textColors": ["#FFFFFF"]
-                  },
-                  "code": "import Foundation\n\nfunc fetchNumbers() async -> [Int] {\n    await withTaskGroup(of: Int.self) { group in\n        for i in 1...5 {\n            group.addTask {\n                try? await Task.sleep(for: .seconds(Double.random(in: 0.5...2)))\n                print(\"✅ Task \\(i) fertig\")\n                return i * 10\n            }\n        }\n        var results: [Int] = []\n        for await number in group { results.append(number) }\n        return results\n    }\n}\n\nTask {\n    let numbers = await fetchNumbers()\n    print(\"📦 Ergebnisse:\", numbers)\n}\n\nRunLoop.main.run()",
-                  "category": "Swift",
-                  "categoryIcon": "arrow.triangle.2.circlepath",
-                  "categoryIconColor": "#0A84FF"
-                },
-                {
-                  "id": "actor_001",
-                  "title": "Actors verstehen (Thread-Safe State)",
-                  "description": "Actors schützen Daten vor Race Conditions bei gleichzeitigen Zugriffen.",
-                  "steps": [
-                    "Deklariere einen Actor für gemeinsame Daten.",
-                    "Verwende `await`, um sicher auf Properties zuzugreifen.",
-                    "Ideal für Multithreading und Concurrency."
-                  ],
-                  "colors": {
-                    "backgroundColors": ["#000000", "#30D158", "#000000"],
-                    "textColors": ["#FFFFFF"]
-                  },
-                  "code": "import Foundation\n\nactor ScoreManager {\n    private(set) var score = 0\n    func add(points: Int) {\n        score += points\n    }\n}\n\nlet manager = ScoreManager()\n\nTask {\n    await manager.add(points: 10)\n    await manager.add(points: 5)\n    print(\"🏆 Aktueller Score: \\(await manager.score)\")\n}\n\nRunLoop.main.run()",
-                  "category": "Swift",
-                  "categoryIcon": "lock.shield.fill",
-                  "categoryIconColor": "#30D158"
-                },
-                {
-                  "id": "taskcancel_001",
-                  "title": "Tasks abbrechen mit Cancellation",
-                  "description": "Lerne, wie du laufende asynchrone Tasks sicher abbrechen kannst.",
-                  "steps": [
-                    "Erstelle einen Task mit Abbruchprüfung.",
-                    "Nutze `Task.isCancelled`, um Abbruch zu erkennen.",
-                    "Breche Tasks mit `cancel()` aktiv ab."
-                  ],
-                  "colors": {
-                    "backgroundColors": ["#000000", "#FF3B30", "#000000"],
-                    "textColors": ["#FFFFFF"]
-                  },
-                  "code": "import Foundation\n\nlet task = Task {\n    for i in 1...10 {\n        try Task.checkCancellation()\n        print(\"⏳ Schritt \\(i)\")\n        try await Task.sleep(for: .seconds(0.5))\n    }\n    print(\"✅ Fertig!\")\n}\n\nTask {\n    try await Task.sleep(for: .seconds(2))\n    print(\"🚫 Task wird abgebrochen\")\n    task.cancel()\n}\n\nRunLoop.main.run()",
-                  "category": "Swift",
-                  "categoryIcon": "xmark.octagon.fill",
-                  "categoryIconColor": "#FF3B30"
-                },
-                {
-                  "id": "swiftdata_001",
-                  "title": "SwiftData (iOS 17+)",
-                  "description": "Speichere und verwalte Daten modern mit SwiftData statt Core Data.",
-                  "steps": [
-                    "Ein Modell mit dem `@Model`-Attribut erstellen.",
-                    "Mit `@Query` automatisch Daten abrufen.",
-                    "Änderungen direkt speichern – ganz ohne manuelle FetchRequests."
-                  ],
-                  "colors": {
-                    "backgroundColors": ["#000000", "#BF5AF2", "#000000"],
-                    "textColors": ["#FFFFFF"]
-                  },
-                  "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass Note {\n    var title: String\n    var createdAt: Date\n    init(title: String) {\n        self.title = title\n        self.createdAt = Date()\n    }\n}\n\nstruct SwiftDataExampleView: View {\n    @Environment(\\.modelContext) private var context\n    @Query(sort: \\Note.createdAt) private var notes: [Note]\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Button(\"Neue Notiz speichern\") {\n                let note = Note(title: \"Neue Notiz – \\(Date())\")\n                context.insert(note)\n            }\n            List(notes) { note in\n                Text(note.title)\n            }\n        }\n        .padding()\n    }\n}\n\n#Preview {\n    SwiftDataExampleView()\n        .modelContainer(for: Note.self)\n}",
-                  "category": "SwiftUI",
-                  "categoryIcon": "tray.and.arrow.down.fill",
-                  "categoryIconColor": "#BF5AF2"
-                },
-                {
-                  "id": "vision_001",
-                  "title": "Text-Erkennung mit Vision",
-                  "description": "Nutze Apples Vision Framework, um Text in Bildern automatisch zu erkennen.",
-                  "steps": [
-                    "Vision importieren und eine VNRecognizeTextRequest erstellen.",
-                    "Bild in CIImage oder CGImage konvertieren.",
-                    "Erkannte Texte im Completion Handler ausgeben."
-                  ],
-                  "colors": {
-                    "backgroundColors": ["#000000", "#5E5CE6", "#000000"],
-                    "textColors": ["#FFFFFF"]
-                  },
-                  "code": "import Vision\nimport UIKit\n\nlet image = UIImage(named: \"text_image\")!\nlet cgImage = image.cgImage!\n\nlet request = VNRecognizeTextRequest { request, _ in\n    guard let results = request.results as? [VNRecognizedTextObservation] else { return }\n    for observation in results {\n        if let top = observation.topCandidates(1).first {\n            print(\"📄 Erkannter Text: \\(top.string)\")\n        }\n    }\n}\n\nlet handler = VNImageRequestHandler(cgImage: cgImage)\ntry? handler.perform([request])",
-                  "category": "Vision",
-                  "categoryIcon": "text.viewfinder",
-                  "categoryIconColor": "#5E5CE6"
-                },
-                  {
-                    "id": "widgetkit_001",
-                    "title": "WidgetKit (Homescreen Widgets)",
-                    "description": "Erstelle ein einfaches iOS Widget mit SwiftUI und WidgetKit.",
-                    "steps": [
-                      "Widget-Erweiterung im Xcode-Projekt anlegen.",
-                      "TimelineProvider implementieren.",
-                      "Ein SwiftUI View für das Widget-Layout erstellen."
-                    ],
-                    "colors": {
-                      "backgroundColors": ["#000000", "#0A84FF", "#000000"],
-                      "textColors": ["#FFFFFF"]
-                    },
-                    "code": "import WidgetKit\nimport SwiftUI\n\nstruct SimpleEntry: TimelineEntry {\n    let date: Date\n}\n\nstruct Provider: TimelineProvider {\n    func placeholder(in context: Context) -> SimpleEntry { SimpleEntry(date: Date()) }\n    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {\n        completion(SimpleEntry(date: Date()))\n    }\n    func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> ()) {\n        let entries = [SimpleEntry(date: .now)]\n        completion(Timeline(entries: entries, policy: .after(.now.addingTimeInterval(60))))\n    }\n}\n\nstruct MyWidgetEntryView: View {\n    var entry: Provider.Entry\n    var body: some View {\n        VStack {\n            Text(entry.date, style: .time)\n                .font(.title)\n            Text(\"⏰ Swift Widget!\")\n        }\n    }\n}\n\n@main\nstruct MyWidget: Widget {\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: \"my_widget\", provider: Provider()) { entry in\n            MyWidgetEntryView(entry: entry)\n        }\n        .configurationDisplayName(\"Zeit Widget\")\n        .description(\"Zeigt die aktuelle Uhrzeit an.\")\n    }\n}",
-                    "category": "WidgetKit",
-                    "categoryIcon": "square.grid.2x2.fill",
-                    "categoryIconColor": "#0A84FF"
-                  },
-                  {
-                    "id": "healthkit_001",
-                    "title": "HealthKit Daten lesen",
-                    "description": "Greife sicher auf Gesundheitsdaten wie Schritte oder Puls zu.",
-                    "steps": [
-                      "HealthKit importieren und HKHealthStore erstellen.",
-                      "Zugriff auf gewünschte Daten anfordern.",
-                      "Beispiel: Schrittzahl auslesen und anzeigen."
-                    ],
-                    "colors": {
-                      "backgroundColors": ["#000000", "#FF3B30", "#000000"],
-                      "textColors": ["#FFFFFF"]
-                    },
-                    "code": "import HealthKit\n\nlet healthStore = HKHealthStore()\n\nif HKHealthStore.isHealthDataAvailable() {\n    let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount)!\n    healthStore.requestAuthorization(toShare: [], read: [stepType]) { success, error in\n        if success {\n            let predicate = HKQuery.predicateForSamples(withStart: .now.addingTimeInterval(-86400), end: .now)\n            let query = HKStatisticsQuery(quantityType: stepType, quantitySamplePredicate: predicate, options: .cumulativeSum) { _, result, _ in\n                if let sum = result?.sumQuantity() {\n                    print(\"🚶 Schritte: \\(sum.doubleValue(for: .count()))\")\n                }\n            }\n            healthStore.execute(query)\n        }\n    }\n}",
-                    "category": "HealthKit",
-                    "categoryIcon": "heart.fill",
-                    "categoryIconColor": "#FF3B30"
-                  },
-                  {
-                    "id": "speech_001",
-                    "title": "Spracherkennung (Speech Framework)",
-                    "description": "Nutze Apples Speech API, um gesprochene Sprache in Text umzuwandeln.",
-                    "steps": [
-                      "Speech importieren und SFSpeechRecognizer erstellen.",
-                      "Mikrofonzugriff anfordern.",
-                      "AudioSession starten und Texterkennung aktivieren."
-                    ],
-                    "colors": {
-                      "backgroundColors": ["#000000", "#30D158", "#000000"],
-                      "textColors": ["#FFFFFF"]
-                    },
-                    "code": "import Speech\n\nlet recognizer = SFSpeechRecognizer(locale: Locale(identifier: \"de-DE\"))!\nSFSpeechRecognizer.requestAuthorization { status in\n    if status == .authorized {\n        let request = SFSpeechURLRecognitionRequest(url: URL(filePath: \"audio.m4a\"))\n        recognizer.recognitionTask(with: request) { result, _ in\n            if let text = result?.bestTranscription.formattedString {\n                print(\"🗣 Erkannt: \\(text)\")\n            }\n        }\n    } else {\n        print(\"🚫 Kein Zugriff auf Spracherkennung\")\n    }\n}",
-                    "category": "Speech",
-                    "categoryIcon": "mic.fill",
-                    "categoryIconColor": "#30D158"
-                  },
-                  {
-                    "id": "arkit_001",
-                    "title": "ARKit – Einfache AR-Szene",
-                    "description": "Zeige ein 3D-Objekt in der echten Welt mit ARKit und RealityKit.",
-                    "steps": [
-                      "RealityKit und ARKit importieren.",
-                      "ARView erstellen und AnchorEntity hinzufügen.",
-                      "Ein einfaches ModelEntity platzieren (z. B. Würfel)."
-                    ],
-                    "colors": {
-                      "backgroundColors": ["#000000", "#5E5CE6", "#000000"],
-                      "textColors": ["#FFFFFF"]
-                    },
-                    "code": "import SwiftUI\nimport RealityKit\nimport ARKit\n\nstruct ARCubeView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let arView = ARView(frame: .zero)\n        let anchor = AnchorEntity(plane: .horizontal)\n        let box = ModelEntity(mesh: .generateBox(size: 0.1), materials: [SimpleMaterial(color: .blue, isMetallic: true)])\n        anchor.addChild(box)\n        arView.scene.addAnchor(anchor)\n        return arView\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARCubeView() }",
-                    "category": "ARKit",
-                    "categoryIcon": "arkit",
-                    "categoryIconColor": "#5E5CE6"
-                  },
-                    {
-                      "id": "swift_044",
-                      "title": "DatePicker verwenden",
-                      "description": "Ermögliche Benutzern, ein Datum oder eine Uhrzeit auszuwählen.",
-                      "steps": ["Erstelle eine @State Variable für das Datum", "Verwende DatePicker()", "Gestalte das Picker-Design"],
-                      "colors": {
-                        "backgroundColors": ["#000000", "#4CC9F0", "#000000"],
-                        "textColors": ["#FFFFFF"]
-                      },
-                      "code": "import SwiftUI\n\nstruct DatePickerExampleView: View {\n    @State private var selectedDate = Date()\n\n    var body: some View {\n        VStack(spacing: 20) {\n            DatePicker(\"Wähle ein Datum\", selection: $selectedDate, displayedComponents: .date)\n                .datePickerStyle(.graphical)\n                .padding()\n\n            Text(\"Gewähltes Datum: \\(selectedDate.formatted(date: .abbreviated, time: .omitted))\")\n                .font(.headline)\n        }\n        .padding()\n    }\n}\n\n#Preview { DatePickerExampleView() }",
-                      "category": "SwiftUI",
-                      "categoryIcon": "calendar",
-                      "categoryIconColor": "#4CC9F0"
-                    },
-                    {
-                      "id": "swift_045",
-                      "title": "Stepper verwenden",
-                      "description": "Erhöhe oder verringere Zahlenwerte mit einem Stepper.",
-                      "steps": ["Erstelle @State Variable", "Verwende Stepper()", "Zeige den aktuellen Wert an"],
-                      "colors": {
-                        "backgroundColors": ["#000000", "#F72585", "#000000"],
-                        "textColors": ["#FFFFFF"]
-                      },
-                      "code": "import SwiftUI\n\nstruct StepperExampleView: View {\n    @State private var value = 0\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Stepper(\"Wert: \\(value)\", value: $value, in: 0...10)\n                .padding()\n            Text(\"Aktueller Wert: \\(value)\")\n                .font(.headline)\n        }\n        .padding()\n    }\n}\n\n#Preview { StepperExampleView() }",
-                      "category": "SwiftUI",
-                      "categoryIcon": "plusminus.circle.fill",
-                      "categoryIconColor": "#F72585"
-                    },
-                    {
-                      "id": "swift_046",
-                      "title": "Toggle Animation",
-                      "description": "Kombiniere Toggle mit sanften Animationen für dynamisches Feedback.",
-                      "steps": ["Erstelle Bool-State", "Verwende Toggle()", "Füge Animation mit withAnimation hinzu"],
-                      "colors": {
-                        "backgroundColors": ["#000000", "#3A86FF", "#000000"],
-                        "textColors": ["#FFFFFF"]
-                      },
-                      "code": "import SwiftUI\n\nstruct ToggleAnimationView: View {\n    @State private var isOn = false\n\n    var body: some View {\n        VStack(spacing: 30) {\n            Circle()\n                .fill(isOn ? Color.green : Color.gray)\n                .frame(width: 100, height: 100)\n                .scaleEffect(isOn ? 1.2 : 1.0)\n                .animation(.spring(response: 0.4, dampingFraction: 0.6), value: isOn)\n\n            Toggle(\"Animation aktivieren\", isOn: $isOn)\n                .padding()\n        }\n        .padding()\n    }\n}\n\n#Preview { ToggleAnimationView() }",
-                      "category": "SwiftUI",
-                      "categoryIcon": "circle.dotted",
-                      "categoryIconColor": "#3A86FF"
-                    },
-                    {
-                      "id": "swift_047",
-                      "title": "AsyncImage erweitertes Beispiel",
-                      "description": "Zeige Bilder aus dem Internet mit Ladeanzeige, Fehlerstatus und Animation.",
-                      "steps": ["Nutze AsyncImage()", "Definiere URL und Platzhalter", "Füge Fade-In Animation hinzu"],
-                      "colors": {
-                        "backgroundColors": ["#000000", "#FF9F1C", "#000000"],
-                        "textColors": ["#FFFFFF"]
-                      },
-                      "code": "import SwiftUI\n\nstruct AsyncImageAdvancedView: View {\n    let imageURL = URL(string: \"https://picsum.photos/400\")!\n    @State private var loaded = false\n\n    var body: some View {\n        VStack(spacing: 20) {\n            AsyncImage(url: imageURL) { phase in\n                switch phase {\n                case .empty:\n                    ProgressView()\n                case .success(let image):\n                    image.resizable()\n                        .scaledToFit()\n                        .cornerRadius(12)\n                        .opacity(loaded ? 1 : 0)\n                        .onAppear { withAnimation(.easeIn(duration: 0.5)) { loaded = true } }\n                case .failure:\n                    Image(systemName: \"xmark.octagon.fill\")\n                        .font(.largeTitle)\n                        .foregroundColor(.red)\n                @unknown default:\n                    EmptyView()\n                }\n            }\n            .frame(width: 250, height: 250)\n        }\n        .padding()\n    }\n}\n\n#Preview { AsyncImageAdvancedView() }",
-                      "category": "SwiftUI",
-                      "categoryIcon": "photo.on.rectangle",
-                      "categoryIconColor": "#FF9F1C"
-                    },
-                    {
-                      "id": "swift_048",
-                      "title": "TabView mit Animation",
-                      "description": "Erstelle eine animierte TabBar mit Icons und Farbübergängen.",
-                      "steps": ["Verwende TabView()", "Setze systemImage Icons", "Füge .animation() hinzu"],
-                      "colors": {
-                        "backgroundColors": ["#000000", "#7209B7", "#000000"],
-                        "textColors": ["#FFFFFF"]
-                      },
-                      "code": "import SwiftUI\n\nstruct AnimatedTabBarView: View {\n    @State private var selectedTab = 0\n\n    var body: some View {\n        TabView(selection: $selectedTab) {\n            Text(\"🏠 Home Screen\")\n                .tabItem { Label(\"Home\", systemImage: \"house.fill\") }\n                .tag(0)\n\n            Text(\"🔍 Suche\")\n                .tabItem { Label(\"Suche\", systemImage: \"magnifyingglass\") }\n                .tag(1)\n\n            Text(\"👤 Profil\")\n                .tabItem { Label(\"Profil\", systemImage: \"person.circle.fill\") }\n                .tag(2)\n        }\n        .tint(.purple)\n        .animation(.easeInOut, value: selectedTab)\n    }\n}\n\n#Preview { AnimatedTabBarView() }",
-                      "category": "SwiftUI",
-                      "categoryIcon": "rectangle.split.3x1",
-                      "categoryIconColor": "#7209B7"
-                    }
-                  ]
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct StepperExampleView: View {\n    @State private var value = 0\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Stepper(\"Wert: \\(value)\", value: $value, in: 0...10)\n                .padding()\n            Text(\"Aktueller Wert: \\(value)\")\n                .font(.headline)\n        }\n        .padding()\n    }\n}\n\n#Preview { StepperExampleView() }",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#F72585"
+    },
+    {
+        "id": "swift_046",
+        "title": "Toggle Animation",
+        "description":
+            "Kombiniere Toggle mit sanften Animationen für dynamisches Feedback.",
+        "steps": [
+            "Erstelle Bool-State",
+            "Verwende Toggle()",
+            "Füge Animation mit withAnimation hinzu"
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#3A86FF",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct ToggleAnimationView: View {\n    @State private var isOn = false\n\n    var body: some View {\n        VStack(spacing: 30) {\n            Circle()\n                .fill(isOn ? Color.green : Color.gray)\n                .frame(width: 100, height: 100)\n                .scaleEffect(isOn ? 1.2 : 1.0)\n                .animation(.spring(response: 0.4, dampingFraction: 0.6), value: isOn)\n\n            Toggle(\"Animation aktivieren\", isOn: $isOn)\n                .padding()\n        }\n        .padding()\n    }\n}\n\n#Preview { ToggleAnimationView() }",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#3A86FF"
+    },
+    {
+        "id": "swift_047",
+        "title": "AsyncImage erweitertes Beispiel",
+        "description":
+            "Zeige Bilder aus dem Internet mit Ladeanzeige, Fehlerstatus und Animation.",
+        "steps": [
+            "Nutze AsyncImage()",
+            "Definiere URL und Platzhalter",
+            "Füge Fade-In Animation hinzu"
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#FF9F1C",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct AsyncImageAdvancedView: View {\n    let imageURL = URL(string: \"https://picsum.photos/400\")!\n    @State private var loaded = false\n\n    var body: some View {\n        VStack(spacing: 20) {\n            AsyncImage(url: imageURL) { phase in\n                switch phase {\n                case .empty:\n                    ProgressView()\n                case .success(let image):\n                    image.resizable()\n                        .scaledToFit()\n                        .cornerRadius(12)\n                        .opacity(loaded ? 1 : 0)\n                        .onAppear { withAnimation(.easeIn(duration: 0.5)) { loaded = true } }\n                case .failure:\n                    Image(systemName: \"xmark.octagon.fill\")\n                        .font(.largeTitle)\n                        .foregroundColor(.red)\n                @unknown default:\n                    EmptyView()\n                }\n            }\n            .frame(width: 250, height: 250)\n        }\n        .padding()\n    }\n}\n\n#Preview { AsyncImageAdvancedView() }",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#FF9F1C"
+    },
+    {
+        "id": "swift_048",
+        "title": "TabView mit Animation",
+        "description":
+            "Erstelle eine animierte TabBar mit Icons und Farbübergängen.",
+        "steps": [
+            "Verwende TabView()",
+            "Setze systemImage Icons",
+            "Füge .animation() hinzu"
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#7209B7",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\n\nstruct AnimatedTabBarView: View {\n    @State private var selectedTab = 0\n\n    var body: some View {\n        TabView(selection: $selectedTab) {\n            Text(\"🏠 Home Screen\")\n                .tabItem { Label(\"Home\", systemImage: \"house.fill\") }\n                .tag(0)\n\n            Text(\"🔍 Suche\")\n                .tabItem { Label(\"Suche\", systemImage: \"magnifyingglass\") }\n                .tag(1)\n\n            Text(\"👤 Profil\")\n                .tabItem { Label(\"Profil\", systemImage: \"person.circle.fill\") }\n                .tag(2)\n        }\n        .tint(.purple)\n        .animation(.easeInOut, value: selectedTab)\n    }\n}\n\n#Preview { AnimatedTabBarView() }",
+        "category": "SwiftUI",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#7209B7"
+    }
+]

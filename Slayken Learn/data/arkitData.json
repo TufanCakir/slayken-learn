@@ -1,0 +1,28 @@
+[
+    {
+        "id": "arkit_001",
+        "title": "ARKit – Einfache AR-Szene",
+        "description":
+            "Zeige ein 3D-Objekt in der echten Welt mit ARKit und RealityKit.",
+        "steps": [
+            "RealityKit und ARKit importieren.",
+            "ARView erstellen und AnchorEntity hinzufügen.",
+            "Ein einfaches ModelEntity platzieren (z. B. Würfel)."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#5E5CE6",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import SwiftUI\nimport RealityKit\nimport ARKit\n\nstruct ARCubeView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let arView = ARView(frame: .zero)\n        let anchor = AnchorEntity(plane: .horizontal)\n        let box = ModelEntity(mesh: .generateBox(size: 0.1), materials: [SimpleMaterial(color: .blue, isMetallic: true)])\n        anchor.addChild(box)\n        arView.scene.addAnchor(anchor)\n        return arView\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARCubeView() }",
+        "category": "ARKit",
+        "categoryIcon": "arkit",
+        "categoryIconColor": "#5E5CE6"
+    },
+]

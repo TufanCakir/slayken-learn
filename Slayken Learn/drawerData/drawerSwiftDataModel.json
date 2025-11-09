@@ -1,0 +1,26 @@
+[
+  {
+    "id": "swiftdata_001",
+    "title": "Einführung in SwiftData",
+    "description": "Lerne, wie du mit SwiftData Objekte speicherst, abrufst und automatisch in SwiftUI synchronisierst.",
+    "steps": [
+      "Importiere SwiftData und definiere ein @Model.",
+      "Erstelle ein ModelContainer im App-Entry.",
+      "Nutze @Query oder ModelContext zum Speichern und Laden von Daten."
+    ],
+    "colors": {
+      "backgroundColors": [
+        "#000000",
+        "#7209B7",
+        "#000000"
+      ],
+      "textColors": [
+        "#FFFFFF"
+      ]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n// 1️⃣ Datenmodell definieren\n@Model\nclass Note {\n    var title: String\n    var createdAt: Date\n\n    init(title: String, createdAt: Date = .now) {\n        self.title = title\n        self.createdAt = createdAt\n    }\n}\n\n// 2️⃣ Haupt-App mit ModelContainer\n@main\nstruct NotesApp: App {\n    var body: some Scene {\n        WindowGroup {\n            ContentView()\n        }\n        .modelContainer(for: Note.self)\n    }\n}\n\n// 3️⃣ Daten in SwiftUI anzeigen und speichern\nstruct ContentView: View {\n    @Environment(\\.modelContext) private var context\n    @Query private var notes: [Note]\n    @State private var newTitle = \"\"\n\n    var body: some View {\n        NavigationStack {\n            VStack(spacing: 20) {\n                TextField(\"Neue Notiz\", text: $newTitle)\n                    .textFieldStyle(.roundedBorder)\n                    .padding()\n\n                Button(\"Speichern\") {\n                    let note = Note(title: newTitle)\n                    context.insert(note)\n                    try? context.save()\n                    newTitle = \"\"\n                }\n                .buttonStyle(.borderedProminent)\n\n                List(notes) { note in\n                    VStack(alignment: .leading) {\n                        Text(note.title)\n                            .font(.headline)\n                        Text(note.createdAt, style: .date)\n                            .font(.caption)\n                            .foregroundColor(.gray)\n                    }\n                }\n            }\n            .navigationTitle(\"SwiftData Notizen\")\n        }\n    }\n}\n\n#Preview { ContentView() }",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#0000FF"
+  }
+]

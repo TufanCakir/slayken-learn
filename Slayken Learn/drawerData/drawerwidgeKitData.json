@@ -1,0 +1,26 @@
+[
+  {
+    "id": "widgetkit_001",
+    "title": "Einfaches Widget erstellen",
+    "description": "Lerne, wie du mit WidgetKit ein einfaches Widget für den Home-Bildschirm erstellst.",
+    "steps": [
+      "Erstelle ein Widget-Extension-Target in Xcode.",
+      "Definiere einen `TimelineProvider`, der Daten liefert.",
+      "Baue das Layout mit SwiftUI und registriere das Widget."
+    ],
+    "colors": {
+      "backgroundColors": [
+        "#000000",
+        "#3A86FF",
+        "#000000"
+      ],
+      "textColors": [
+        "#FFFFFF"
+      ]
+    },
+    "code": "import WidgetKit\nimport SwiftUI\n\n// MARK: - Datenmodell\nstruct SimpleEntry: TimelineEntry {\n    let date: Date\n}\n\n// MARK: - Provider\nstruct Provider: TimelineProvider {\n    func placeholder(in context: Context) -> SimpleEntry {\n        SimpleEntry(date: Date())\n    }\n\n    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {\n        completion(SimpleEntry(date: Date()))\n    }\n\n    func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> ()) {\n        let entries = [SimpleEntry(date: Date())]\n        completion(Timeline(entries: entries, policy: .atEnd))\n    }\n}\n\n// MARK: - Widget View\nstruct WidgetKitExampleEntryView : View {\n    var entry: Provider.Entry\n\n    var body: some View {\n        ZStack {\n            LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing)\n            VStack {\n                Text(\"WidgetKit 🔷\")\n                    .font(.headline)\n                    .foregroundColor(.white)\n                Text(entry.date, style: .time)\n                    .foregroundColor(.white.opacity(0.8))\n            }\n        }\n    }\n}\n\n// MARK: - Widget Registrierung\n@main\nstruct WidgetKitExample: Widget {\n    let kind: String = \"WidgetKitExample\"\n\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: kind, provider: Provider()) { entry in\n            WidgetKitExampleEntryView(entry: entry)\n        }\n        .configurationDisplayName(\"Beispiel-Widget\")\n        .description(\"Ein einfaches Widget mit Zeitangabe.\")\n        .supportedFamilies([.systemSmall])\n    }\n}\n\n#Preview(as: .systemSmall) {\n    WidgetKitExample()\n} timeline: {\n    SimpleEntry(date: .now)\n}",
+    "category": "WidgetKit",
+    "categoryIcon": "square.grid.2x2",
+    "categoryIconColor": "#3A86FF"
+  }
+]

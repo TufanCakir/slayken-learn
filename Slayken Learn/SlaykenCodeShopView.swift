@@ -10,28 +10,68 @@ import StoreKit
 
 // MARK: - Shop Model
 struct ShopItem: Identifiable, Codable {
-let id: String
-let productID: String
-let title: String
-let description: String
-let colors: ShopColors
-let priceTier: String?
-let previewImage: String?
-let code: String?
-let category: String
-let categoryIcon: String
-let categoryIconColor: String
+    let id: String
+    let productID: String
+    let title: String
+    let description: String
+    let colors: ShopColors
+    let priceTier: String?
+    let previewImage: String?
+    let shopCode: String?
+    let category: String
+    let categoryIcon: String
+    let categoryIconColor: String
+
+    enum CodingKeys: String, CodingKey {
+        case id, productID, title, description, colors, priceTier, previewImage, shopCode, category, categoryIcon, categoryIconColor, code
+    }
+
+    // MARK: - Decoding (liest sowohl "shopCode" als auch "code")
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        productID = try container.decode(String.self, forKey: .productID)
+        title = try container.decode(String.self, forKey: .title)
+        description = try container.decode(String.self, forKey: .description)
+        colors = try container.decode(ShopColors.self, forKey: .colors)
+        priceTier = try? container.decode(String.self, forKey: .priceTier)
+        previewImage = try? container.decode(String.self, forKey: .previewImage)
+        // Fallback: shopCode oder code
+        shopCode = try? container.decode(String.self, forKey: .shopCode)
+        category = try container.decode(String.self, forKey: .category)
+        categoryIcon = try container.decode(String.self, forKey: .categoryIcon)
+        categoryIconColor = try container.decode(String.self, forKey: .categoryIconColor)
+    }
+
+    // MARK: - Encoding (schreibt immer "shopCode")
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(productID, forKey: .productID)
+        try container.encode(title, forKey: .title)
+        try container.encode(description, forKey: .description)
+        try container.encode(colors, forKey: .colors)
+        try container.encodeIfPresent(priceTier, forKey: .priceTier)
+        try container.encodeIfPresent(previewImage, forKey: .previewImage)
+        try container.encodeIfPresent(shopCode, forKey: .shopCode)
+        try container.encode(category, forKey: .category)
+        try container.encode(categoryIcon, forKey: .categoryIcon)
+        try container.encode(categoryIconColor, forKey: .categoryIconColor)
+    }
 }
 
+// MARK: - Farbstruktur
 struct ShopColors: Codable {
-let backgroundColors: [String]
-let textColors: [String]
+    let backgroundColors: [String]
+    let textColors: [String]
 }
 
 
 // MARK: - Hauptansicht
 @MainActor
 struct SlaykenCodeShopView: View {
+    let preselectedProductID: String? // optional für „gesperrten Code anzeigen“
+
     // MARK: - Environment
     @EnvironmentObject private var themeManager: ThemeManager
     @EnvironmentObject private var purchaseManager: PurchaseManager
@@ -43,7 +83,7 @@ struct SlaykenCodeShopView: View {
     @State private var errorMessage: String?
     @State private var showRestoreToast = false
     @State private var navigateToLearning = false
-    @State private var selectedCategory: String = "Alle"
+    @State private var selectedCategory = "Alle"
 
     // MARK: - Storage
     @AppStorage("openPurchasedTab") private var openPurchasedTab = false
@@ -56,12 +96,10 @@ struct SlaykenCodeShopView: View {
             ? shopItems
             : shopItems.filter { $0.category == selectedCategory }
     }
-    
-    // MARK: - Sortierte Kategorien (stabil & alphabetisch)
+
+    // MARK: - Sortierte Kategorien
     private var sortedCategories: [String] {
-        let allCategories = shopItems.map(\.category)
-        // "Alle" bleibt zuerst, danach alphabetisch sortiert
-        let unique = Array(Set(allCategories)).sorted()
+        let unique = Array(Set(shopItems.map(\.category))).sorted()
         return ["Alle"] + unique
     }
 
@@ -74,12 +112,8 @@ struct SlaykenCodeShopView: View {
             }
             .navigationTitle("Code-Shop")
             .navigationBarTitleDisplayMode(.inline)
-            .task(id: purchaseManager.purchaseStateDidChange) {
-                await setupShop()
-            }
-            .task {
-                await setupShop()
-            }
+            .task(id: purchaseManager.purchaseStateDidChange) { await setupShop() }
+            .task { await setupShop() }
             .navigationDestination(isPresented: $navigateToLearning) {
                 LearningListView()
                     .environmentObject(themeManager)
@@ -89,9 +123,6 @@ struct SlaykenCodeShopView: View {
         }
     }
 }
-
-
-
 
 // MARK: - Setup & Logik
 private extension SlaykenCodeShopView {
@@ -109,7 +140,7 @@ private extension SlaykenCodeShopView {
     func loadShopData() async throws {
         guard let url = Bundle.main.url(forResource: "shopData", withExtension: "json") else {
             throw URLError(.fileDoesNotExist,
-                userInfo: [NSLocalizedDescriptionKey: "shopData.json nicht gefunden"])
+                           userInfo: [NSLocalizedDescriptionKey: "shopData.json nicht gefunden"])
         }
         let data = try Data(contentsOf: url)
         shopItems = try JSONDecoder().decode([ShopItem].self, from: data)
@@ -160,22 +191,24 @@ private extension SlaykenCodeShopView {
 
         } else {
             ScrollView {
-                VStack(spacing: 28) {
+                VStack(spacing: 24) {
                     restoreButton
 
-                    // MARK: Kategorie-Leiste
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 12) {
-                            ForEach(sortedCategories, id: \.self) { category in
-                                let colorHex = shopItems.first(where: { $0.category == category })?.categoryIconColor ?? "#0A84FF"
-                                categoryButton(title: category, color: Color(hex: colorHex))
+                    // Kategorien-Leiste
+                    if sortedCategories.count > 1 {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 12) {
+                                ForEach(sortedCategories, id: \.self) { category in
+                                    let colorHex = shopItems.first(where: { $0.category == category })?.categoryIconColor ?? "#0A84FF"
+                                    categoryButton(title: category, color: Color(hex: colorHex))
+                                }
                             }
+                            .padding(.horizontal)
+                            .padding(.vertical, 8)
                         }
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
                     }
 
-                    // MARK: Produkte
+                    // Produktkarten
                     LazyVStack(spacing: 22) {
                         ForEach(filteredItems) { item in
                             if let product = products.first(where: { $0.id == item.productID }) {
@@ -207,7 +240,7 @@ private extension SlaykenCodeShopView {
     // MARK: Kategorie-Button
     func categoryButton(title: String, color: Color) -> some View {
         Button {
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
                 selectedCategory = title
             }
         } label: {
@@ -222,15 +255,16 @@ private extension SlaykenCodeShopView {
             .padding(.vertical, 8)
             .background(
                 Capsule()
-                    .fill(selectedCategory == title ? color.opacity(0.85) : Color.white.opacity(0.1))
+                    .fill(selectedCategory == title ? color.opacity(0.9) : Color.white.opacity(0.1))
             )
             .overlay(
                 Capsule()
-                    .stroke(color.opacity(selectedCategory == title ? 1 : 0.3), lineWidth: 1.5)
+                    .stroke(color.opacity(selectedCategory == title ? 1 : 0.3), lineWidth: 1.2)
             )
             .foregroundColor(.white)
             .shadow(color: color.opacity(selectedCategory == title ? 0.5 : 0), radius: 4, y: 2)
         }
+        .buttonStyle(.plain)
     }
 
     // MARK: Hintergrund
@@ -240,7 +274,8 @@ private extension SlaykenCodeShopView {
                 theme.fullBackgroundView()
             } else {
                 LinearGradient(colors: [.black, .blue.opacity(0.9)],
-                               startPoint: .topLeading, endPoint: .bottomTrailing)
+                               startPoint: .topLeading,
+                               endPoint: .bottomTrailing)
             }
         }
         .ignoresSafeArea()
@@ -265,11 +300,12 @@ private extension SlaykenCodeShopView {
         .padding()
     }
 
-    // MARK: Wiederherstellungs-Button
+    // MARK: Restore-Button
     var restoreButton: some View {
         Button {
             Task {
                 await purchaseManager.restorePurchases()
+                haptic(.medium)
                 withAnimation(.spring()) { showRestoreToast = true }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     withAnimation(.easeOut) { showRestoreToast = false }
@@ -287,7 +323,7 @@ private extension SlaykenCodeShopView {
         }
     }
 
-    // MARK: Toast
+    // MARK: Restore-Toast
     @ViewBuilder
     var restoreToastView: some View {
         if showRestoreToast {
@@ -301,6 +337,11 @@ private extension SlaykenCodeShopView {
                 .padding(.bottom, 22)
                 .transition(.move(edge: .bottom).combined(with: .opacity))
         }
+    }
+
+    // MARK: Haptik
+    func haptic(_ style: UIImpactFeedbackGenerator.FeedbackStyle) {
+        UIImpactFeedbackGenerator(style: style).impactOccurred()
     }
 }
 
@@ -355,12 +396,10 @@ struct SlaykenShopCard: View {
                         .fontWeight(.semibold)
                         .foregroundColor(accentColor)
                     Spacer()
-                    Button(purchased ? "Anzeigen 👀" : "Kaufen") {
-                        onBuy()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(purchased ? .green : accentColor)
-                    .animation(.easeInOut, value: purchased)
+                    Button(purchased ? "Anzeigen 👀" : "Kaufen", action: onBuy)
+                        .buttonStyle(.borderedProminent)
+                        .tint(purchased ? .green : accentColor)
+                        .animation(.easeInOut, value: purchased)
                 }
             }
             .padding(.horizontal, 8)
@@ -370,6 +409,7 @@ struct SlaykenShopCard: View {
         .cornerRadius(22)
         .shadow(color: .black.opacity(0.35), radius: 10, y: 5)
         .padding(.horizontal)
+        .transition(.opacity)
     }
 }
 
@@ -384,9 +424,8 @@ struct MockProduct: ProductProtocol { var id: String; var displayPrice: String }
 
 // MARK: - Preview
 #Preview {
-    SlaykenCodeShopView()
+    SlaykenCodeShopView(preselectedProductID: nil)
         .environmentObject(ThemeManager())
         .environmentObject(PurchaseManager())
         .preferredColorScheme(.dark)
 }
-

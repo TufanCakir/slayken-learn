@@ -81,7 +81,7 @@ private extension SideDrawerView {
         .padding(.bottom, 10)
         .transition(.opacity.combined(with: .scale))
     }
-
+    
     // MARK: - Kategorie Tabs
     var categoryTabs: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -111,8 +111,8 @@ private extension SideDrawerView {
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(
                                     selectedCategory == category
-                                        ? (currentTheme?.accent ?? .blue).opacity(0.9)
-                                        : Color.white.opacity(0.1)
+                                    ? (currentTheme?.accent ?? .blue).opacity(0.9)
+                                    : Color.white.opacity(0.1)
                                 )
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 10)
@@ -121,8 +121,8 @@ private extension SideDrawerView {
                         )
                         .foregroundColor(
                             selectedCategory == category
-                                ? (currentTheme?.buttonText ?? .black)
-                                : (currentTheme?.text ?? .white).opacity(0.8)
+                            ? (currentTheme?.buttonText ?? .black)
+                            : (currentTheme?.text ?? .white).opacity(0.8)
                         )
                         .shadow(color: (currentTheme?.accent ?? .blue).opacity(selectedCategory == category ? 0.6 : 0),
                                 radius: selectedCategory == category ? 6 : 0)
@@ -133,14 +133,14 @@ private extension SideDrawerView {
             .padding(.bottom, 8)
         }
     }
-
+    
     // MARK: - Section Cards
     func sectionCard(for section: DrawerSection) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(section.title)
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundColor(currentTheme?.text ?? .white)
-
+            
             Text(section.description)
                 .font(.system(size: 13))
                 .foregroundColor((currentTheme?.text ?? .white).opacity(0.7))
@@ -157,7 +157,9 @@ private extension SideDrawerView {
                 )
         )
     }
-
+    
+    
+    
     // MARK: - Empty State
     var emptyPlaceholder: some View {
         VStack(spacing: 8) {
@@ -171,7 +173,7 @@ private extension SideDrawerView {
         .frame(maxWidth: .infinity, minHeight: 120)
         .padding(.top, 40)
     }
-
+    
     // MARK: - Footer
     var closeButton: some View {
         Button {
@@ -193,7 +195,7 @@ private extension SideDrawerView {
         }
         .padding(.bottom, 20)
     }
-
+    
     // MARK: - Hintergrund
     var backgroundView: some View {
         Group {
@@ -206,12 +208,37 @@ private extension SideDrawerView {
         }
         .ignoresSafeArea()
     }
-
+    
     // MARK: - Daten laden
     private func loadAndGroupSections() {
-        sections = loadDrawerSections(from: "drawerSections")
+        let jsonFiles = [
+            "drawerSections",
+            "drawerMetalData",
+            "drawerRealityKitData",
+            "drawerSpriteKitData",
+            "drawerSwiftUIData",
+            "drawerSwiftData",
+            "drawerARKitData",
+            "drawerHealthKitData",
+            "drawerVisionData",
+            "drawerwidgeKitData",
+            "drawerSpeechData",
+            "drawerSwiftDataModel"
+        ]
+        
+        var combinedSections: [DrawerSection] = []
+        
+        for file in jsonFiles {
+            if let url = Bundle.main.url(forResource: file, withExtension: "json"),
+               let data = try? Data(contentsOf: url),
+               let decoded = try? JSONDecoder().decode([DrawerSection].self, from: data) {
+                combinedSections.append(contentsOf: decoded)
+            }
+        }
+        
+        sections = combinedSections.sorted { $0.title < $1.title }
         groupedSections = Dictionary(grouping: sections, by: { $0.category })
-        if selectedCategory == "Alle" { return }
+        
         if !groupedSections.keys.contains(selectedCategory) {
             selectedCategory = "Alle"
         }

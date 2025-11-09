@@ -52,7 +52,9 @@ struct LockedContentView: View {
                 }
 
                 // 🛒 Button zum Code-Shop
-                NavigationLink(destination: SlaykenCodeShopView()) {
+                NavigationLink(
+                    destination: SlaykenCodeShopView(preselectedProductID: topic.productID)
+                ) {
                     Label("Zum Code-Shop", systemImage: "cart.fill.badge.plus")
                         .font(.headline)
                         .padding(.horizontal, 40)
@@ -66,12 +68,9 @@ struct LockedContentView: View {
                         .cornerRadius(14)
                         .shadow(color: .black.opacity(0.4), radius: 6, y: 4)
                         .foregroundColor(.white)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 14)
-                                .stroke(Color.white.opacity(0.2), lineWidth: 1)
-                        )
                 }
                 .buttonStyle(.plain)
+
                 .padding(.top, 8)
 
                 Spacer(minLength: 0)

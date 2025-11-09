@@ -1,0 +1,26 @@
+[
+  {
+    "id": "metal_001",
+    "title": "Metal Shader Hintergrund",
+    "description": "Erstelle einen einfachen Metal-Hintergrund für SwiftUI mit dynamischem GPU-Effekt.",
+    "steps": [
+      "Verwende MTKView innerhalb eines UIViewRepresentable.",
+      "Nutze Metal, um Farben oder Animationen per Shader zu rendern.",
+      "Integriere das MTKView-Rendering nahtlos in SwiftUI."
+    ],
+    "colors": {
+      "backgroundColors": [
+        "#000000",
+        "#7209B7",
+        "#000000"
+      ],
+      "textColors": [
+        "#FFFFFF"
+      ]
+    },
+    "code": "import SwiftUI\nimport MetalKit\n\nstruct MetalBackgroundView: UIViewRepresentable {\n    func makeUIView(context: Context) -> MTKView {\n        let view = MTKView()\n        view.device = MTLCreateSystemDefaultDevice()\n        view.clearColor = MTLClearColor(red: 0.2, green: 0.0, blue: 0.4, alpha: 1)\n        view.framebufferOnly = true\n        return view\n    }\n    func updateUIView(_ uiView: MTKView, context: Context) {}\n}\n\nstruct MetalExampleView: View {\n    var body: some View {\n        MetalBackgroundView()\n            .ignoresSafeArea()\n            .overlay(\n                Text(\"Metal Shader! 🔥\")\n                    .font(.largeTitle)\n                    .foregroundColor(.white)\n                    .shadow(radius: 10)\n            )\n    }\n}\n\n#Preview {\n    MetalExampleView()\n}",
+    "category": "Metal",
+    "categoryIcon": "cpu",
+    "categoryIconColor": "#7209B7"
+  }
+]

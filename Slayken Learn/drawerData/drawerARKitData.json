@@ -1,0 +1,26 @@
+[
+  {
+    "id": "arkit_001",
+    "title": "ARKit Shader Hintergrund",
+    "description": "Erstelle einen einfachen ARKit-Hintergrund für SwiftUI mit einem dynamischen Effekt.",
+    "steps": [
+      "Verwende ARView aus RealityKit in einem UIViewRepresentable.",
+      "Aktiviere ARWorldTrackingConfiguration für echte Bewegung.",
+      "Integriere ARView als SwiftUI-View."
+    ],
+    "colors": {
+      "backgroundColors": [
+        "#000000",
+        "#7209B7",
+        "#000000"
+      ],
+      "textColors": [
+        "#FFFFFF"
+      ]
+    },
+    "code": "import SwiftUI\nimport RealityKit\nimport ARKit\n\nstruct ARKitBackgroundView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let arView = ARView(frame: .zero)\n        let config = ARWorldTrackingConfiguration()\n        config.environmentTexturing = .automatic\n        arView.session.run(config)\n        return arView\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\nstruct ARKitExampleView: View {\n    var body: some View {\n        ARKitBackgroundView()\n            .ignoresSafeArea()\n            .overlay(\n                Text(\"ARKit Aktiv! 🟣\")\n                    .font(.largeTitle)\n                    .foregroundColor(.white)\n                    .shadow(radius: 10)\n            )\n    }\n}\n\n#Preview { ARKitExampleView() }",
+    "category": "ARKit",
+    "categoryIcon": "arkit",
+    "categoryIconColor": "#7209B7"
+  }
+]

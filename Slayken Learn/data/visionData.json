@@ -1,0 +1,28 @@
+[
+    {
+        "id": "vision_001",
+        "title": "Text-Erkennung mit Vision",
+        "description":
+            "Nutze Apples Vision Framework, um Text in Bildern automatisch zu erkennen.",
+        "steps": [
+            "Vision importieren und eine VNRecognizeTextRequest erstellen.",
+            "Bild in CIImage oder CGImage konvertieren.",
+            "Erkannte Texte im Completion Handler ausgeben."
+        ],
+        "colors": {
+            "backgroundColors": [
+                "#000000",
+                "#5E5CE6",
+                "#000000"
+            ],
+            "textColors": [
+                "#FFFFFF"
+            ]
+        },
+        "code":
+            "import Vision\nimport UIKit\n\nlet image = UIImage(named: \"text_image\")!\nlet cgImage = image.cgImage!\n\nlet request = VNRecognizeTextRequest { request, _ in\n    guard let results = request.results as? [VNRecognizedTextObservation] else { return }\n    for observation in results {\n        if let top = observation.topCandidates(1).first {\n            print(\"📄 Erkannter Text: \\(top.string)\")\n        }\n    }\n}\n\nlet handler = VNImageRequestHandler(cgImage: cgImage)\ntry? handler.perform([request])",
+        "category": "Vision",
+        "categoryIcon": "vision.pro",
+        "categoryIconColor": "#5E5CE6"
+    },
+]

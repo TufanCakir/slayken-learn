@@ -14,7 +14,7 @@
       },
       "code": "import SwiftUI\nimport MetalKit\n\nstruct MetalView: UIViewRepresentable {\n    func makeUIView(context: Context) -> MTKView {\n        let view = MTKView()\n        view.device = MTLCreateSystemDefaultDevice()\n        view.clearColor = MTLClearColor(red: 0.2, green: 0.2, blue: 0.25, alpha: 1)\n        return view\n    }\n    func updateUIView(_ uiView: MTKView, context: Context) {}\n}\n\nstruct MetalExampleView: View {\n    var body: some View {\n        MetalView()\n            .frame(height: 300)\n            .cornerRadius(12)\n            .padding()\n    }\n}\n\n#Preview { MetalExampleView() }",
       "category": "Metal Setup",
-      "categoryIcon": "cpu.fill",
+      "categoryIcon": "cpu",
       "categoryIconColor": "#FF9F0A"
     },
   {
@@ -54,7 +54,7 @@
     },
     "code": "//  ContentView.swift\n//  MetalHelloTriangleApp\n//\n//  Created by Tufan Cakir on 16.10.25.\n//\n\nimport SwiftUI\n\nstruct ContentView: View {\n    var body: some View {\n        MetalView()\n            .ignoresSafeArea()\n    }\n}\n\n// App Einstiegspunkt\nimport SwiftUI\n\n@main\nstruct MetalHelloTriangleAppApp: App {\n    var body: some Scene {\n        WindowGroup {\n            ContentView()\n        }\n    }\n}",
     "category": "Metal Setup",
-    "categoryIcon": "swift",
+    "categoryIcon": "cpu",
     "categoryIconColor": "#00FF00"
   }
 ]

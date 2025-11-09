@@ -1,0 +1,26 @@
+[
+  {
+    "id": "spritekit_001",
+    "title": "SpriteKit Integration",
+    "description": "Verwende SpriteKit direkt in SwiftUI für 2D-Animationen, Effekte und Spielelemente.",
+    "steps": [
+      "Importiere SpriteKit.",
+      "Erstelle eine eigene SKScene-Unterklasse mit Grafiken oder Partikeln.",
+      "Binde die Szene über SpriteView in SwiftUI ein."
+    ],
+    "colors": {
+      "backgroundColors": [
+        "#000000",
+        "#F72585",
+        "#000000"
+      ],
+      "textColors": [
+        "#FFFFFF"
+      ]
+    },
+    "code": "import SwiftUI\nimport SpriteKit\n\nclass FireScene: SKScene {\n    override func didMove(to view: SKView) {\n        backgroundColor = .black\n\n        // 🔥 Beispiel: Feuerpartikel laden\n        if let node = SKEmitterNode(fileNamed: \"FireParticle.sks\") {\n            node.position = CGPoint(x: size.width / 2, y: size.height / 2)\n            addChild(node)\n        }\n    }\n}\n\nstruct SpriteKitExampleView: View {\n    var scene: SKScene {\n        let scene = FireScene()\n        scene.size = CGSize(width: 400, height: 600)\n        scene.scaleMode = .resizeFill\n        return scene\n    }\n\n    var body: some View {\n        SpriteView(scene: scene)\n            .ignoresSafeArea()\n            .overlay(\n                Text(\"SpriteKit 🔥\")\n                    .font(.title)\n                    .foregroundColor(.white)\n                    .shadow(radius: 8),\n                alignment: .top\n            )\n    }\n}\n\n#Preview {\n    SpriteKitExampleView()\n}",
+    "category": "SpriteKit",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#F72585"
+  }
+]

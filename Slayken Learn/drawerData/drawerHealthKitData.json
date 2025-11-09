@@ -1,0 +1,26 @@
+[
+  {
+    "id": "healthkit_001",
+    "title": "Schrittzähler mit HealthKit",
+    "description": "Lerne, wie du mit HealthKit auf Gesundheitsdaten zugreifst – z. B. um Schritte auszulesen.",
+    "steps": [
+      "Importiere HealthKit und erstelle eine HKHealthStore-Instanz.",
+      "Fordere Berechtigungen für Schrittzählerdaten an.",
+      "Lese die Schrittanzahl über eine HKStatisticsQuery aus."
+    ],
+    "colors": {
+      "backgroundColors": [
+        "#000000",
+        "#06D6A0",
+        "#000000"
+      ],
+      "textColors": [
+        "#FFFFFF"
+      ]
+    },
+    "code": "import HealthKit\n\nclass HealthKitManager: ObservableObject {\n    private let healthStore = HKHealthStore()\n    @Published var steps: Double = 0\n\n    init() {\n        requestAuthorization()\n    }\n\n    // Berechtigungen anfragen\n    func requestAuthorization() {\n        guard HKHealthStore.isHealthDataAvailable() else {\n            print(\"❌ HealthKit nicht verfügbar\")\n            return\n        }\n\n        guard let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount) else { return }\n\n        healthStore.requestAuthorization(toShare: [], read: [stepType]) { success, error in\n            if success {\n                print(\"✅ HealthKit Zugriff gewährt\")\n                self.fetchSteps()\n            } else if let error = error {\n                print(\"❌ Zugriff verweigert: \\(error.localizedDescription)\")\n            }\n        }\n    }\n\n    // Schrittanzahl abrufen\n    func fetchSteps() {\n        guard let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount) else { return }\n\n        let startOfDay = Calendar.current.startOfDay(for: Date())\n        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: Date(), options: .strictStartDate)\n\n        let query = HKStatisticsQuery(quantityType: stepType, quantitySamplePredicate: predicate, options: .cumulativeSum) { _, result, _ in\n            guard let result = result, let sum = result.sumQuantity() else { return }\n            DispatchQueue.main.async {\n                self.steps = sum.doubleValue(for: HKUnit.count())\n                print(\"🚶 Schritte heute: \\(Int(self.steps))\")\n            }\n        }\n\n        healthStore.execute(query)\n    }\n}\n\n// Beispiel: @StateObject var hkManager = HealthKitManager()",
+    "category": "HealthKit",
+    "categoryIcon": "heart.fill",
+    "categoryIconColor": "#06D6A0"
+  }
+]

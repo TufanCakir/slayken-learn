@@ -1,0 +1,56 @@
+[
+  {
+    "id": "swiftui_001",
+    "title": "Button Erstellen",
+    "description": "Erfahre, wie man in SwiftUI einen einfachen Button mit Aktion erstellt.",
+    "steps": [
+      "Button mit Label erstellen",
+      "Aktion mit Closure definieren",
+      "Design mit Modifiers anpassen"
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#FF6D2D", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\n\nstruct ButtonExampleView: View {\n    var body: some View {\n        Button(action: {\n            print(\"Button gedrückt!\")\n        }) {\n            Text(\"Drücke mich\")\n                .padding()\n                .background(Color.orange)\n                .foregroundColor(.white)\n                .cornerRadius(10)\n        }\n    }\n}\n\n#Preview { ButtonExampleView() }",
+    "category": "SwiftUI",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#FF6D2D"
+  },
+  {
+    "id": "swiftui_002",
+    "title": "Text Anzeigen",
+    "description": "Lerne, wie man Text mit verschiedenen Schriftarten und Farben anzeigt.",
+    "steps": [
+      "Verwende Text() für statischen Inhalt",
+      "Passe Schriftgröße und Gewicht an",
+      "Nutze Farben für Stil"
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#5E5CE6", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\n\nstruct TextExampleView: View {\n    var body: some View {\n        VStack(spacing: 20) {\n            Text(\"Hallo SwiftUI!\")\n                .font(.largeTitle)\n                .fontWeight(.bold)\n                .foregroundColor(.purple)\n\n            Text(\"Willkommen zu deiner ersten App!\")\n                .font(.headline)\n                .foregroundColor(.gray)\n        }\n    }\n}\n\n#Preview { TextExampleView() }",
+    "category": "SwiftUI",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#5E5CE6"
+  },
+  {
+    "id": "swiftui_003",
+    "title": "Liste Erstellen",
+    "description": "Erstelle eine SwiftUI-Liste, um mehrere Einträge übersichtlich darzustellen.",
+    "steps": [
+      "Verwende List für dynamische Inhalte",
+      "Nutze ForEach für wiederholte Elemente",
+      "Füge NavigationLinks hinzu"
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#3DB2FF", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\n\nstruct ListExampleView: View {\n    let namen = [\"Anna\", \"Luca\", \"Mara\", \"Timo\"]\n\n    var body: some View {\n        List(namen, id: \\.self) { name in\n            Text(name)\n        }\n        .navigationTitle(\"Namenliste\")\n    }\n}\n\n#Preview { ListExampleView() }",
+    "category": "SwiftUI",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#3DB2FF"
+  }
+]

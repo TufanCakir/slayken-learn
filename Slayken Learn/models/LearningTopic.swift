@@ -36,7 +36,7 @@ func loadLearningTopics(from fileName: String) -> [LearningTopic] {
 }
 
 // MARK: - Convenience-Funktionen
-func loadSwiftData() -> [LearningTopic] {
+func loadSwiftUIData() -> [LearningTopic] {
     loadLearningTopics(from: "learningTopics")
 }
 
@@ -52,6 +52,34 @@ func loadMetalAppData() -> [LearningTopic] {
 }
 func loadReactNativeData() -> [LearningTopic] {
     loadLearningTopics(from: "reactNativeData")
+}
+
+func loadSwiftData() -> [LearningTopic] {
+    loadLearningTopics(from: "swiftData")
+}
+
+func loadSwiftDataModel() -> [LearningTopic] {
+    loadLearningTopics(from: "swiftDataModel")
+}
+
+func loadArKitData() -> [LearningTopic] {
+    loadLearningTopics(from: "arkitData")
+}
+
+func loadVisionData() -> [LearningTopic] {
+    loadLearningTopics(from: "visionData")
+}
+
+func loadWidgeKitData() -> [LearningTopic] {
+    loadLearningTopics(from: "widgekitData")
+}
+
+func loadHealthKitData() -> [LearningTopic] {
+    loadLearningTopics(from: "healthkitData")
+}
+
+func loadSpeechData() -> [LearningTopic] {
+    loadLearningTopics(from: "speechData")
 }
 
 func loadPurchasedData() -> [LearningTopic] {

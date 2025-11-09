@@ -1,0 +1,26 @@
+[
+  {
+    "id": "speech_001",
+    "title": "Spracherkennung mit Speech Framework",
+    "description": "Lerne, wie du mit Apples Speech Framework gesprochene Sprache in Text umwandelst.",
+    "steps": [
+      "Importiere Speech und bitte um Mikrofon-Zugriff.",
+      "Erstelle eine SFSpeechRecognizer-Instanz.",
+      "Starte eine SFSpeechAudioBufferRecognitionRequest, um Sprache zu transkribieren."
+    ],
+    "colors": {
+      "backgroundColors": [
+        "#000000",
+        "#FF6D2D",
+        "#000000"
+      ],
+      "textColors": [
+        "#FFFFFF"
+      ]
+    },
+    "code": "import Speech\nimport AVFoundation\n\nclass SpeechRecognizerManager: NSObject, ObservableObject {\n    private let recognizer = SFSpeechRecognizer(locale: Locale(identifier: \"de-DE\"))\n    private var request: SFSpeechAudioBufferRecognitionRequest?\n    private var recognitionTask: SFSpeechRecognitionTask?\n    private let audioEngine = AVAudioEngine()\n\n    @Published var recognizedText = \"\"\n\n    override init() {\n        super.init()\n        SFSpeechRecognizer.requestAuthorization { authStatus in\n            if authStatus != .authorized {\n                print(\"❌ Zugriff auf Spracherkennung verweigert\")\n            }\n        }\n    }\n\n    func startListening() {\n        recognitionTask?.cancel()\n        recognitionTask = nil\n\n        let audioSession = AVAudioSession.sharedInstance()\n        try? audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)\n        try? audioSession.setActive(true, options: .notifyOthersOnDeactivation)\n\n        request = SFSpeechAudioBufferRecognitionRequest()\n        guard let inputNode = audioEngine.inputNode else { return }\n        guard let request = request else { return }\n\n        recognitionTask = recognizer?.recognitionTask(with: request) { result, error in\n            if let result = result {\n                DispatchQueue.main.async {\n                    self.recognizedText = result.bestTranscription.formattedString\n                }\n            }\n            if error != nil {\n                self.audioEngine.stop()\n                inputNode.removeTap(onBus: 0)\n                self.request = nil\n                self.recognitionTask = nil\n            }\n        }\n\n        let recordingFormat = inputNode.outputFormat(forBus: 0)\n        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in\n            self.request?.append(buffer)\n        }\n\n        audioEngine.prepare()\n        try? audioEngine.start()\n        print(\"🎤 Spracherkennung gestartet…\")\n    }\n\n    func stopListening() {\n        audioEngine.stop()\n        request?.endAudio()\n        print(\"🛑 Spracherkennung gestoppt\")\n    }\n}\n\n// Beispielnutzung (z. B. in SwiftUI):\n// @StateObject var speechManager = SpeechRecognizerManager()\n// Button(\"Start\") { speechManager.startListening() }",
+    "category": "Speech",
+    "categoryIcon": "waveform.circle.fill",
+    "categoryIconColor": "#FF6D2D"
+  }
+]

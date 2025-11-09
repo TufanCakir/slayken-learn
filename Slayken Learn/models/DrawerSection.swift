@@ -18,17 +18,65 @@ struct DrawerColor: Codable {
     let textColors: [String]        // Textfarben (z. B. ["#FFFFFF"])
 }
 
+// MARK: - Loader (generisch & flexibel)
 func loadDrawerSections(from fileName: String) -> [DrawerSection] {
     guard let url = Bundle.main.url(forResource: fileName, withExtension: "json") else {
-        print("❌ Datei \(fileName).json nicht gefunden")
+        print("⚠️ \(fileName).json nicht gefunden")
         return []
     }
     do {
         let data = try Data(contentsOf: url)
         return try JSONDecoder().decode([DrawerSection].self, from: data)
     } catch {
-        print("❌ Fehler beim Laden von \(fileName): \(error)")
+        print("⚠️ Fehler beim Dekodieren von \(fileName).json: \(error)")
         return []
     }
 }
+
+// MARK: - Convenience-Funktionen
+func loadDrawerSwiftUIData() -> [DrawerSection] {
+    loadDrawerSections(from: "drawerSections")
+}
+
+func loadDrawerSwiftData() -> [DrawerSection] {
+    loadDrawerSections(from: "drawerSwiftData")
+}
+
+func loadDrawerSwiftDataModel() -> [DrawerSection] {
+    loadDrawerSections(from: "drawerSwiftDataModel")
+}
+
+func loadDrawerMetalData() -> [DrawerSection] {
+    loadDrawerSections(from: "drawerMetalData")
+}
+
+func loadDrawerRealityKitData() -> [DrawerSection] {
+    loadDrawerSections(from: "drawerRealityKitData")
+}
+
+func loadDrawerSpriteKitData() -> [DrawerSection] {
+    loadDrawerSections(from: "drawerSpriteKitData")
+}
+
+func loadDrawerARKitData() -> [DrawerSection] {
+    loadDrawerSections(from: "drawerARKitData")
+}
+
+func loadDrawerWidgeKitData() -> [DrawerSection] {
+    loadDrawerSections(from: "drawerWidgeKitData")
+}
+
+func loadDrawerHealthKitData() -> [DrawerSection] {
+    loadDrawerSections(from: "drawerHealthKitData")
+}
+
+func loadDrawerVisionData() -> [DrawerSection] {
+    loadDrawerSections(from: "drawerVisionData")
+}
+
+func loadDrawerSpeechData() -> [DrawerSection] {
+    loadDrawerSections(from: "drawerSpeechData")
+}
+
+
 

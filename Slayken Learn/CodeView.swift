@@ -8,7 +8,7 @@ struct CodeView: View {
     @Environment(\.colorScheme) private var colorScheme
     private var currentTheme: SlaykenTheme? { themeManager.currentTheme }
 
-    // MARK: - Keyword Sets
+    // MARK: - Keywords
     private let swiftKeywords = [
         "import","struct","class","enum","protocol","extension","func",
         "var","let","return","if","else","for","in","while","guard",
@@ -33,8 +33,9 @@ struct CodeView: View {
 
     // MARK: - State
     @State private var showCopied = false
-    @State private var attributedCode: AttributedString = ""
+    @State private var attributedCode: AttributedString = AttributedString("")
 
+    // MARK: - View
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             headerBar
@@ -46,19 +47,13 @@ struct CodeView: View {
                         .textSelection(.enabled)
                         .padding(18)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(
-                            LinearGradient(
-                                colors: [Color.black, Color(hex: "#1C1C1E")],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
+                        .background(backgroundGradient)
                         .cornerRadius(12)
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
                                 .stroke(accentColor.opacity(0.25), lineWidth: 1)
                         )
-                        .shadow(color: .black.opacity(0.4), radius: 8, x: 0, y: 4)
+                        .shadow(color: .black.opacity(0.4), radius: 8, y: 4)
                         .padding(.horizontal)
                         .padding(.bottom, 12)
                 }
@@ -84,10 +79,7 @@ struct CodeView: View {
                     .foregroundColor(accentColor)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(
-                        RoundedRectangle(cornerRadius: 6)
-                            .fill(accentColor.opacity(0.15))
-                    )
+                    .background(RoundedRectangle(cornerRadius: 6).fill(accentColor.opacity(0.15)))
             }
             .buttonStyle(.plain)
         }
@@ -96,16 +88,27 @@ struct CodeView: View {
     }
 }
 
+// MARK: - Extension
 private extension CodeView {
     // MARK: - Farben
     var accentColor: Color { currentTheme?.accent ?? .orange }
-    var commentColor: Color { Color(hex: "#7C8A99") }
+    var commentColor: Color { Color(hex: "#8E8E93") }
     var stringColor: Color { Color(hex: "#FFD866") }
     var numberColor: Color { Color(hex: "#C792EA") }
     var keywordColor: Color { Color(hex: "#82AAFF") }
     var tagColor: Color { Color(hex: "#FF6D2D") }
     var attrColor: Color { Color(hex: "#89DDFF") }
     var operatorColor: Color { Color(hex: "#FF6D6D") }
+
+    var backgroundGradient: LinearGradient {
+        LinearGradient(
+            colors: colorScheme == .dark
+                ? [Color.black, Color(hex: "#1C1C1E")]
+                : [Color(hex: "#F2F2F7"), Color(hex: "#E5E5EA")],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
 
     // MARK: - Sprache erkennen
     var detectedLanguage: String {
@@ -119,9 +122,9 @@ private extension CodeView {
 
     var languageDisplayName: String {
         switch detectedLanguage {
-        case "html": return "HTML Code"
-        case "react": return "React Native Code"
-        default: return "Swift Code"
+        case "html": return "HTML"
+        case "react": return "React Native"
+        default: return "Swift"
         }
     }
 
@@ -152,18 +155,16 @@ private extension CodeView {
         }
     }
 
-    // MARK: - Kopieren
+    // MARK: - Copy
     func copyToClipboard() {
         UIPasteboard.general.string = code
-        withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-            showCopied = true
-        }
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) { showCopied = true }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
             withAnimation(.easeOut(duration: 0.3)) { showCopied = false }
         }
     }
 
-    // MARK: - Highlight Rendering
+    // MARK: - Highlight Pipeline
     func renderHighlightedCode() async {
         let highlighted = await makeHighlighted(code: code)
         await MainActor.run {
@@ -173,103 +174,74 @@ private extension CodeView {
         }
     }
 
-    // MARK: - Syntax Highlighting
     func makeHighlighted(code: String) async -> AttributedString {
         var attr = AttributedString(code)
-
         switch detectedLanguage {
         case "html":
-            highlight("(?<=<)/?\\b(" + htmlTags.joined(separator: "|") + ")\\b", color: tagColor, bold: true, in: &attr, code: code)
-            highlight("\\b[a-zA-Z-]+(?==\")", color: attrColor, in: &attr, code: code)
-            highlight("\".*?\"", color: stringColor, in: &attr, code: code)
-            highlight("<!--.*?-->", color: commentColor, italic: true, in: &attr, code: code)
+            applyHighlights([
+                ("(?<=<)/?\\b(" + htmlTags.joined(separator: "|") + ")\\b", tagColor, true, false),
+                ("\\b[a-zA-Z-]+(?==\")", attrColor, false, false),
+                ("\".*?\"", stringColor, false, false),
+                ("<!--.*?-->", commentColor, false, true)
+            ], to: &attr, code: code)
 
         case "react":
-            highlight("\\b(" + jsKeywords.joined(separator: "|") + ")\\b", color: keywordColor, bold: true, in: &attr, code: code)
-            highlight("//.*", color: commentColor, italic: true, in: &attr, code: code)
-            highlight("/\\*[\\s\\S]*?\\*/", color: commentColor, italic: true, in: &attr, code: code)
-            highlight("\".*?\"|'.*?'", color: stringColor, in: &attr, code: code)
-            highlight("\\b[0-9]+(\\.[0-9]+)?\\b", color: numberColor, in: &attr, code: code)
-            highlight("<[A-Za-z0-9_]+", color: tagColor, bold: true, in: &attr, code: code)
-            highlight("[=+\\-*/<>!]+", color: operatorColor, in: &attr, code: code)
+            applyHighlights([
+                ("\\b(" + jsKeywords.joined(separator: "|") + ")\\b", keywordColor, true, false),
+                ("//.*", commentColor, false, true),
+                ("/\\*[\\s\\S]*?\\*/", commentColor, false, true),
+                ("\".*?\"|'.*?'", stringColor, false, false),
+                ("\\b[0-9]+(\\.[0-9]+)?\\b", numberColor, false, false),
+                ("<[A-Za-z0-9_]+", tagColor, true, false),
+                ("[=+\\-*/<>!]+", operatorColor, false, false)
+            ], to: &attr, code: code)
 
         default: // Swift
-            highlight("\\b(" + swiftKeywords.joined(separator: "|") + ")\\b", color: keywordColor, bold: true, in: &attr, code: code)
-            highlight("//.*", color: commentColor, italic: true, in: &attr, code: code)
-            highlight("\".*?\"", color: stringColor, in: &attr, code: code)
-            highlight("\\b[0-9]+(\\.[0-9]+)?\\b", color: numberColor, in: &attr, code: code)
-            highlight("[=+\\-*/<>!]+", color: operatorColor, in: &attr, code: code)
+            applyHighlights([
+                ("\\b(" + swiftKeywords.joined(separator: "|") + ")\\b", keywordColor, true, false),
+                ("//.*", commentColor, false, true),
+                ("\".*?\"", stringColor, false, false),
+                ("\\b[0-9]+(\\.[0-9]+)?\\b", numberColor, false, false),
+                ("[=+\\-*/<>!]+", operatorColor, false, false)
+            ], to: &attr, code: code)
         }
-
         return attr
     }
 
-    // MARK: - Regex Helper
-    func highlight(_ pattern: String,
-                   color: Color,
-                   bold: Bool = false,
-                   italic: Bool = false,
-                   in attr: inout AttributedString,
-                   code: String)
-    {
-        guard let regex = try? NSRegularExpression(pattern: pattern, options: [.dotMatchesLineSeparators]) else { return }
-        let nsRange = NSRange(code.startIndex..<code.endIndex, in: code)
+    func applyHighlights(_ rules: [(String, Color, Bool, Bool)],
+                         to attr: inout AttributedString,
+                         code: String) {
+        for (pattern, color, bold, italic) in rules {
+            guard let regex = try? NSRegularExpression(pattern: pattern, options: [.dotMatchesLineSeparators]) else { continue }
+            let nsRange = NSRange(code.startIndex..<code.endIndex, in: code)
 
-        regex.enumerateMatches(in: code, range: nsRange) { match, _, _ in
-            guard let match = match,
-                  let swiftRange = Range(match.range, in: code),
-                  let range = attr.range(of: String(code[swiftRange]))
-            else { return }
+            regex.enumerateMatches(in: code, range: nsRange) { match, _, _ in
+                guard let match = match,
+                      let range = Range(match.range, in: code),
+                      let lower = AttributedString.Index(range.lowerBound, within: attr),
+                      let upper = AttributedString.Index(range.upperBound, within: attr)
+                else { return }
 
-            attr[range].foregroundColor = color
-            var font = Font.system(.body, design: .monospaced)
-            if bold { font = font.bold() }
-            if italic { font = font.italic() }
-            attr[range].font = font
+                let attributedRange = lower..<upper
+                attr[attributedRange].foregroundColor = color
+
+                var font = Font.system(.body, design: .monospaced)
+                if bold { font = font.bold() }
+                if italic { font = font.italic() }
+                attr[attributedRange].font = font
+            }
         }
     }
+
 }
 
 // MARK: - Preview
 #Preview {
     VStack(spacing: 24) {
-        // Swift
         CodeView(code: """
-        import SwiftUI
-        struct ExampleView: View {
-            var body: some View {
-                Button("Klick mich") {
-                    print("Hallo Welt!") // Kommentar
-                }
-            }
-        }
-        """)
-
-        // HTML
-        CodeView(code: """
-        <!DOCTYPE html>
-        <html>
-          <body>
-            <button class="btn">Click me</button>
-          </body>
-        </html>
-        """)
-
-        // React Native
-        CodeView(code: """
-        import { useState } from 'react';
-        import { View, Text, Button } from 'react-native';
-
-        export default function Counter() {
-          const [count, setCount] = useState(0);
-          return (
-            <View style={{ padding: 20 }}>
-              <Text>Zähler: {count}</Text>
-              <Button title="+1" onPress={() => setCount(count + 1)} />
-            </View>
-          );
-        }
-        """)
+        import SwiftUI\n\nstruct pnstruct Product: Identifiable, Hashable {\n    let id = UUID()\n    let name: String\n    let price: Double\n    let icon: String\n}\n\n/MARK: - Main View\nstruct ECommerceDemoView: View {\n    @State private var products: [Product] = [\n        Product(name: \"SwiftUI Template\", price: 19.99, icon: \"🧩\"),\n        Product(name: \"Pro UI Kit\", price: 14.99, icon: \"🎨\"),\n        Product(name: \"JSON Helper Tool\", price: 9.99, icon: \"💾\"),\n        Product(name: \"Metal Shader Pack\", price: 12.99, icon: \"💠\"),\n        Product(name: \"Game Asset Bundle\", price: 7.49, icon: \"🎮\"),\n        Product(name: \"Font Collection\", price: 4.99, icon: \"🔤\")\n    ]\n    \n    @State private var cart: [Product: Int] = [:]\n    @State private var showCart = false\n    \n    private var cartCount: Int { cart.values.reduce(0, +) }\n    private var cartTotal: Double {\n        cart.reduce(0) { $0 + Double($1.value) * $1.key.price }\n    }\n    \n    private let columns = [GridItem(.flexible()), GridItem(.flexible())]\n    \n    var body: some View {\n        ScrollView {\n            LazyVGrid(columns: columns, spacing: 16) {\n                ForEach(products) { product in\n                    ProductCard(product: product) {\n                        add(product)\n                    }\n                }\n            }\n            .padding()\n        }\n        .navigationTitle(\"🛍️ Demo-Shop\")\n        .toolbar {\n            ToolbarItem(placement: .topBarTrailing) {\n                Button {\n                    showCart = true\n                } label: {\n                    HStack(spacing: 4) {\n                        Image(systemName: \"cart.fill\")\n                        if cartCount > 0 {\n                            Text(\"\\(cartCount)\")\n                                .font(.footnote.bold())\n                                .padding(4)\n                                .background(Capsule().fill(Color.blue.opacity(0.15)))\n                        }\n                    }\n                }\n                .accessibilityLabel(\"Warenkorb öffnen\")\n            }\n        }\n        .sheet(isPresented: $showCart) {\n            NavigationStack {\n                CartView(\n                    cart: cart,\n                    onIncrement: { add($0) },\n                    onDecrement: { decrement($0) },\n                    onRemove: { remove($0) },\n                    total: cartTotal\n                )\n                .navigationTitle(\"Warenkorb\")\n                .toolbar {\n                    ToolbarItem(placement: .topBarTrailing) {\n                        Button(\"Fertig\") { showCart = false }\n                    }\n                }\n            }\n        }\n    }\n    \n / MARK: - Cart Logic\n    private func add(_ product: Product) {\n        cart[product, default: 0] += 1\n    }\n    \n    private func decrement(_ product: Product) {\n        guard let qty = cart[product] else { return }\n        if qty <= 1 {\n            cart.removeValue(forKey: product)\n        } else {\n            cart[product] = qty - 1\n        }\n    }\n    \n    private func remove(_ product: Product) {\n        cart.removeValue(forKey: product)\n    }\n}\n\n/ MARK: - Product Card\nstruct ProductCard: View {\n    let product: Product\n    let addAction: () -> Void\n    \n    var body: some View {\n        VStack(spacing: 8) {\n            Text(product.icon)\n                .font(.system(size: 40))\n                .frame(maxWidth: .infinity, minHeight: 80)\n                .background(.thinMaterial)\n                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))\n            \n            VStack(alignment: .leading, spacing: 4) {\n                Text(product.name)\n                    .font(.headline)\n                Text(product.price, format: .currency(code: Locale.current.currency?.identifier ?? \"USD\"))\n                    .font(.subheadline)\n                    .foregroundStyle(.secondary)\n            }\n            \n            HStack {\n                Spacer()\n                Button(action: addAction) {\n                    Label(\"Hinzufügen\", systemImage: \"plus.circle.fill\")\n                }\n                .buttonStyle(.borderedProminent)\n            }\n        }\n        .padding()\n        .background(\n            RoundedRectangle(cornerRadius: 16, style: .continuous)\n                .fill(Color(.systemBackground))\n                .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)\n        )\n    }\n}\n\n/ MARK: - Cart View\nstruct CartView: View {\n    let cart: [Product: Int]\n    let onIncrement: (Product) -> Void\n    let onDecrement: (Product) -> Void\n    let onRemove: (Product) -> Void\n    let total: Double\n    \n    private var items: [(product: Product, qty: Int)] {\n        cart.map { ($0.key, $0.value) }.sorted { $0.product.name < $1.product.name }\n    }\n    \n    var body: some View {\n        List {\n            ForEach(items, id: \\.product) { item in\n                HStack(spacing: 12) {\n                    Text(item.product.icon)\n                        .font(.largeTitle)\n                    \n                    VStack(alignment: .leading) {\n                        Text(item.product.name)\n                            .font(.headline)\n                        Text(item.product.price, format: .currency(code: Locale.current.currency?.identifier ?? \"USD\"))\n                            .foregroundStyle(.secondary)\n                    }\n                    \n                    Spacer()\n                    \n                    HStack(spacing: 8) {\n                        Button(action: { onDecrement(item.product) }) {\n                            Image(systemName: \"minus.circle.fill\").font(.title3)\n                        }\n                        Text(\"\\(item.qty)\")\n                            .frame(minWidth: 24)\n                        Button(action: { onIncrement(item.product) }) {\n                            Image(systemName: \"plus.circle.fill\").font(.title3)\n                        }\n                    }\n                    \n                    Button(role: .destructive, action: { onRemove(item.product) }) {\n                        Image(systemName: \"trash\")\n                    }\n                }\n                .buttonStyle(.plain)\n            }\n            \n            if items.isEmpty {\n                ContentUnavailableView(\n                    \"Warenkorb ist leer\",\n                    systemImage: \"cart\",\n                    description: Text(\"Füge Demo-Produkte hinzu, um die Funktion zu testen.\")\n                )\n            }\n            \n            Section {\n                HStack {\n                    Text(\"Gesamtsumme\")\n                    Spacer()\n                    Text(total, format: .currency(code: Locale.current.currency?.identifier ?? \"USD\")).bold()\n                }\n                Button {\n                    / Demo Checkout — keine echten Zahlungen\n                } label: {\n                    Label(\"Zur Kasse (Demo)\", systemImage: \"creditcard.fill\")\n                }\n                .buttonStyle(.borderedProminent)\n                .disabled(items.isEmpty)\n            }\n        }\n    }\n}\n\n/ MARK: - Preview\n#Preview {\n    NavigationStack {\n        ECommerceDemoView()\n
+    
+""")
     }
     .environmentObject(ThemeManager())
     .preferredColorScheme(.dark)

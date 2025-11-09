@@ -250,7 +250,7 @@ private extension LearningListView {
     func loadAllTopics() {
         let files = [
             "learningTopics", "metalData", "metalShaderData",
-            "metalAppData", "reactNativeData", "purchasedContent", "swiftData", "arkitData", "healthkitData", "speechData", "visionData", "widgekitData", "swiftDataModel"
+            "metalAppData", "reactNativeData", "purchasedContent", "swiftData", "arkitData", "healthkitData", "speechData", "visionData", "widgekitData", "swiftDataModel", "htmlData", "jsonData"
         ]
         topics = files.flatMap { loadLearningTopics(from: $0) }
     }

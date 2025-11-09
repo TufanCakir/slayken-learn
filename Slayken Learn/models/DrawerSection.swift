@@ -78,5 +78,9 @@ func loadDrawerSpeechData() -> [DrawerSection] {
     loadDrawerSections(from: "drawerSpeechData")
 }
 
+func loadDrawerHtmlData() -> [DrawerSection] {
+    loadDrawerSections(from: "drawerHtmlData")
+}
+
 
 

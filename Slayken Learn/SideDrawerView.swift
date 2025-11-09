@@ -223,7 +223,8 @@ private extension SideDrawerView {
             "drawerVisionData",
             "drawerwidgeKitData",
             "drawerSpeechData",
-            "drawerSwiftDataModel"
+            "drawerSwiftDataModel",
+            "drawerHtmlData"
         ]
         
         var combinedSections: [DrawerSection] = []

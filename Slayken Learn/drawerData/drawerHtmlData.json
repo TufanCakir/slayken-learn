@@ -1,0 +1,20 @@
+[
+    {
+      "id": "html_001",
+      "title": "Button erstellen",
+      "description": "Lerne, wie du in HTML einen einfachen klickbaren Button erstellst.",
+      "steps": [
+        "Erstelle das Grundgerüst mit <!DOCTYPE html>.",
+        "Füge <button> innerhalb des <body>-Tags hinzu.",
+        "Füge optional CSS hinzu, um den Button zu stylen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#7209B7", "#000000"],
+        "textColors": ["#FFFFFF"]
+    },
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Button Beispiel</title>\n</head>\n<body>\n    <button>Click me</button>\n</body>\n</html>",
+      "category": "HTML",
+      "categoryIcon": "chevron.left.forwardslash.chevron.right",
+      "categoryIconColor": "#FF6D2D"
+    }
+]

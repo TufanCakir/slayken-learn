@@ -1,0 +1,20 @@
+[
+  {
+    "id": "html_001",
+    "title": "Boilerplate erstellen",
+    "description": "Erfahre, wie man die Grundstruktur einer HTML-Datei erstellt.",
+    "steps": [
+      "Erstelle das Grundgerüst mit <!DOCTYPE html>",
+      "Füge <head> und <body> hinzu",
+      "Setze den Titel der Seite"
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#FF6D2D", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Document</title>\n</head>\n<body>\n    \n</body>\n</html>",
+    "category": "HTML",
+    "categoryIcon": "chevron.left.forwardslash.chevron.right",
+    "categoryIconColor": "#FF6D2D"
+  }
+]

@@ -19,6 +19,15 @@ struct RootTabView: View {
             .tabItem {
                 Label("Lernen", systemImage: "book.closed.fill")
             }
+            
+            // 1️⃣ Lernen / Home
+            NavigationStack {
+                JSONEscapeStudioView()
+            }
+            .tabItem {
+                Label("JSON", systemImage: "curlybraces")
+            }
+            
 
             // 2️⃣ Code-Shop 🛍️
             NavigationStack {

@@ -50,7 +50,8 @@ private extension DrawerListView {
             "drawerVisionData",
             "drawerwidgeKitData",
             "drawerSpeechData",
-            "drawerSwiftDataModel"
+            "drawerSwiftDataModel",
+            "drawerHtmlData"
         ]
         
         var combinedSections: [DrawerSection] = []

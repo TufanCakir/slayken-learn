@@ -86,4 +86,15 @@ func loadPurchasedData() -> [LearningTopic] {
     loadLearningTopics(from: "purchasedContent")
 }
 
+func loadHtmlData() -> [LearningTopic] {
+    loadLearningTopics(from: "htmlData")
+}
+
+func loadJsonData() -> [LearningTopic] {
+    loadLearningTopics(from: "jsonData")
+}
+
+
+
+
 

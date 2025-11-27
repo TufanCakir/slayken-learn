@@ -906,5 +906,290 @@
         "category": "React Native",
         "categoryIcon": "atom",
         "categoryIconColor": "#FF2D55"
+    },
+    {
+        "id": "rn_036",
+        "title": "Netzwerkstatus & Online/Offline-Erkennung",
+        "description": "Erkenne, ob der Nutzer online oder offline ist – perfekt für Apps mit Internet-Abhängigkeit.",
+        "steps": [
+            "Nutze `@react-native-community/netinfo`.",
+            "Überwache Netzwerkstatus in Echtzeit.",
+            "Passe UI oder Funktionen entsprechend an."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#61DAFB", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "import NetInfo from '@react-native-community/netinfo';\nimport { useEffect, useState } from 'react';\nimport { Text, View } from 'react-native';\n\nexport default function NetworkStatus() {\n  const [isOnline, setOnline] = useState(true);\n\n  useEffect(() => {\n    const unsubscribe = NetInfo.addEventListener(state => {\n      setOnline(state.isConnected);\n    });\n    return unsubscribe;\n  }, []);\n\n  return (\n    <View style={{ flex:1, justifyContent:'center', alignItems:'center' }}>\n      <Text style={{ color:isOnline?'#0f0':'#f00', fontSize:24 }}>\n        {isOnline ? '🟢 Online' : '🔴 Offline'}\n      </Text>\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "atom",
+        "categoryIconColor": "#61DAFB"
+    },
+    {
+        "id": "rn_037",
+        "title": "Hintergrundaufgaben mit TaskManager",
+        "description": "Führe Aufgaben im Hintergrund aus – z. B. Standort-Updates oder Syncing.",
+        "steps": [
+            "Nutze Expo TaskManager.",
+            "Registriere einen Background Task.",
+            "Führe periodische Berechnungen im Hintergrund aus."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF2D55", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "import * as TaskManager from 'expo-task-manager';\nimport * as BackgroundFetch from 'expo-background-fetch';\n\nTaskManager.defineTask('sync-task', async () => {\n  console.log('🔄 Hintergrund-Task läuft...');\n  return BackgroundFetch.BackgroundFetchResult.NewData;\n});\n\nawait BackgroundFetch.registerTaskAsync('sync-task');",
+        "category": "React Native",
+        "categoryIcon": "atom",
+        "categoryIconColor": "#FF2D55"
+    },
+    {
+        "id": "rn_038",
+        "title": "Offline Cache mit react-query",
+        "description": "Speichere API-Daten lokal und zeige sie offline an.",
+        "steps": [
+            "Installiere React Query.",
+            "Nutze QueryClient & QueryClientProvider.",
+            "Aktiviere persistQueryClient für Offline-Support."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#30D158", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';\n\nconst qc = new QueryClient();\n\nfunction Data() {\n  const { data } = useQuery(['posts'], () => fetch('https://jsonplaceholder.typicode.com/posts/1').then(r => r.json()));\n  return <Text style={{color:'#fff'}}>{data?.title}</Text>;\n}\n\nexport default function App() {\n  return <QueryClientProvider client={qc}><Data/></QueryClientProvider>;\n}",
+        "category": "React Native",
+        "categoryIcon": "atom",
+        "categoryIconColor": "#30D158"
+    },
+    {
+        "id": "rn_039",
+        "title": "Clipboard & Teilen-Funktion",
+        "description": "Kopiere Text in die Zwischenablage oder teile ihn über das System-Share-Menü.",
+        "steps": [
+            "Nutze Clipboard.setStringAsync.",
+            "Nutze `Share.share()` für Teilen-Funktionen.",
+            "Perfekt für Social Apps."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#61DAFB", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "import * as Clipboard from 'expo-clipboard';\nimport { Share, Button, View } from 'react-native';\n\nexport default function ShareExample() {\n  const copy = () => Clipboard.setStringAsync('Hello!');\n  const share = () => Share.share({ message: 'Teile diesen Text!' });\n  return (\n    <View style={{ gap:16, padding:40 }}>\n      <Button title=\"📋 Kopieren\" onPress={copy} />\n      <Button title=\"📤 Teilen\" onPress={share} />\n    </View>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "atom",
+        "categoryIconColor": "#61DAFB"
+    },
+    {
+        "id": "rn_040",
+        "title": "Lokale Datenbank mit SQLite",
+        "description": "Speichere Daten strukturiert mit einer lokalen SQLite-Datenbank.",
+        "steps": [
+            "Nutze `expo-sqlite`.",
+            "Erstelle Tabellen & führe Queries aus.",
+            "Perfekt für Notizen, Inventar oder Spiele."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#0A84FF", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "import * as SQLite from 'expo-sqlite';\nconst db = SQLite.openDatabase('app.db');\n\ndb.transaction(tx => {\n  tx.executeSql('CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, text TEXT);');\n});",
+        "category": "React Native",
+        "categoryIcon": "atom",
+        "categoryIconColor": "#0A84FF"
+    },
+    {
+        "id": "rn_041",
+        "title": "Kamera-Effekte (Filter, Zoom, Flash)",
+        "description": "Steuere Kamera-Funktionen wie Zoom, Fokus, Flash & mehr.",
+        "steps": [
+            "Nutze Expo Camera.",
+            "Setze Zoom über State.",
+            "Nutze props für Flash, Fokus & Weißabgleich."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF9500", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "import { CameraView } from 'expo-camera';\nimport { useState } from 'react';\n\nexport default function CameraEffects() {\n  const [zoom, setZoom] = useState(0);\n  return <CameraView zoom={zoom} style={{flex:1}} />;\n}",
+        "category": "React Native",
+        "categoryIcon": "atom",
+        "categoryIconColor": "#FF9500"
+    },
+    {
+        "id": "rn_042",
+        "title": "Audio aufnehmen & abspielen",
+        "description": "Recorde Audio mit expo-av und spiele es ab.",
+        "steps": [
+            "Installation: expo-av.",
+            "Audio aufnehmen mit Recording API.",
+            "Audio mit Sound abspielen."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF2D55", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "import { Audio } from 'expo-av';\n\nconst recording = new Audio.Recording();\nawait recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);\nawait recording.startAsync();",
+        "category": "React Native",
+        "categoryIcon": "atom",
+        "categoryIconColor": "#FF2D55"
+    },
+    {
+        "id": "rn_043",
+        "title": "SVG Grafiken & Animationen",
+        "description": "Nutze react-native-svg, um Vektor-Grafiken & Animationen zu erstellen.",
+        "steps": [
+            "Installation: react-native-svg.",
+            "Erstelle Pfade, Kreise, Polygone.",
+            "Nutze Animated für morphing Shapes."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#30D158", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "import Svg, { Circle } from 'react-native-svg';\n\nexport default function SvgExample() {\n  return (\n    <Svg height=\"200\" width=\"200\">\n      <Circle cx=\"100\" cy=\"100\" r=\"80\" fill=\"cyan\" />\n    </Svg>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "atom",
+        "categoryIconColor": "#30D158"
+    },
+    {
+        "id": "rn_044",
+        "title": "App Themes mit Tailwind (NativeWind)",
+        "description": "Baue schnelle, utility-basierte Designs mit Tailwind in React Native.",
+        "steps": [
+            "Installation & Setup von NativeWind.",
+            "Verwende className für Styling.",
+            "Theme-Switching per Provider."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#61DAFB", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "import { View, Text } from 'react-native';\n\nexport default function TWExample() {\n  return <View className=\"flex-1 items-center justify-center bg-black\"><Text className=\"text-cyan-400\">Hello!</Text></View>;\n}",
+        "category": "React Native",
+        "categoryIcon": "atom",
+        "categoryIconColor": "#61DAFB"
+    },
+    {
+        "id": "rn_045",
+        "title": "Onboarding Screens mit PagerView",
+        "description": "Erstelle ein Onboarding mit Wisch-Animationen.",
+        "steps": [
+            "Nutze react-native-pager-view.",
+            "Füge mehrere Seiten hinzu.",
+            "Verwende Animationen beim Wechsel."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#0A84FF", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "import PagerView from 'react-native-pager-view';\n\nexport default function Onboarding() {\n  return (\n    <PagerView style={{flex:1}}>\n      <View><Text>Seite 1</Text></View>\n      <View><Text>Seite 2</Text></View>\n    </PagerView>\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "atom",
+        "categoryIconColor": "#0A84FF"
+    },
+    {
+        "id": "rn_046",
+        "title": "Landschafts- & Portrait-Modus fixieren",
+        "description": "Fixiere die Orientierung der App oder einzelner Screens.",
+        "steps": [
+            "Nutze `expo-screen-orientation`.",
+            "LockOrientation() z. B. auf Portrait.",
+            "Freigeben für dynamische Rotation."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF9500", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "import * as ScreenOrientation from 'expo-screen-orientation';\nawait ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);",
+        "category": "React Native",
+        "categoryIcon": "atom",
+        "categoryIconColor": "#FF9500"
+    },
+    {
+        "id": "rn_047",
+        "title": "File Picker & Dokumente öffnen",
+        "description": "Erlaube Nutzern, Dateien auszuwählen und zu öffnen.",
+        "steps": [
+            "Nutze expo-document-picker.",
+            "Erlaube Auswahl verschiedener Dateitypen.",
+            "Verarbeite oder speichere Dateien lokal."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF2D55", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "import * as DocumentPicker from 'expo-document-picker';\n\nconst pick = async () => {\n  const result = await DocumentPicker.getDocumentAsync({});\n  console.log(result);\n};",
+        "category": "React Native",
+        "categoryIcon": "atom",
+        "categoryIconColor": "#FF2D55"
+    },
+    {
+        "id": "rn_048",
+        "title": "Charts & Statistiken anzeigen",
+        "description": "Baue grafische Diagramme für Statistiken, Scores oder Health-Apps.",
+        "steps": [
+            "Nutze Victory Native oder react-native-chart-kit.",
+            "Erstelle Linien-, Balken- oder Kreisdiagramme.",
+            "Stile das Diagramm an dein Theme."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#30D158", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "import { LineChart } from 'react-native-chart-kit';\nimport { Dimensions } from 'react-native';\n\nexport default function ChartExample() {\n  return (\n    <LineChart\n      data={{ labels:['Jan','Feb'], datasets:[{ data:[10,40] }] }}\n      width={Dimensions.get('window').width}\n      height={200}\n      chartConfig={{ backgroundColor:'#000', color:()=> '#61DAFB' }}\n    />\n  );\n}",
+        "category": "React Native",
+        "categoryIcon": "atom",
+        "categoryIconColor": "#30D158"
+    },
+    {
+        "id": "rn_049",
+        "title": "Bluetooth Low Energy (BLE) Geräte verbinden",
+        "description": "Verbinde dich mit IoT-Geräten per BLE – ideal für Fitness-Tracker oder Smart-Home.",
+        "steps": [
+            "Nutze react-native-ble-plx.",
+            "Scanne Geräte in der Umgebung.",
+            "Verbinde dich & lese Werte aus."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#61DAFB", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "import { BleManager } from 'react-native-ble-plx';\nconst manager = new BleManager();\nmanager.startDeviceScan(null, null, (error, device) => {\n  if (device) console.log(device.name);\n});",
+        "category": "React Native",
+        "categoryIcon": "atom",
+        "categoryIconColor": "#61DAFB"
+    },
+    {
+        "id": "rn_050",
+        "title": "QR-Code Scanner & Generator",
+        "description": "Scanne QR-Codes mit der Kamera oder erstelle eigene Codes.",
+        "steps": [
+            "Nutze expo-camera oder vision-camera für Scan.",
+            "Nutze react-native-qrcode-svg zum Generieren.",
+            "Perfekt für Login, Events oder Payments."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#0A84FF", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "import QRCode from 'react-native-qrcode-svg';\n\nexport default function QRExample() {\n  return <QRCode value=\"https://slayken.com\" size={160} />;\n}",
+        "category": "React Native",
+        "categoryIcon": "atom",
+        "categoryIconColor": "#0A84FF"
     }
 ]

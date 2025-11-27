@@ -52,5 +52,131 @@
     "category": "SwiftUI",
     "categoryIcon": "swift",
     "categoryIconColor": "#3DB2FF"
+  },
+  {
+    "id": "swiftui_004",
+    "title": "State verwenden",
+    "description": "Lerne, wie du mit @State lokale Zustände verwaltest und UI-Updates automatisch auslöst.",
+    "steps": [
+      "Deklariere eine @State Variable",
+      "Ändere den Zustand im Button",
+      "UI aktualisiert sich automatisch"
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7209B7", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\n\nstruct StateExampleView: View {\n    @State private var counter = 0\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Text(\"Zähler: \\(counter)\")\n                .font(.largeTitle)\n\n            Button(\"Erhöhen\") {\n                counter += 1\n            }\n            .buttonStyle(.borderedProminent)\n        }\n        .padding()\n    }\n}\n\n#Preview { StateExampleView() }",
+    "category": "SwiftUI",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#7209B7"
+  },
+  {
+    "id": "swiftui_005",
+    "title": "TextField & Eingaben",
+    "description": "Erfahre, wie Nutzer Text eingeben und wie du die Eingabe weiterverarbeitest.",
+    "steps": [
+      "TextField mit Binding verbinden",
+      "UI per @State aktualisieren",
+      "Eingabetext anzeigen oder verarbeiten"
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4CC9F0", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\n\nstruct TextFieldExampleView: View {\n    @State private var name = \"\"\n\n    var body: some View {\n        VStack(spacing: 16) {\n            TextField(\"Name eingeben\", text: $name)\n                .textFieldStyle(.roundedBorder)\n\n            Text(\"Hallo, \\(name)\")\n                .font(.title)\n        }\n        .padding()\n    }\n}\n\n#Preview { TextFieldExampleView() }",
+    "category": "SwiftUI",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#4CC9F0"
+  },
+  {
+    "id": "swiftui_006",
+    "title": "Toggle & Switch",
+    "description": "Nutze einen Toggle, um Einstellungen wie Dark Mode oder Optionen zu aktivieren.",
+    "steps": [
+      "Toggle mit Bool-Variable verbinden",
+      "Zustandsänderung anzeigen",
+      "UI dynamisch anpassen"
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#F72585", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\n\nstruct ToggleExampleView: View {\n    @State private var isOn = false\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Toggle(\"Schalter\", isOn: $isOn)\n                .padding()\n\n            Text(isOn ? \"Aktiviert\" : \"Deaktiviert\")\n                .font(.title2)\n                .foregroundColor(isOn ? .green : .red)\n        }\n        .padding()\n    }\n}\n\n#Preview { ToggleExampleView() }",
+    "category": "SwiftUI",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#F72585"
+  },
+  {
+    "id": "swiftui_007",
+    "title": "NavigationStack & NavigationLink",
+    "description": "Baue Navigation zwischen Screens – ideal für jede App mit mehreren Views.",
+    "steps": [
+      "NavigationStack erstellen",
+      "NavigationLink hinzufügen",
+      "Ziel-View anzeigen"
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4361EE", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\n\nstruct NavigationExampleView: View {\n    var body: some View {\n        NavigationStack {\n            VStack(spacing: 20) {\n                NavigationLink(\"Weiter zum Detail\") {\n                    Text(\"🔥 Detailansicht\")\n                        .font(.largeTitle)\n                }\n            }\n            .navigationTitle(\"Start\")\n        }\n    }\n}\n\n#Preview { NavigationExampleView() }",
+    "category": "SwiftUI",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#4361EE"
+  },
+  {
+    "id": "swiftui_008",
+    "title": "Images Anzeigen",
+    "description": "Zeige Bilder aus deinem Asset Catalog oder per URL an.",
+    "steps": [
+      "Image() mit Asset nutzen",
+      "Bildeigenschaften anpassen",
+      "Resizing und Scaling anwenden"
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#3F37C9", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\n\nstruct ImageExampleView: View {\n    var body: some View {\n        VStack(spacing: 20) {\n            Image(\"exampleImage\")\n                .resizable()\n                .scaledToFit()\n                .frame(width: 200)\n                .clipShape(RoundedRectangle(cornerRadius: 20))\n        }\n        .padding()\n    }\n}\n\n#Preview { ImageExampleView() }",
+    "category": "SwiftUI",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#3F37C9"
+  },
+  {
+    "id": "swiftui_009",
+    "title": "ZStack – Elemente übereinander legen",
+    "description": "Platziere Views übereinander – ideal für Overlays, Badges und UI-Layer.",
+    "steps": [
+      "ZStack erstellen",
+      "Mehrere Views übereinander stapeln",
+      "Alignment definieren"
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#3A0CA3", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\n\nstruct ZStackExampleView: View {\n    var body: some View {\n        ZStack {\n            Color.blue.ignoresSafeArea()\n            Text(\"Vordergrund\")\n                .font(.largeTitle)\n                .foregroundColor(.white)\n        }\n    }\n}\n\n#Preview { ZStackExampleView() }",
+    "category": "SwiftUI",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#3A0CA3"
+  },
+  {
+    "id": "swiftui_010",
+    "title": "HStack & VStack",
+    "description": "Ordne Views horizontal oder vertikal an – die Basis jeder SwiftUI-UI.",
+    "steps": [
+      "HStack für horizontale Layouts",
+      "VStack für vertikale Layouts",
+      "Spacing und Alignment steuern"
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4895EF", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\n\nstruct StackExampleView: View {\n    var body: some View {\n        VStack(spacing: 30) {\n            HStack(spacing: 20) {\n                Text(\"A\")\n                Text(\"B\")\n                Text(\"C\")\n            }\n            .font(.largeTitle)\n\n            Text(\"Stacks sind das Herz von SwiftUI\")\n                .font(.headline)\n        }\n        .padding()\n    }\n}\n\n#Preview { StackExampleView() }",
+    "category": "SwiftUI",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#4895EF"
   }
 ]

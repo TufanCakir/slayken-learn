@@ -52,5 +52,185 @@
     "category": "SwiftData",
     "categoryIcon": "swiftdata",
     "categoryIconColor": "#0000FF"
+  },
+  {
+    "id": "swiftdata_004",
+    "title": "Many-to-Many Beziehungen",
+    "description": "Lerne, wie du Modelle erstellst, bei denen mehrere Elemente gegenseitig miteinander verknüpft sind.",
+    "steps": [
+      "Definiere zwei @Model-Typen.",
+      "Nutze @Relationship für many-to-many.",
+      "Verlinke Objekte in beide Richtungen."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#3A0CA3", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass Student {\n    var name: String\n    @Relationship var courses: [Course] = []\n    init(name: String) { self.name = name }\n}\n\n@Model\nclass Course {\n    var title: String\n    @Relationship var students: [Student] = []\n    init(title: String) { self.title = title }\n}\n\nstruct CourseView: View {\n    @Environment(\\.modelContext) private var context\n    @Query private var courses: [Course]\n\n    var body: some View {\n        List(courses) { course in\n            Text(course.title)\n        }\n    }\n}\n\n#Preview { CourseView() }",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#4361EE"
+  },
+  {
+    "id": "swiftdata_005",
+    "title": "Modelle aktualisieren",
+    "description": "Verstehe, wie du gespeicherte SwiftData-Objekte bearbeitest und speicherst.",
+    "steps": [
+      "Lade bestehende Objekte per @Query.",
+      "Bearbeite Properties direkt.",
+      "Speichere Änderungen mit context.save()."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4CC9F0", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass Counter {\n    var value: Int = 0\n}\n\nstruct CounterView: View {\n    @Environment(\\.modelContext) private var context\n    @Query private var counters: [Counter]\n\n    var body: some View {\n        VStack(spacing: 20) {\n            if let c = counters.first {\n                Text(\"Wert: \\(c.value)\")\n                    .font(.largeTitle)\n\n                Button(\"+1\") {\n                    c.value += 1\n                    try? context.save()\n                }\n                .buttonStyle(.borderedProminent)\n            }\n        }\n        .padding()\n    }\n}\n\n#Preview { CounterView().modelContainer(for: Counter.self) }",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#4CC9F0"
+  },
+  {
+    "id": "swiftdata_006",
+    "title": "Objekte löschen",
+    "description": "Lerne, wie du gespeicherte SwiftData-Objekte sicher entfernst.",
+    "steps": [
+      "Lade Objekte per @Query.",
+      "Lösche Elemente mit context.delete().",
+      "Speichere den Zustand."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7209B7", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass Todo {\n    var text: String\n    init(text: String) { self.text = text }\n}\n\nstruct TodoListView: View {\n    @Environment(\\.modelContext) private var context\n    @Query private var todos: [Todo]\n\n    var body: some View {\n        List {\n            ForEach(todos) { todo in\n                Text(todo.text)\n            }\n            .onDelete { indexSet in\n                indexSet.forEach { i in\n                    context.delete(todos[i])\n                }\n                try? context.save()\n            }\n        }\n    }\n}\n\n#Preview { TodoListView().modelContainer(for: Todo.self) }",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#7209B7"
+  },
+  {
+    "id": "swiftdata_007",
+    "title": "Migrations (Model Schema Update)",
+    "description": "Ändere Modelle sicher und erstelle automatische Migrationsprozesse.",
+    "steps": [
+      "Füge neue Properties hinzu.",
+      "Nutze optionale Typen für Migration.",
+      "SwiftData migriert automatisch."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#B5179E", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftData\n\n@Model\nclass Player {\n    var name: String\n    var level: Int\n    var xp: Int? // Neu: optional für Migration\n    init(name: String, level: Int, xp: Int? = nil) {\n        self.name = name\n        self.level = level\n        self.xp = xp\n    }\n}",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#B5179E"
+  },
+  {
+    "id": "swiftdata_008",
+    "title": "Performance & Batch Inserts",
+    "description": "Füge viele Daten effizient ein – ideal für Listen, Tabellen oder Tests.",
+    "steps": [
+      "Verwende eine Schleife für viele Inserts.",
+      "Nutze context.save() nur am Ende.",
+      "Ideal für große Datenmengen."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#F72585", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass LogEntry { var value: Int }\n\nstruct BatchInsertView: View {\n    @Environment(\\.modelContext) private var context\n\n    var body: some View {\n        Button(\"1000 Items erzeugen\") {\n            for i in 0..<1000 {\n                context.insert(LogEntry(value: i))\n            }\n            try? context.save()\n        }\n        .buttonStyle(.borderedProminent)\n    }\n}\n\n#Preview { BatchInsertView().modelContainer(for: LogEntry.self) }",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#F72585"
+  },
+  {
+    "id": "swiftdata_009",
+    "title": "@Bindable nutzen",
+    "description": "Bearbeite Model-Werte live im UI – ohne extra States.",
+    "steps": [
+      "Nutze @Bindable für Modelbinding.",
+      "Bearbeite Felder direkt im UI.",
+      "Speichere automatisch Änderungen."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#560BAD", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass Profile { var username: String }\n\nstruct ProfileView: View {\n    @Environment(\\.modelContext) private var context\n    @Bindable var profile: Profile\n\n    var body: some View {\n        Form {\n            TextField(\"Username\", text: $profile.username)\n        }\n    }\n}\n\n#Preview {\n    let profile = Profile(username: \"Tufan\")\n    return ProfileView(profile: profile)\n        .modelContainer(for: Profile.self)\n}",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#560BAD"
+  },
+  {
+    "id": "swiftdata_010",
+    "title": "Predicates dynamisch ändern",
+    "description": "Nutze State, um Filter live anzupassen und neue @Query-Abfragen zu erzeugen.",
+    "steps": [
+      "Erstelle einen @State Filterwert.",
+      "Nutze @Query mit dynamischem Predicate.",
+      "Reagiere auf Eingaben sofort."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#3F37C9", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass Product { var name: String }\n\nstruct ProductFilterView: View {\n    @State private var search = \"\"\n    @Environment(\\.modelContext) private var context\n    @Query private var products: [Product]\n\n    init(search: String = \"\") {\n        self._search = State(initialValue: search)\n        self.__products = Query(filter: #Predicate { item in\n            search.isEmpty || item.name.contains(search)\n        })\n    }\n\n    var body: some View {\n        VStack {\n            TextField(\"Suche\", text: $search)\n                .textFieldStyle(.roundedBorder)\n            List(products) { p in Text(p.name) }\n        }\n        .padding()\n    }\n}\n\n#Preview { ProductFilterView().modelContainer(for: Product.self) }",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#3F37C9"
+  },
+  {
+    "id": "swiftdata_011",
+    "title": "ModelContainer im Preview nutzen",
+    "description": "Erstelle realistische Previews mit Beispiel-Daten.",
+    "steps": [
+      "Nutze .modelContainer(for:) im Preview.",
+      "Erzeuge Testdaten direkt im Preview.",
+      "Mach Views reproduzierbar und testbar."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4895EF", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass Person { var name: String }\n\nstruct PeopleView: View {\n    @Query private var people: [Person]\n    var body: some View {\n        List(people) { p in Text(p.name) }\n    }\n}\n\n#Preview {\n    let config = ModelConfiguration(isStoredInMemoryOnly: true)\n    let container = try! ModelContainer(for: Person.self, configurations: config)\n    let context = container.mainContext\n    context.insert(Person(name: \"Tufan\"))\n    context.insert(Person(name: \"Alex\"))\n\n    return PeopleView()\n        .modelContainer(container)\n}",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#4895EF"
+  },
+  {
+    "id": "swiftdata_012",
+    "title": "Undo & Redo",
+    "description": "Nutze das Undo-System von SwiftData für komfortable History-Features.",
+    "steps": [
+      "Greife auf context.undoManager zu.",
+      "Nutze undo() und redo().",
+      "Perfekt für Editoren oder kreative Apps."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4CC9F0", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass Counter { var value = 0 }\n\nstruct UndoExampleView: View {\n    @Environment(\\.modelContext) private var context\n    @Query private var counters: [Counter]\n    var body: some View {\n        VStack(spacing: 20) {\n            let c = counters.first ?? Counter()\n            Text(\"Wert: \\(c.value)\")\n                .font(.title)\n\n            HStack {\n                Button(\"+1\") {\n                    c.value += 1\n                    try? context.save()\n                }\n                Button(\"Undo\") { context.undoManager?.undo() }\n                Button(\"Redo\") { context.undoManager?.redo() }\n            }\n        }\n        .padding()\n    }\n}\n\n#Preview { UndoExampleView().modelContainer(for: Counter.self) }",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#4CC9F0"
+  },
+  {
+    "id": "swiftdata_013",
+    "title": "Hintergrund-Speicherungen",
+    "description": "Verarbeite Daten im Hintergrund – ideal für große Datenimporte.",
+    "steps": [
+      "Nutze Task für Hintergrundarbeit.",
+      "Verwende context.insert() in async Block.",
+      "Speichere nur am Ende."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#560BAD", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass LogEntry { var text: String }\n\nstruct BackgroundInsertView: View {\n    @Environment(\\.modelContext) private var context\n\n    var body: some View {\n        Button(\"Import starten\") {\n            Task {\n                for i in 0..<500 {\n                    context.insert(LogEntry(text: \"Eintrag #\\(i)\"))\n                }\n                try? context.save()\n            }\n        }\n        .buttonStyle(.borderedProminent)\n        .padding()\n    }\n}\n\n#Preview { BackgroundInsertView().modelContainer(for: LogEntry.self) }",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#560BAD"
   }
 ]

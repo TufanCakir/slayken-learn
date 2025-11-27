@@ -22,5 +22,95 @@
     "category": "SpriteKit",
     "categoryIcon": "swift",
     "categoryIconColor": "#F72585"
+  },
+  {
+    "id": "spritekit_002",
+    "title": "Sprite Animation (Texture Atlas)",
+    "description": "Erstelle flüssige 2D-Animationen mit SKTextureAtlas – ideal für Charaktere oder Effekte.",
+    "steps": [
+      "Erstelle einen TextureAtlas im Assets-Katalog.",
+      "Lade mehrere Frames in ein Array von SKTextures.",
+      "Starte eine wiederholende Animation mit run(SKAction.animate)."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#F72585", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SpriteKit\n\nclass HeroScene: SKScene {\n    override func didMove(to view: SKView) {\n        backgroundColor = .black\n\n        let atlas = SKTextureAtlas(named: \"Hero\")\n        var frames: [SKTexture] = []\n\n        for i in 1...6 {\n            frames.append(atlas.textureNamed(\"hero_\\(i)\"))\n        }\n\n        let sprite = SKSpriteNode(texture: frames.first)\n        sprite.position = CGPoint(x: size.width / 2, y: size.height / 2)\n        addChild(sprite)\n\n        let animation = SKAction.repeatForever(\n            SKAction.animate(with: frames, timePerFrame: 0.08)\n        )\n        sprite.run(animation)\n    }\n}",
+    "category": "SpriteKit",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#F72585"
+  },
+  {
+    "id": "spritekit_003",
+    "title": "Physik & Kollisionen",
+    "description": "Nutze SpriteKits Physik-Engine, um realistische Bewegungen, Gravitation und Kollisionen umzusetzen.",
+    "steps": [
+      "Setze physicsBody für Nodes.",
+      "Definiere Kategorien & Bitmasks für Kollisionserkennung.",
+      "Nutze SKPhysicsContactDelegate, um auf Treffer zu reagieren."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#B5179E", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+      "code": "import SpriteKit\n\nstruct PhysicsCategory {\n    static let player: UInt32 = 1\n    static let enemy: UInt32 = 2\n}\n\nclass PhysicsScene: SKScene, SKPhysicsContactDelegate {\n    override func didMove(to view: SKView) {\n        backgroundColor = .black\n        physicsWorld.contactDelegate = self\n\n        let player = SKSpriteNode(color: .cyan, size: CGSize(width: 40, height: 40))\n        player.position = CGPoint(x: 200, y: 400)\n        player.physicsBody = SKPhysicsBody(rectangleOf: player.size)\n        player.physicsBody?.categoryBitMask = PhysicsCategory.player\n        player.physicsBody?.contactTestBitMask = PhysicsCategory.enemy\n        addChild(player)\n\n        let enemy = SKSpriteNode(color: .red, size: CGSize(width: 40, height: 40))\n        enemy.position = CGPoint(x: 200, y: 100)\n        enemy.physicsBody = SKPhysicsBody(rectangleOf: enemy.size)\n        enemy.physicsBody?.categoryBitMask = PhysicsCategory.enemy\n        addChild(enemy)\n    }\n\n    func didBegin(_ contact: SKPhysicsContact) {\n        print(\"💥 Kollision erkannt!\")\n    }\n}",
+    "category": "SpriteKit",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#B5179E"
+  },
+  {
+    "id": "spritekit_004",
+    "title": "Particle Effects (Explosion)",
+    "description": "Füge beeindruckende Partikel-Explosionen hinzu – perfekt für Spieleffekte wie Treffer oder Magie.",
+    "steps": [
+      "Erstelle eine .sks Partikeldatei im Xcode-Editor.",
+      "Lade das SKEmitterNode im Code.",
+      "Positioniere und spiele die Explosion an einem Punkt."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#560BAD", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SpriteKit\n\nclass ExplosionScene: SKScene {\n    override func didMove(to view: SKView) {\n        backgroundColor = .black\n\n        let explosion = SKEmitterNode(fileNamed: \"Explosion.sks\")!\n        explosion.position = CGPoint(x: size.width / 2, y: size.height / 2)\n        addChild(explosion)\n\n        run(SKAction.sequence([\n            SKAction.wait(forDuration: 2),\n            SKAction.run { explosion.removeFromParent() }\n        ]))\n    }\n}",
+    "category": "SpriteKit",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#560BAD"
+  },
+  {
+    "id": "spritekit_005",
+    "title": "Touch-Steuerung",
+    "description": "Steuere Spielfiguren mit Touch-Ereignissen wie Tap, Drag oder Hold.",
+    "steps": [
+      "override touchesBegan() nutzen.",
+      "Sprite zu Touch-Position bewegen.",
+      "Optionale Bewegungsanimationen hinzufügen."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7209B7", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SpriteKit\n\nclass TouchMoveScene: SKScene {\n    let hero = SKSpriteNode(color: .yellow, size: CGSize(width: 50, height: 50))\n\n    override func didMove(to view: SKView) {\n        backgroundColor = .black\n        hero.position = CGPoint(x: size.width/2, y: size.height/2)\n        addChild(hero)\n    }\n\n    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {\n        guard let touch = touches.first else { return }\n        let location = touch.location(in: self)\n\n        let move = SKAction.move(to: location, duration: 0.3)\n        move.timingMode = .easeOut\n\n        hero.run(move)\n    }\n}",
+    "category": "SpriteKit",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#7209B7"
+  },
+  {
+    "id": "spritekit_006",
+    "title": "Parallax Scrolling Hintergrund",
+    "description": "Erstelle einen mehrschichtigen Hintergrund, der sich mit unterschiedlicher Geschwindigkeit bewegt – ideal für Games.",
+    "steps": [
+      "Mehrere Ebenen als SKSpriteNode erstellen.",
+      "Verschiedene Geschwindigkeiten definieren.",
+      "Endlosschleife für fließende Bewegung entwickeln."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#3A0CA3", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SpriteKit\n\nclass ParallaxScene: SKScene {\n    var layers: [SKSpriteNode] = []\n\n    override func didMove(to view: SKView) {\n        backgroundColor = .black\n\n        for i in 0..<3 {\n            let layer = SKSpriteNode(imageNamed: \"layer_\\(i)\")\n            layer.position = CGPoint(x: size.width/2, y: size.height/2)\n            layer.zPosition = CGFloat(i) * -1\n            addChild(layer)\n            layers.append(layer)\n        }\n    }\n\n    override func update(_ currentTime: TimeInterval) {\n        for (i, layer) in layers.enumerated() {\n            layer.position.x -= CGFloat(i + 1)\n            if layer.position.x < -layer.size.width {\n                layer.position.x += layer.size.width * 2\n            }\n        }\n    }\n}",
+    "category": "SpriteKit",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#3A0CA3"
   }
 ]

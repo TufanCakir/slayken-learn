@@ -22,5 +22,176 @@
     "category": "HealthKit",
     "categoryIcon": "heart.fill",
     "categoryIconColor": "#06D6A0"
+  },
+  {
+    "id": "healthkit_002",
+    "title": "Kalorienverbrauch auslesen (Active Energy)",
+    "description": "Lies den täglichen Kalorienverbrauch aus und zeige ihn in deiner App an.",
+    "steps": [
+      "Erstelle einen HKHealthStore.",
+      "Fordere Berechtigung für activeEnergyBurned an.",
+      "Nutze HKStatisticsQuery, um den Tageswert zu summieren."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#EF476F", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code":
+      "import HealthKit\n\nclass EnergyManager: ObservableObject {\n    private let store = HKHealthStore()\n    @Published var calories = 0.0\n\n    init() { requestAccess() }\n\n    func requestAccess() {\n        guard let energyType = HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned) else { return }\n        store.requestAuthorization(toShare: [], read: [energyType]) { success, _ in\n            if success { self.loadEnergy() }\n        }\n    }\n\n    func loadEnergy() {\n        guard let type = HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned) else { return }\n        let start = Calendar.current.startOfDay(for: .now)\n        let predicate = HKQuery.predicateForSamples(withStart: start, end: .now)\n\n        let query = HKStatisticsQuery(quantityType: type, quantitySamplePredicate: predicate, options: .cumulativeSum) { _, result, _ in\n            if let q = result?.sumQuantity() {\n                DispatchQueue.main.async { self.calories = q.doubleValue(for: .kilocalorie()) }\n            }\n        }\n        store.execute(query)\n    }\n}",
+    "category": "HealthKit",
+    "categoryIcon": "heart.fill",
+    "categoryIconColor": "#EF476F"
+  },
+  {
+    "id": "healthkit_003",
+    "title": "Herzfrequenz (Pulse) auslesen",
+    "description": "Greife auf Herzfrequenzdaten zu – perfekt für Fitness-Apps.",
+    "steps": [
+      "Fordere Berechtigung für heartRate an.",
+      "Nutze HKSampleQuery für die letzten Messwerte.",
+      "Berechne Durchschnitt oder zeige letzte Werte."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#FFD166", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code":
+      "import HealthKit\n\nclass HeartRateManager: ObservableObject {\n    private let store = HKHealthStore()\n    @Published var bpm: Double = 0\n\n    init() { requestAccess() }\n\n    func requestAccess() {\n        guard let type = HKQuantityType.quantityType(forIdentifier: .heartRate) else { return }\n        store.requestAuthorization(toShare: [], read: [type]) { success, _ in\n            if success { self.fetchLatest() }\n        }\n    }\n\n    func fetchLatest() {\n        guard let type = HKQuantityType.quantityType(forIdentifier: .heartRate) else { return }\n        let sort = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)\n        let query = HKSampleQuery(sampleType: type, predicate: nil, limit: 1, sortDescriptors: [sort]) { _, samples, _ in\n            if let sample = samples?.first as? HKQuantitySample {\n                let value = sample.quantity.doubleValue(for: .init(from: \"count/min\"))\n                DispatchQueue.main.async { self.bpm = value }\n            }\n        }\n        store.execute(query)\n    }\n}",
+    "category": "HealthKit",
+    "categoryIcon": "heart.fill",
+    "categoryIconColor": "#FFD166"
+  },
+  {
+    "id": "healthkit_004",
+    "title": "Schlafanalyse auslesen",
+    "description": "Lies die Schlafdaten eines Nutzers aus – Light, Deep & Core Sleep.",
+    "steps": [
+      "Fordere Berechtigung für sleepAnalysis an.",
+      "Nutze HKSampleQuery für Datensätze.",
+      "Analysiere inBed und asleep Werte."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#118AB2", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code":
+      "import HealthKit\n\nclass SleepManager: ObservableObject {\n    private let store = HKHealthStore()\n    @Published var sleepHours: Double = 0\n\n    func requestAccess() {\n        guard let sleepType = HKCategoryType.categoryType(forIdentifier: .sleepAnalysis) else { return }\n        store.requestAuthorization(toShare: [], read: [sleepType]) { success, _ in\n            if success { self.loadSleep() }\n        }\n    }\n\n    func loadSleep() {\n        guard let type = HKCategoryType.categoryType(forIdentifier: .sleepAnalysis) else { return }\n        let start = Calendar.current.date(byAdding: .day, value: -1, to: Date())!\n        let predicate = HKQuery.predicateForSamples(withStart: start, end: Date())\n\n        let query = HKSampleQuery(sampleType: type, predicate: predicate, limit: 20, sortDescriptors: nil) { _, samples, _ in\n            let total = samples?.compactMap { sample -> Double? in\n                guard let s = sample as? HKCategorySample else { return nil }\n                return s.endDate.timeIntervalSince(s.startDate) / 3600\n            }.reduce(0, +)\n\n            DispatchQueue.main.async { self.sleepHours = total ?? 0 }\n        }\n        store.execute(query)\n    }\n}",
+    "category": "HealthKit",
+    "categoryIcon": "heart.fill",
+    "categoryIconColor": "#118AB2"
+  },
+  {
+    "id": "healthkit_005",
+    "title": "Gewicht & Körpergröße (Body Metrics)",
+    "description": "Zeige Benutzergewicht und Körpergröße aus HealthKit an.",
+    "steps": [
+      "Lade bodyMass und height.",
+      "Nutze HKSampleQuery für die letzten Werte.",
+      "Konvertiere Einheiten (kg, cm)."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#073B4C", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code":
+      "import HealthKit\n\nclass BodyMetricsManager: ObservableObject {\n    private let store = HKHealthStore()\n    @Published var weight: Double = 0\n    @Published var height: Double = 0\n\n    func requestAccess() {\n        guard\n            let weightType = HKQuantityType.quantityType(forIdentifier: .bodyMass),\n            let heightType = HKQuantityType.quantityType(forIdentifier: .height)\n        else { return }\n\n        store.requestAuthorization(toShare: [], read: [weightType, heightType]) { success, _ in\n            if success {\n                self.loadWeight()\n                self.loadHeight()\n            }\n        }\n    }\n\n    func loadWeight() {\n        guard let type = HKQuantityType.quantityType(forIdentifier: .bodyMass) else { return }\n        let sort = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)\n        let query = HKSampleQuery(sampleType: type, predicate: nil, limit: 1, sortDescriptors: [sort]) { _, samples, _ in\n            if let sample = samples?.first as? HKQuantitySample {\n                let value = sample.quantity.doubleValue(for: .gramUnit(with: .kilo))\n                DispatchQueue.main.async { self.weight = value }\n            }\n        }\n        store.execute(query)\n    }\n\n    func loadHeight() {\n        guard let type = HKQuantityType.quantityType(forIdentifier: .height) else { return }\n        let sort = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)\n        let query = HKSampleQuery(sampleType: type, predicate: nil, limit: 1, sortDescriptors: [sort]) { _, samples, _ in\n            if let sample = samples?.first as? HKQuantitySample {\n                let cm = sample.quantity.doubleValue(for: .meter()) * 100\n                DispatchQueue.main.async { self.height = cm }\n            }\n        }\n        store.execute(query)\n    }\n}",
+    "category": "HealthKit",
+    "categoryIcon": "heart.fill",
+    "categoryIconColor": "#073B4C"
+  },
+  {
+    "id": "healthkit_006",
+    "title": "Blutdruck auslesen (Systole & Diastole)",
+    "description": "Erhalte den Blutdruck (mmHg) des Nutzers – falls vorhanden.",
+    "steps": [
+      "Fordere Berechtigung für bloodPressureSystolic & Diastolic.",
+      "Nutze HKCorrelationQuery.",
+      "Extrahiere Einzelwerte aus der Korrelation."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#EF476F", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code":
+      "import HealthKit\n\nclass BloodPressureManager: ObservableObject {\n    private let store = HKHealthStore()\n    @Published var systolic = 0.0\n    @Published var diastolic = 0.0\n\n    func requestAccess() {\n        guard let sys = HKQuantityType.quantityType(forIdentifier: .bloodPressureSystolic),\n              let dia = HKQuantityType.quantityType(forIdentifier: .bloodPressureDiastolic) else { return }\n\n        store.requestAuthorization(toShare: [], read: [sys, dia]) { success, _ in\n            if success { self.fetchBP() }\n        }\n    }\n\n    func fetchBP() {\n        guard let type = HKObjectType.correlationType(forIdentifier: .bloodPressure) else { return }\n        let sort = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)\n\n        let query = HKSampleQuery(sampleType: type, predicate: nil, limit: 1, sortDescriptors: [sort]) { _, samples, _ in\n            if let correlation = samples?.first as? HKCorrelation {\n                if let sys = correlation.objects(for: HKObjectType.quantityType(forIdentifier: .bloodPressureSystolic)!).first as? HKQuantitySample {\n                    self.systolic = sys.quantity.doubleValue(for: .millimeterOfMercury())\n                }\n                if let dia = correlation.objects(for: HKObjectType.quantityType(forIdentifier: .bloodPressureDiastolic)!).first as? HKQuantitySample {\n                    self.diastolic = dia.quantity.doubleValue(for: .millimeterOfMercury())\n                }\n            }\n        }\n        store.execute(query)\n    }\n}",
+    "category": "HealthKit",
+    "categoryIcon": "heart.fill",
+    "categoryIconColor": "#EF476F"
+  },
+  {
+    "id": "healthkit_007",
+    "title": "Workouts abrufen (Trainingseinheiten)",
+    "description": "Lies Trainingsdaten wie Dauer, Energieverbrauch und Art des Workouts.",
+    "steps": [
+      "Nutze HKWorkoutType.",
+      "Verwende HKSampleQuery.",
+      "Analysiere burned energy & distance."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#FFD166", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code":
+      "import HealthKit\n\nclass WorkoutManager: ObservableObject {\n    private let store = HKHealthStore()\n    @Published var workouts: [HKWorkout] = []\n\n    func requestAccess() {\n        store.requestAuthorization(toShare: [], read: [HKObjectType.workoutType()]) { s, _ in\n            if s { self.load() }\n        }\n    }\n\n    func load() {\n        let type = HKObjectType.workoutType()\n        let query = HKSampleQuery(sampleType: type, predicate: nil, limit: 20, sortDescriptors: nil) { _, samples, _ in\n            DispatchQueue.main.async {\n                self.workouts = samples as? [HKWorkout] ?? []\n            }\n        }\n        store.execute(query)\n    }\n}",
+    "category": "HealthKit",
+    "categoryIcon": "heart.fill",
+    "categoryIconColor": "#FFD166"
+  },
+  {
+    "id": "healthkit_008",
+    "title": "Wasseraufnahme (Water Intake) speichern & lesen",
+    "description": "Speichere getrunkene Wassermengen und lese sie später wieder aus.",
+    "steps": [
+      "Nutze dietaryWater als QuantityType.",
+      "Schreibe HKQuantitySamples.",
+      "Lese Tagesverbrauch aus."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#118AB2", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code":
+      "import HealthKit\n\nclass WaterManager: ObservableObject {\n    private let store = HKHealthStore()\n\n    func requestAccess() {\n        guard let water = HKQuantityType.quantityType(forIdentifier: .dietaryWater) else { return }\n        store.requestAuthorization(toShare: [water], read: [water]) { _, _ in }\n    }\n\n    func addWater(_ ml: Double) {\n        guard let type = HKQuantityType.quantityType(forIdentifier: .dietaryWater) else { return }\n        let quantity = HKQuantity(unit: .literUnit(with: .milli), doubleValue: ml)\n        let sample = HKQuantitySample(type: type, quantity: quantity, start: .now, end: .now)\n        store.save(sample) { _,_ in }\n    }\n}",
+    "category": "HealthKit",
+    "categoryIcon": "heart.fill",
+    "categoryIconColor": "#118AB2"
+  },
+  {
+    "id": "healthkit_009",
+    "title": "Blutzucker (Blood Glucose) auslesen",
+    "description": "Ideal für Gesundheits-Apps – lies Glukosewerte in mg/dL.",
+    "steps": [
+      "Fordere bloodGlucose-Zugriff an.",
+      "Nutze HKSampleQuery.",
+      "Zeige letzten Messwert an."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#06D6A0", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code":
+      "import HealthKit\n\nclass GlucoseManager: ObservableObject {\n    private let store = HKHealthStore()\n    @Published var glucose: Double = 0\n\n    func requestAccess() {\n        guard let type = HKQuantityType.quantityType(forIdentifier: .bloodGlucose) else { return }\n        store.requestAuthorization(toShare: [], read: [type]) { s,_ in if s { self.load() } }\n    }\n\n    func load() {\n        guard let type = HKQuantityType.quantityType(forIdentifier: .bloodGlucose) else { return }\n        let sort = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)\n        let query = HKSampleQuery(sampleType: type, predicate: nil, limit: 1, sortDescriptors: [sort]) { _, samples, _ in\n            if let sample = samples?.first as? HKQuantitySample {\n                let value = sample.quantity.doubleValue(for: HKUnit(from: \"mg/dL\"))\n                DispatchQueue.main.async { self.glucose = value }\n            }\n        }\n        store.execute(query)\n    }\n}",
+    "category": "HealthKit",
+    "categoryIcon": "heart.fill",
+    "categoryIconColor": "#06D6A0"
+  },
+  {
+    "id": "healthkit_010",
+    "title": "Atmung (Respiratory Rate) auslesen",
+    "description": "Lies die Atemfrequenz in Atemzügen pro Minute aus.",
+    "steps": [
+      "Fordere Authorization für respiratoryRate an.",
+      "Nutze HKSampleQuery.",
+      "Zeige letzten Wert an."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7209B7", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code":
+      "import HealthKit\n\nclass RespirationManager: ObservableObject {\n    private let store = HKHealthStore()\n    @Published var rate: Double = 0\n\n    func requestAccess() {\n        let type = HKQuantityType.quantityType(forIdentifier: .respiratoryRate)!\n        store.requestAuthorization(toShare: [], read: [type]) { s,_ in if s { self.load() } }\n    }\n\n    func load() {\n        let type = HKQuantityType.quantityType(forIdentifier: .respiratoryRate)!\n        let sort = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)\n        let q = HKSampleQuery(sampleType: type, predicate: nil, limit: 1, sortDescriptors: [sort]) { _, samples, _ in\n            if let sample = samples?.first as? HKQuantitySample {\n                let v = sample.quantity.doubleValue(for: .init(from: \"count/min\"))\n                DispatchQueue.main.async { self.rate = v }\n            }\n        }\n        store.execute(q)\n    }\n}",
+    "category": "HealthKit",
+    "categoryIcon": "heart.fill",
+    "categoryIconColor": "#7209B7"
   }
 ]

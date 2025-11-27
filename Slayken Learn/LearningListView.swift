@@ -13,11 +13,9 @@ struct LearningListView: View {
     @State private var showFavoritesOnly = false
     @State private var categories: [String] = []
     @State private var selectedCategory = "Alle"
-    @State private var hasAskedForReviewThisSession = false
 
     // MARK: - Persistent
     @AppStorage("favoriteIDs") private var favoriteIDs = ""
-    @AppStorage("appLaunchCount") private var launchCount = 0
     @AppStorage("openPurchasedTab") private var openPurchasedTab = false
 
     // MARK: - Computed
@@ -209,30 +207,25 @@ private extension LearningListView {
     }
 }
 
-private extension Sequence where Element: Hashable {
-    func unique() -> [Element] {
-        var seen = Set<Element>()
-        return filter { seen.insert($0).inserted }
-    }
-}
-
 // MARK: - Logik
 private extension LearningListView {
     func onAppear() {
         loadAllTopics()
         setupCategories()
-        askForReviewIfNeeded()
 
         if openPurchasedTab {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
-                    // 🔍 Kategorie dynamisch anhand der Topics erkennen
                     if let dynamicCategory = topics
                         .map(\.category)
-                        .unique()
-                        .first(where: { $0.localizedCaseInsensitiveContains("purch") || $0.localizedCaseInsensitiveContains("buy") || $0.localizedCaseInsensitiveContains("gekauft") }) {
+                        .first(where: { $0.localizedCaseInsensitiveContains("purch") ||
+                                         $0.localizedCaseInsensitiveContains("buy") ||
+                                         $0.localizedCaseInsensitiveContains("gekauft") }) {
                         selectedCategory = dynamicCategory
-                    } else if let fallback = topics.map(\.category).unique().first(where: { $0.localizedCaseInsensitiveContains("shop") || $0.localizedCaseInsensitiveContains("store") }) {
+                    } else if let fallback = topics
+                        .map(\.category)
+                        .first(where: { $0.localizedCaseInsensitiveContains("shop") ||
+                                         $0.localizedCaseInsensitiveContains("store") }) {
                         selectedCategory = fallback
                     } else {
                         selectedCategory = "Alle"
@@ -241,16 +234,15 @@ private extension LearningListView {
                 openPurchasedTab = false
             }
         }
-
-
-
     }
 
-    
     func loadAllTopics() {
         let files = [
             "learningTopics", "metalData", "metalShaderData",
-            "metalAppData", "reactNativeData", "purchasedContent", "swiftData", "arkitData", "healthkitData", "speechData", "visionData", "widgekitData", "swiftDataModel", "htmlData", "jsonData"
+            "metalAppData", "reactNativeData", "purchasedContent",
+            "swiftData", "arkitData", "healthkitData",
+            "speechData", "visionData", "widgekitData",
+            "swiftDataModel", "htmlData", "jsonData"
         ]
         topics = files.flatMap { loadLearningTopics(from: $0) }
     }
@@ -260,29 +252,6 @@ private extension LearningListView {
         categories = ["Alle"] + unique.sorted()
         if !categories.contains(selectedCategory) {
             selectedCategory = "Alle"
-        }
-    }
-
-    func askForReviewIfNeeded() {
-        launchCount += 1
-        guard topics.count > 3 else { return }
-        if (launchCount == 5 || launchCount % 10 == 0),
-           !hasAskedForReviewThisSession {
-            hasAskedForReviewThisSession = true
-            requestAppStoreReview()
-        }
-    }
-
-    func requestAppStoreReview() {
-        guard let scene = UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene })
-            .first(where: { $0.activationState == .foregroundActive })
-        else { return }
-
-        if #available(iOS 18.0, *) {
-            AppStore.requestReview(in: scene)
-        } else {
-            SKStoreReviewController.requestReview(in: scene)
         }
     }
 }

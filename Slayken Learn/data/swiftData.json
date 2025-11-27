@@ -647,5 +647,195 @@
         "category": "Swift",
         "categoryIcon": "swift",
         "categoryIconColor": "#FF3B30"
+    },
+    {
+        "id": "swift_051",
+        "title": "Optionals sicher mit guard entpacken",
+        "description": "Lerne, wie du mit guard let Optionals sicher frühzeitig entpackst und Fehlerwege klar trennst.",
+        "steps": [
+            "nutze guard let für frühe Rückgaben",
+            "halte den Hauptcode sauber",
+            "reduziere verschachtelte if-let Blöcke"
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF6D2D", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "func greet(_ name: String?) {\n    guard let name = name else {\n        print(\"❌ Kein Name vorhanden\")\n        return\n    }\n    print(\"👋 Hallo, \\(name)\")\n}\n\ngreet(nil)\ngreet(\"Tufan\")",
+        "category": "Swift",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#FF6D2D"
+    },
+    {
+        "id": "swift_052",
+        "title": "Computed Properties verstehen",
+        "description": "Berechne Werte dynamisch ohne zusätzliche Variablen zu speichern.",
+        "steps": [
+            "berechnete Variable mit get anlegen",
+            "Abkürzung verwenden (ohne get {})",
+            "ideal für dynamische Zustände"
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF9F0A", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "struct Rectangle {\n    var width: Double\n    var height: Double\n\n    var area: Double {\n        width * height\n    }\n}\n\nlet r = Rectangle(width: 10, height: 4)\nprint(r.area)",
+        "category": "Swift",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#FF9F0A"
+    },
+    {
+        "id": "swift_053",
+        "title": "Property Observers (willSet & didSet)",
+        "description": "Verfolge Änderungen an Variablen, um UI oder Logik automatisch zu aktualisieren.",
+        "steps": [
+            "nutze willSet/didSet",
+            "Ideal für Debugging & UI-Updates",
+            "wird vor/nach Änderung ausgeführt"
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#5E5CE6", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "var score: Int = 0 {\n    willSet { print(\"➡️ Neuer Wert: \\(newValue)\") }\n    didSet  { print(\"⬅️ Alter Wert: \\(oldValue)\") }\n}\n\nscore = 20\nscore = 50",
+        "category": "Swift",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#5E5CE6"
+    },
+    {
+        "id": "swift_054",
+        "title": "Static Properties & Methods",
+        "description": "Nutze statische Werte für zentrale Konstanten und globale Funktionen.",
+        "steps": [
+            "mit static deklarieren",
+            "Instanz-Erzeugung nicht nötig",
+            "perfekt für Config oder Utils"
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#30D158", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "struct MathUtils {\n    static let pi = 3.1415\n    static func square(_ x: Int) -> Int { x * x }\n}\n\nprint(MathUtils.pi)\nprint(MathUtils.square(12))",
+        "category": "Swift",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#30D158"
+    },
+    {
+        "id": "swift_055",
+        "title": "Mutating Functions in Structs",
+        "description": "Ändere Werte innerhalb eines Structs mit mutating.",
+        "steps": [
+            "Structs sind immutable ohne mutating",
+            "mutating erlaubt Eigenschaftsänderungen",
+            "ideal für Value Types"
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF375F", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "struct Counter {\n    var value = 0\n    mutating func add() { value += 1 }\n}\n\nvar c = Counter()\nc.add()\nprint(c.value)",
+        "category": "Swift",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#FF375F"
+    },
+    {
+        "id": "swift_056",
+        "title": "Lazy Properties korrekt nutzen",
+        "description": "Initialisiere Variablen nur bei Bedarf – optimal für Performance.",
+        "steps": [
+            "mit lazy deklarieren",
+            "wird erst beim ersten Zugriff erzeugt",
+            "perfekt für teure Berechnungen"
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF9500", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "struct DataLoader {\n    lazy var bigData: [Int] = {\n        print(\"📦 Lade große Daten…\")\n        return Array(0...1_000_000)\n    }()\n}\n\nvar loader = DataLoader()\nprint(loader.bigData.count)",
+        "category": "Swift",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#FF9500"
+    },
+    {
+        "id": "swift_057",
+        "title": "Higher-Order Functions: map / filter / reduce",
+        "description": "Verarbeite Listen extrem kompakt mit funktionalen Operationen.",
+        "steps": [
+            "map → transformiere Werte",
+            "filter → filtere Werte",
+            "reduce → kombiniere Werte"
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#BF5AF2", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "let numbers = [1, 2, 3, 4, 5]\n\nprint(numbers.map { $0 * 2 })\nprint(numbers.filter { $0 % 2 == 0 })\nprint(numbers.reduce(0, +))",
+        "category": "Swift",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#BF5AF2"
+    },
+    {
+        "id": "swift_058",
+        "title": "Subscripts nutzen",
+        "description": "Erstelle eigene Zugriffsmethoden wie bei Arrays mit [] Syntax.",
+        "steps": [
+            "Subscript definieren",
+            "Lesen & Schreiben unterstützen",
+            "ideal für Data-Container"
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF3B30", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "struct ScoreBoard {\n    var scores = [\"A\": 10, \"B\": 20]\n    subscript(player: String) -> Int? {\n        get { scores[player] }\n        set { scores[player] = newValue }\n    }\n}\n\nvar s = ScoreBoard()\ns[\"A\"] = 99\nprint(s[\"A\"]!)",
+        "category": "Swift",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#FF3B30"
+    },
+    {
+        "id": "swift_059",
+        "title": "Pattern Matching mit if case & guard case",
+        "description": "Nutze Pattern Matching, um Enums und Werte extrem sauber zu prüfen.",
+        "steps": [
+            "if case zum Entpacken nutzen",
+            "guard case für frühes Verlassen",
+            "perfekt für elegante Switch-Alternativen"
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#0A84FF", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "enum Status { case success(Int), error(String) }\nlet response = Status.success(200)\n\nif case let .success(code) = response {\n    print(\"✅ Code: \\(code)\")\n}",
+        "category": "Swift",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#0A84FF"
+    },
+    {
+        "id": "swift_060",
+        "title": "Failable Initializer (init?)",
+        "description": "Erstelle Initializer, die nil zurückgeben können – perfekt für Validierung.",
+        "steps": [
+            "Deklariere init?()",
+            "prüfe Werte vor Initialisierung",
+            "return nil bei ungültigem Zustand"
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#30D158", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+            "struct User {\n    let name: String\n    init?(name: String) {\n        guard !name.isEmpty else { return nil }\n        self.name = name\n    }\n}\n\nlet good = User(name: \"Tufan\")\nlet bad = User(name: \"\")\nprint(good)\nprint(bad)",
+        "category": "Swift",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#30D158"
     }
 ]

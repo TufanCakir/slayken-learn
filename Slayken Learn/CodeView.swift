@@ -182,14 +182,18 @@ private extension CodeView {
                 ("(?<=<)/?\\b(" + htmlTags.joined(separator: "|") + ")\\b", tagColor, true, false),
                 ("\\b[a-zA-Z-]+(?==\")", attrColor, false, false),
                 ("\".*?\"", stringColor, false, false),
-                ("<!--.*?-->", commentColor, false, true)
+                ("<!--[\\s\\S]*?-->", commentColor, false, true)
             ], to: &attr, code: code)
 
         case "react":
             applyHighlights([
                 ("\\b(" + jsKeywords.joined(separator: "|") + ")\\b", keywordColor, true, false),
-                ("//.*", commentColor, false, true),
+                // Line Comments
+                ("//[^\n]*", commentColor, false, true),
+                // Block Comments
                 ("/\\*[\\s\\S]*?\\*/", commentColor, false, true),
+                // TODO, FIXME
+                ("\\/\\/\\s*(TODO|FIXME|NOTE):?[^\n]*", commentColor, true, true),
                 ("\".*?\"|'.*?'", stringColor, false, false),
                 ("\\b[0-9]+(\\.[0-9]+)?\\b", numberColor, false, false),
                 ("<[A-Za-z0-9_]+", tagColor, true, false),
@@ -198,12 +202,30 @@ private extension CodeView {
 
         default: // Swift
             applyHighlights([
+                ("(?m)^\\s*//\\s*(MARK:|- MARK:|MARK -).*", commentColor, true, true),
+                // Keywords
                 ("\\b(" + swiftKeywords.joined(separator: "|") + ")\\b", keywordColor, true, false),
+
+                // MARK, TODO, NOTE, FIXME
+                ("//\\s*(MARK:|- MARK:|MARK -)[^\n]*", commentColor, true, false),
+                ("//\\s*(TODO|FIXME|NOTE):?[^\n]*", commentColor, true, true),
+
+                // Normal comments
                 ("//.*", commentColor, false, true),
+
+                // Multiline comments
+                ("/\\*[\\s\\S]*?\\*/", commentColor, false, true),
+
+                // Strings
                 ("\".*?\"", stringColor, false, false),
+
+                // Numbers
                 ("\\b[0-9]+(\\.[0-9]+)?\\b", numberColor, false, false),
+
+                // Operators
                 ("[=+\\-*/<>!]+", operatorColor, false, false)
             ], to: &attr, code: code)
+
         }
         return attr
     }

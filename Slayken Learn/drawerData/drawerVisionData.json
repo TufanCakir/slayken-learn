@@ -22,5 +22,95 @@
     "category": "Vision",
     "categoryIcon": "vision.pro",
     "categoryIconColor": "#7B2CBF"
-  }
+  },
+  {
+    "id": "vision_002",
+    "title": "Gesichtserkennung mit Vision",
+    "description": "Erkenne Gesichter in einem Bild und erhalte deren Positionen mittels VNDetectFaceRectanglesRequest.",
+    "steps": [
+      "Importiere Vision und UIKit.",
+      "Erstelle eine VNDetectFaceRectanglesRequest.",
+      "Führe den Request mit VNImageRequestHandler aus."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#560BAD", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import Vision\nimport UIKit\n\nfunc detectFaces(in image: UIImage) {\n    guard let cgImage = image.cgImage else { return }\n\n    let request = VNDetectFaceRectanglesRequest { request, _ in\n        if let faces = request.results as? [VNFaceObservation] {\n            print(\"👤 Gefundene Gesichter: \\(faces.count)\")\n            for (i, face) in faces.enumerated() {\n                print(\"- Gesicht \\(i+1): BoundingBox = \\(face.boundingBox)\")\n            }\n        }\n    }\n\n    let handler = VNImageRequestHandler(cgImage: cgImage)\n    try? handler.perform([request])\n}",
+    "category": "Vision",
+    "categoryIcon": "vision.pro",
+    "categoryIconColor": "#560BAD"
+  },
+  {
+    "id": "vision_003",
+    "title": "Gesichtslandmarken (Augen, Mund, Nase)",
+    "description": "Erkenne präzise Landmarken eines Gesichts – Augen, Nase, Mund – für AR-Effekte oder Filter.",
+    "steps": [
+      "Verwende VNDetectFaceLandmarksRequest.",
+      "Erhalte FaceObservation und LandmarkPoints.",
+      "Konvertiere die Koordinaten aus dem Normalized-Space."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#3A0CA3", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import Vision\nimport UIKit\n\nfunc detectFaceLandmarks(in image: UIImage) {\n    guard let cgImage = image.cgImage else { return }\n\n    let request = VNDetectFaceLandmarksRequest { request, _ in\n        guard let results = request.results as? [VNFaceObservation] else { return }\n\n        for face in results {\n            if let landmarks = face.landmarks {\n                print(\"👁 Linkes Auge: \\(landmarks.leftEye?.normalizedPoints ?? [])\")\n                print(\"👁 Rechtes Auge: \\(landmarks.rightEye?.normalizedPoints ?? [])\")\n                print(\"👄 Mund: \\(landmarks.outerLips?.normalizedPoints ?? [])\")\n            }\n        }\n    }\n\n    let handler = VNImageRequestHandler(cgImage: cgImage)\n    try? handler.perform([request])\n}",
+    "category": "Vision",
+    "categoryIcon": "vision.pro",
+    "categoryIconColor": "#3A0CA3"
+  },
+  {
+    "id": "vision_004",
+    "title": "Barcode- und QR-Code-Scan",
+    "description": "Scanne Barcodes oder QR-Codes in Bildern mit Vision – perfekt für Scanner-Apps.",
+    "steps": [
+      "Nutze VNDetectBarcodesRequest.",
+      "Erhalte VNBarcodeObservation mit Payload.",
+      "Gib Barcode-Text und Typ aus."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4895EF", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import Vision\nimport UIKit\n\nfunc scanBarcode(in image: UIImage) {\n    guard let cgImage = image.cgImage else { return }\n\n    let request = VNDetectBarcodesRequest { request, _ in\n        if let codes = request.results as? [VNBarcodeObservation] {\n            for code in codes {\n                print(\"📦 Typ: \\(code.symbology.rawValue)\")\n                print(\"🔍 Inhalt: \\(code.payloadStringValue ?? \"Kein Inhalt\")\")\n            }\n        }\n    }\n\n    let handler = VNImageRequestHandler(cgImage: cgImage)\n    try? handler.perform([request])\n}",
+    "category": "Vision",
+    "categoryIcon": "vision.pro",
+    "categoryIconColor": "#4895EF"
+  },
+  {
+    "id": "vision_005",
+    "title": "Konturerkennung (Objektumrisse)",
+    "description": "Finde Kanten und Konturen in Bildern – ideal für Zeichnungen, Scans oder Bildanalyse.",
+    "steps": [
+      "Verwende VNDetectContoursRequest.",
+      "Aktiviere refineOptions für detaillierte Konturen.",
+      "Lese die gefundenen VNContours aus."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4CC9F0", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import Vision\nimport UIKit\n\nfunc detectContours(in image: UIImage) {\n    guard let cgImage = image.cgImage else { return }\n\n    let request = VNDetectContoursRequest()\n    request.maximumImageDimension = 512\n    request.contrastAdjustment = 1.0\n\n    let handler = VNImageRequestHandler(cgImage: cgImage)\n    try? handler.perform([request])\n\n    if let observation = request.results?.first as? VNContoursObservation {\n        print(\"✏️ Konturen gefunden: \\(observation.contourCount)\")\n    }\n}",
+    "category": "Vision",
+    "categoryIcon": "vision.pro",
+    "categoryIconColor": "#4CC9F0"
+  },
+  {
+    "id": "vision_006",
+    "title": "Bild-Tracking in Echtzeit (für AR)",
+    "description": "Lerne, wie du ein bestimmtes Bild erfasst und seine Position Frame-für-Frame verfolgst.",
+    "steps": [
+      "Nutze VNTrackImageRequest.",
+      "Starte Tracking mit einem Initial-Bild.",
+      "Verwende VNSequenceRequestHandler für Video-Frames."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#5E60CE", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import Vision\nimport UIKit\n\nlet sequenceHandler = VNSequenceRequestHandler()\nvar lastObservation: VNDetectedObjectObservation?\n\nfunc trackObject(pixelBuffer: CVPixelBuffer) {\n    guard let observation = lastObservation else { return }\n\n    let request = VNTrackObjectRequest(detectedObjectObservation: observation) { request, _ in\n        if let result = request.results?.first as? VNDetectedObjectObservation {\n            lastObservation = result\n            print(\"🎯 Tracking Box: \\(result.boundingBox)\")\n        }\n    }\n\n    try? sequenceHandler.perform([request], on: pixelBuffer)\n}",
+      "category": "Vision",
+      "categoryIcon": "vision.pro",
+      "categoryIconColor": "#5E60CE"
+    }
 ]

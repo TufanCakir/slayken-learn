@@ -22,5 +22,167 @@
     "category": "Metal",
     "categoryIcon": "cpu",
     "categoryIconColor": "#7209B7"
+  },
+  {
+    "id": "metal_002",
+    "title": "Metal Render Pipeline erstellen",
+    "description": "Lerne, wie man eine Metal Render Pipeline erstellt und einen Shader lädt.",
+    "steps": [
+      "Erstelle ein MTLDevice und MTLCommandQueue.",
+      "Lade ein .metal Shader File.",
+      "Baue eine Render Pipeline mit Vertex- & Fragment-Shader."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#3A0CA3", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import MetalKit\n\nclass MetalPipeline: NSObject {\n    let device: MTLDevice\n    let commandQueue: MTLCommandQueue\n    let pipelineState: MTLRenderPipelineState\n\n    override init() {\n        self.device = MTLCreateSystemDefaultDevice()!\n        self.commandQueue = device.makeCommandQueue()!\n\n        let library = device.makeDefaultLibrary()!\n        let vertex = library.makeFunction(name: \"vertex_main\")!\n        let fragment = library.makeFunction(name: \"fragment_main\")!\n\n        let descriptor = MTLRenderPipelineDescriptor()\n        descriptor.vertexFunction = vertex\n        descriptor.fragmentFunction = fragment\n        descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm\n\n        self.pipelineState = try! device.makeRenderPipelineState(descriptor: descriptor)\n    }\n}",
+    "category": "Metal",
+    "categoryIcon": "cpu",
+    "categoryIconColor": "#3A0CA3"
+  },
+  {
+    "id": "metal_003",
+    "title": "Dreieck rendern mit Metal",
+    "description": "Zeichne dein erstes Dreieck mit GPU-Rendering.",
+    "steps": [
+      "Initialisiere Vertex-Daten.",
+      "Übermittle Buffer an die GPU.",
+      "Nutze drawPrimitives() im RenderEncoder."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4361EE", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "struct Vertex { var position: SIMD3<Float> }\n\nclass MetalTriangleRenderer: NSObject, MTKViewDelegate {\n    let pipeline: MetalPipeline\n    let vertexBuffer: MTLBuffer\n\n    init(view: MTKView) {\n        self.pipeline = MetalPipeline()\n        let vertices = [\n            Vertex(position: [-0.5, -0.5, 0]),\n            Vertex(position: [ 0.5, -0.5, 0]),\n            Vertex(position: [ 0.0,  0.5, 0])\n        ]\n        self.vertexBuffer = pipeline.device.makeBuffer(bytes: vertices, length: MemoryLayout<Vertex>.stride * 3)\n        super.init()\n        view.delegate = self\n    }\n\n    func draw(in view: MTKView) {\n        guard let drawable = view.currentDrawable,\n              let descriptor = view.currentRenderPassDescriptor else { return }\n\n        let commandBuffer = pipeline.commandQueue.makeCommandBuffer()!\n        let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor)!\n\n        encoder.setRenderPipelineState(pipeline.pipelineState)\n        encoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)\n        encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)\n\n        encoder.endEncoding()\n        commandBuffer.present(drawable)\n        commandBuffer.commit()\n    }\n}",
+    "category": "Metal",
+    "categoryIcon": "cpu",
+    "categoryIconColor": "#4361EE"
+  },
+  {
+    "id": "metal_004",
+    "title": "Gradient Shader (GPU Farbverlauf)",
+    "description": "Erstelle einen animierten Farbverlauf mit Fragment-Shader.",
+    "steps": [
+      "Nutze fragment_main für Pixelberechnung.",
+      "Verwende time als Uniform für Animation.",
+      "Generiere einen farbigen GPU-Verlauf."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4CC9F0", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "#include <metal_stdlib>\nusing namespace metal;\n\nstruct VertexOut { float4 position [[position]]; float2 uv; };\n\nfragment float4 fragment_main(VertexOut in [[stage_in]], constant float &time [[buffer(1)]]) {\n    float r = 0.5 + 0.5 * sin(time + in.uv.x * 4.0);\n    float g = 0.5 + 0.5 * sin(time + in.uv.y * 4.0);\n    float b = 0.8;\n    return float4(r, g, b, 1);\n}",
+    "category": "Metal",
+    "categoryIcon": "cpu",
+    "categoryIconColor": "#4CC9F0"
+  },
+  {
+    "id": "metal_005",
+    "title": "Uniform Buffer (Animation über Swift)",
+    "description": "Sende Variablen wie Zeit, Farbe oder Stärke an deine Shader.",
+    "steps": [
+      "Erstelle einen Swift-Uniform-Buffer.",
+      "Übergebe ihn an fragment_main.",
+      "Nutze ihn für Animationen oder Effekte."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7209B7", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "class TimeUniform {\n    var time: Float = 0\n}\n\n/ In draw(in:)\nvar t = TimeUniform()\nt.time += 0.016\nencoder.setFragmentBytes(&t, length: MemoryLayout<TimeUniform>.stride, index: 1)",
+    "category": "Metal",
+    "categoryIcon": "cpu",
+    "categoryIconColor": "#7209B7"
+  },
+  {
+    "id": "metal_006",
+    "title": "Texture Rendering (Bild laden & zeigen)",
+    "description": "Lade ein Texture-Image in die GPU und rendere es.",
+    "steps": [
+      "Lade ein UIImage als MTLTexture.",
+      "Erstelle Textur-Sampler.",
+      "Zeichne Textur über Fragment Shader."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#560BAD", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "let textureLoader = MTKTextureLoader(device: device)\nlet texture = try! textureLoader.newTexture(name: \"background\", scaleFactor: 1.0, bundle: .main)",
+    "category": "Metal",
+    "categoryIcon": "cpu",
+    "categoryIconColor": "#560BAD"
+  },
+  {
+    "id": "metal_007",
+    "title": "Compute Shader Grundlagen",
+    "description": "Führe Berechnungen über die GPU aus – parallel, extrem schnell.",
+    "steps": [
+      "Erstelle eine Compute Pipeline.",
+      "Setze Buffer für Input & Output.",
+      "Rufe dispatchThreadgroups auf."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#B5179E", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "#include <metal_stdlib>\nusing namespace metal;\n\nkernel void compute_add(device float *data [[buffer(0)]], uint id [[thread_position_in_grid]]) {\n    data[id] = data[id] + 1.0;\n}",
+    "category": "Metal",
+    "categoryIcon": "cpu",
+    "categoryIconColor": "#B5179E"
+  },
+  {
+    "id": "metal_008",
+    "title": "2D Noise Shader (Perlin / Random)",
+    "description": "Erzeuge einen animierten Noise-Effekt per Fragment Shader.",
+    "steps": [
+      "Nutze random-Funktion basierend auf UV-Werten.",
+      "Animierbar durch Zeit-Uniform.",
+      "Perfekt für Feuer, Nebel, Wasser."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#F72585", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "float random(float2 st) {\n    return fract(sin(dot(st.xy, float2(12.9898,78.233))) * 43758.5453123);\n}\n\nfragment float4 fragment_main(VertexOut in [[stage_in]]) {\n    float n = random(in.uv * 10.0);\n    return float4(n, n, n, 1);\n}",
+    "category": "Metal",
+    "categoryIcon": "cpu",
+    "categoryIconColor": "#F72585"
+  },
+  {
+    "id": "metal_009",
+    "title": "Blurring Shader (Gaussian Blur)",
+    "description": "Erstelle einen Unschärfe-Effekt für Hintergründe oder UI.",
+    "steps": [
+      "Nutze 9-Tap Gaussian Kernel.",
+      "Berechne gewichtete Pixel.",
+      "Kombiniere horizontalen & vertikalen Blur."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4895EF", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "/ Pseudocode – Gaussian Blur\nfragment float4 fragment_main(VertexOut in [[stage_in]], texture2d<float> tex [[texture(0)]]) {\n    float2 uv = in.uv;\n    float3 col = float3(0);\n    float kernel[9] = {0.05, 0.09, 0.12, 0.15, 0.16, 0.15, 0.12, 0.09, 0.05};\n\n    for (int i = -4; i <= 4; i++) {\n        col += tex.sample(sampler(address::clamp_to_edge), uv + float2(i) * 0.002).rgb * kernel[i+4];\n    }\n    return float4(col, 1);\n}",
+    "category": "Metal",
+    "categoryIcon": "cpu",
+    "categoryIconColor": "#4895EF"
+  },
+  {
+    "id": "metal_010",
+    "title": "Metal + SwiftUI Animation (TimelineView)",
+    "description": "Kombiniere SwiftUI Animationen mit Metal Rendering.",
+    "steps": [
+      "Nutze TimelineView zur Zeitsteuerung.",
+      "Update Uniform Buffer in jedem Frame.",
+      "Verbinde MetalView als SwiftUI-Child."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#3A0CA3", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "struct AnimatedMetalView: View {\n    @State private var time: Float = 0\n\n    var body: some View {\n        TimelineView(.animation) { _ in\n            MetalBackgroundView(time: time)\n                .onAppear { time += 0.016 }\n        }\n    }\n}",
+    "category": "Metal",
+    "categoryIcon": "cpu",
+    "categoryIconColor": "#3A0CA3"
   }
 ]

@@ -32,7 +32,7 @@
       "backgroundColors": ["#000000", "#FF0000", "#000000"],
       "textColors": ["#FFFFFF"]
     },
-    "code": "//  ContentView.swift\n//  MetalHelloTriangleApp\n//\n//  Created by Tufan Cakir on 16.10.25.\n//\n\nimport SwiftUI\n\nstruct ContentView: View {\n    var body: some View {\n        MetalView()\n            .ignoresSafeArea()\n    }\n}\n\n// App Einstiegspunkt\nimport SwiftUI\n\n@main\nstruct MetalHelloTriangleAppApp: App {\n    var body: some Scene {\n        WindowGroup {\n            ContentView()\n        }\n    }\n}",
+    "code": "/  ContentView.swift\n/  MetalHelloTriangleApp\n/\n/  Created by Tufan Cakir on 16.10.25.\n/\n\nimport SwiftUI\n\nstruct ContentView: View {\n    var body: some View {\n        MetalView()\n            .ignoresSafeArea()\n    }\n}\n\n/ App Einstiegspunkt\nimport SwiftUI\n\n@main\nstruct MetalHelloTriangleAppApp: App {\n    var body: some Scene {\n        WindowGroup {\n            ContentView()\n        }\n    }\n}",
     "category": "Metal Setup",
     "categoryIcon": "swift",
     "categoryIconColor": "#00FF00"
@@ -52,7 +52,7 @@
       "backgroundColors": ["#000000", "#FFFF00", "#000000"],
       "textColors": ["#FFFFFF"]
     },
-    "code": "//  ContentView.swift\n//  MetalHelloTriangleApp\n//\n//  Created by Tufan Cakir on 16.10.25.\n//\n\nimport SwiftUI\n\nstruct ContentView: View {\n    var body: some View {\n        MetalView()\n            .ignoresSafeArea()\n    }\n}\n\n// App Einstiegspunkt\nimport SwiftUI\n\n@main\nstruct MetalHelloTriangleAppApp: App {\n    var body: some Scene {\n        WindowGroup {\n            ContentView()\n        }\n    }\n}",
+    "code": "/  ContentView.swift\n/  MetalHelloTriangleApp\n/\n/  Created by Tufan Cakir on 16.10.25.\n/\n\nimport SwiftUI\n\nstruct ContentView: View {\n    var body: some View {\n        MetalView()\n            .ignoresSafeArea()\n    }\n}\n\n/ App Einstiegspunkt\nimport SwiftUI\n\n@main\nstruct MetalHelloTriangleAppApp: App {\n    var body: some Scene {\n        WindowGroup {\n            ContentView()\n        }\n    }\n}",
     "category": "Metal Setup",
     "categoryIcon": "cpu",
     "categoryIconColor": "#00FF00"

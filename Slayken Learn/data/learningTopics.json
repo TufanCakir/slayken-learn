@@ -852,5 +852,365 @@
         "category": "SwiftUI",
         "categoryIcon": "swift",
         "categoryIconColor": "#7209B7"
+    },
+    {
+      "id": "swiftui_049",
+      "title": "LazyVGrid verwenden",
+      "description": "Erstelle Grid-Layouts mit dynamischen Spalten – perfekt für Galerien.",
+      "steps": [
+        "Erstelle GridItem-Array.",
+        "Verwende LazyVGrid mit Columns.",
+        "Fülle das Grid mit ForEach."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#6A4C93", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct GridExampleView: View {\n    let columns = [GridItem(.flexible()), GridItem(.flexible())]\n\n    var body: some View {\n        ScrollView {\n            LazyVGrid(columns: columns, spacing: 20) {\n                ForEach(1..<9) { i in\n                    RoundedRectangle(cornerRadius: 12)\n                        .fill(.purple.opacity(0.7))\n                        .frame(height: 100)\n                        .overlay(Text(\"Item \\(i)\").foregroundColor(.white))\n                }\n            }\n            .padding()\n        }\n    }\n}\n\n#Preview { GridExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#6A4C93"
+    },
+    {
+      "id": "swiftui_050",
+      "title": "ScrollViewReader verwenden",
+      "description": "Springe programmgesteuert zu Positionen in einer ScrollView.",
+      "steps": [
+        "ScrollViewReader hinzufügen.",
+        "Mit reader.scrollTo() scrollen.",
+        "IDs für jedes Element setzen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#4CC9F0", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct ScrollReaderView: View {\n    var body: some View {\n        ScrollViewReader { proxy in\n            VStack(spacing: 20) {\n                Button(\"Zu Item 30 springen\") {\n                    withAnimation { proxy.scrollTo(30) }\n                }\n\n                ScrollView {\n                    VStack(spacing: 10) {\n                        ForEach(1..<50) { i in\n                            Text(\"Item \\(i)\")\n                                .id(i)\n                                .frame(maxWidth: .infinity)\n                                .padding()\n                                .background(.blue.opacity(0.3))\n                                .cornerRadius(8)\n                        }\n                    }\n                }\n            }\n        }\n    }\n}\n\n#Preview { ScrollReaderView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#4CC9F0"
+    },
+    {
+      "id": "swiftui_051",
+      "title": "Toolbar & NavigationBar anpassen",
+      "description": "Füge Buttons zur Toolbar hinzu und gestalte die NavigationBar.",
+      "steps": [
+        "NavigationStack verwenden.",
+        "ToolbarItems hinzufügen.",
+        "Icons und Rollen definieren."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#4361EE", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct ToolbarExampleView: View {\n    var body: some View {\n        NavigationStack {\n            Text(\"Toolbar Beispiel\")\n                .navigationTitle(\"Start\")\n                .toolbar {\n                    ToolbarItem(placement: .navigationBarTrailing) {\n                        Button(action: {}) { Image(systemName: \"gear\") }\n                    }\n                    ToolbarItem(placement: .navigationBarLeading) {\n                        Button(action: {}) { Image(systemName: \"bell\") }\n                    }\n                }\n        }\n    }\n}\n\n#Preview { ToolbarExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#4361EE"
+    },
+    {
+      "id": "swiftui_052",
+      "title": "ConfirmationDialog verwenden",
+      "description": "Zeige ein iOS-typisches ActionSheet mit mehreren Optionen.",
+      "steps": [
+        "State für das Anzeigen anlegen.",
+        "Mit .confirmationDialog() verbinden.",
+        "Buttons & Rollen definieren."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#F72585", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct ConfirmationDialogExampleView: View {\n    @State private var showDialog = false\n\n    var body: some View {\n        Button(\"Optionen öffnen\") { showDialog = true }\n            .confirmationDialog(\"Aktion wählen\", isPresented: $showDialog) {\n                Button(\"Löschen\", role: .destructive) {}\n                Button(\"Umbenennen\") {}\n                Button(\"Abbrechen\", role: .cancel) {}\n            }\n            .padding()\n    }\n}\n\n#Preview { ConfirmationDialogExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#F72585"
+    },
+    {
+      "id": "swiftui_053",
+      "title": "SwipeActions in List",
+      "description": "Füge nach links/rechts wischbare Aktionen zu List-Elementen hinzu.",
+      "steps": [
+        "List mit ForEach erstellen.",
+        "Mit .swipeActions() Aktionen hinzufügen.",
+        "Rollen wie .destructive verwenden."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#3A0CA3", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct SwipeActionsExampleView: View {\n    @State private var items = [\"Alpha\", \"Beta\", \"Gamma\"]\n\n    var body: some View {\n        List {\n            ForEach(items, id: \\.self) { item in\n                Text(item)\n                    .swipeActions(edge: .trailing) {\n                        Button(role: .destructive) { } label: {\n                            Label(\"Löschen\", systemImage: \"trash\")\n                        }\n                    }\n            }\n        }\n    }\n}\n\n#Preview { SwipeActionsExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#3A0CA3"
+    },
+    {
+      "id": "swiftui_054",
+      "title": "Searchable hinzufügen",
+      "description": "Füge oben in einer Liste ein Suchfeld hinzu – perfekt für große Daten.",
+      "steps": [
+        "Searchable Modifier verwenden.",
+        "State für den Suchtext anlegen.",
+        "Liste entsprechend filtern."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#4CC9F0", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct SearchExampleView: View {\n    @State private var query = \"\"\n    let items = [\"Apple\", \"Banana\", \"Cherry\", \"Date\"]\n\n    var body: some View {\n        List(filtered) { item in\n            Text(item)\n        }\n        .searchable(text: $query, prompt: \"Suchen…\")\n    }\n\n    var filtered: [String] {\n        query.isEmpty ? items : items.filter { $0.localizedCaseInsensitiveContains(query) }\n    }\n}\n\n#Preview { SearchExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#4CC9F0"
+    },
+    {
+      "id": "swiftui_055",
+      "title": "Badge in TabView oder List",
+      "description": "Füge kleine Notification-Badges in Tabs und Listeneinträgen hinzu.",
+      "steps": [
+        "Badge Modifier verwenden.",
+        "Zahlen oder Texte anzeigen.",
+        "Tabletaugliche Designs nutzen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#3F37C9", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct BadgeExampleView: View {\n    var body: some View {\n        TabView {\n            Text(\"Home\")\n                .tabItem { Label(\"Home\", systemImage: \"house\") }\n                .badge(3)\n\n            Text(\"Nachrichten\")\n                .tabItem { Label(\"Chat\", systemImage: \"message\") }\n                .badge(\"Neu\")\n        }\n    }\n}\n\n#Preview { BadgeExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#3F37C9"
+    },
+    {
+      "id": "swiftui_056",
+      "title": "Async Let & Task",
+      "description": "Nutze Swift Concurrency für parallele Aufgaben in Views.",
+      "steps": [
+        "Async let für gleichzeitige Tasks.",
+        "Task {} im onAppear verwenden.",
+        "Daten asynchron laden."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#4895EF", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct AsyncTaskExampleView: View {\n    @State private var text = \"Lade…\"\n\n    var body: some View {\n        Text(text)\n            .task {\n                async let first = fetchTitle()\n                async let second = fetchSubtitle()\n                text = await \"\\(first) – \\(second)\"\n            }\n            .padding()\n    }\n\n    func fetchTitle() async -> String { \"Titel\" }\n    func fetchSubtitle() async -> String { \"Untertitel\" }\n}\n\n#Preview { AsyncTaskExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#4895EF"
+    },
+    {
+      "id": "swiftui_057",
+      "title": "onChange Modifier",
+      "description": "Reagiere immer, wenn sich ein State ändert – ideal für Validierung.",
+      "steps": [
+        "onChange(of:) verwenden.",
+        "State beobachten.",
+        "Aktionen automatisch auslösen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#7209B7", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct OnChangeExampleView: View {\n    @State private var text = \"\"\n    @State private var status = \"Noch nichts eingegeben\"\n\n    var body: some View {\n        VStack(spacing: 20) {\n            TextField(\"Tippe etwas…\", text: $text)\n                .textFieldStyle(.roundedBorder)\n\n            Text(status)\n                .font(.headline)\n                .foregroundColor(.purple)\n        }\n        .padding()\n        .onChange(of: text) { newValue in\n            status = newValue.isEmpty ? \"Leeres Feld\" : \"Eingabe: \\(newValue)\"\n        }\n    }\n}\n\n#Preview { OnChangeExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#7209B7"
+    },
+    {
+      "id": "swiftui_058",
+      "title": "Shimmer Effekt",
+      "description": "Erstelle einen modernen Shimmer-Loading-Effekt wie bei Instagram & Apple.",
+      "steps": [
+        "Animierten Gradient erstellen.",
+        "Mask mit Rectangle anwenden.",
+        "Endlosen Loop mit Animation nutzen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#F15BB5", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct ShimmerView: View {\n    @State private var move = false\n\n    var shimmer: LinearGradient {\n        LinearGradient(\n            colors: [.white.opacity(0.3), .white, .white.opacity(0.3)],\n            startPoint: .leading,\n            endPoint: .trailing\n        )\n    }\n\n    var body: some View {\n        ZStack {\n            RoundedRectangle(cornerRadius: 12)\n                .fill(.gray.opacity(0.3))\n                .frame(height: 120)\n\n            shimmer\n                .frame(width: 200)\n                .offset(x: move ? 150 : -150)\n                .mask(RoundedRectangle(cornerRadius: 12).frame(height: 120))\n                .animation(.linear(duration: 1.2).repeatForever(autoreverses: false), value: move)\n        }\n        .onAppear { move = true }\n        .padding()\n    }\n}\n\n#Preview { ShimmerView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#F15BB5"
+    },
+    {
+      "id": "swiftui_059",
+      "title": "ShareSheet (Teilen-Dialog) verwenden",
+      "description": "Öffne den iOS System-Share Dialog, um Text, Bilder oder Links zu teilen.",
+      "steps": [
+        "UIActivityViewController Wrapper erstellen.",
+        "State für das Anzeigen anlegen.",
+        "Button zum Öffnen des ShareSheets nutzen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#5E60CE", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct ShareSheetView: UIViewControllerRepresentable {\n    let items: [Any]\n    func makeUIViewController(context: Context) -> UIActivityViewController {\n        UIActivityViewController(activityItems: items, applicationActivities: nil)\n    }\n    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}\n}\n\nstruct ShareExampleView: View {\n    @State private var showSheet = false\n\n    var body: some View {\n        Button(\"Teilen\") { showSheet = true }\n            .sheet(isPresented: $showSheet) {\n                ShareSheetView(items: [\"Hallo aus SwiftUI!\"])\n            }\n            .padding()\n    }\n}\n\n#Preview { ShareExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#5E60CE"
+    },
+    {
+      "id": "swiftui_060",
+      "title": "Drag and Drop in SwiftUI",
+      "description": "Ziehe Elemente mit DragGesture und DropDelegate über den Bildschirm.",
+      "steps": [
+        "DragGesture hinzufügen.",
+        "Element per offset bewegen.",
+        "Drop Delegate optional nutzen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#4CC9F0", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct DragDropExampleView: View {\n    @State private var offset = CGSize.zero\n\n    var body: some View {\n        Circle()\n            .fill(.blue)\n            .frame(width: 120, height: 120)\n            .offset(offset)\n            .gesture(\n                DragGesture()\n                    .onChanged { value in offset = value.translation }\n                    .onEnded { _ in withAnimation { offset = .zero } }\n            )\n            .padding()\n    }\n}\n\n#Preview { DragDropExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#4CC9F0"
+    },
+    {
+      "id": "swiftui_061",
+      "title": "Custom Modifier erstellen",
+      "description": "Erstelle deinen eigenen ViewModifier, um wiederverwendbares Styling zu bauen.",
+      "steps": [
+        "Struktur erstellen, die ViewModifier erfüllt.",
+        "Modifier implementieren.",
+        "Extension .myModifier() hinzufügen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#3A0CA3", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct NeonModifier: ViewModifier {\n    func body(content: Content) -> some View {\n        content\n            .padding()\n            .background(.purple)\n            .foregroundColor(.white)\n            .cornerRadius(12)\n            .shadow(color: .purple.opacity(0.6), radius: 10)\n    }\n}\n\nextension View {\n    func neonStyle() -> some View { self.modifier(NeonModifier()) }\n}\n\nstruct ModifierExampleView: View {\n    var body: some View {\n        Text(\"Custom Modifier\")\n            .neonStyle()\n    }\n}\n\n#Preview { ModifierExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#3A0CA3"
+    },
+    {
+      "id": "swiftui_062",
+      "title": "Mask & ClipShape",
+      "description": "Schneide Views in beliebige Formen wie Kreis, Capsule oder Irregular Shapes.",
+      "steps": [
+        "clipShape() verwenden.",
+        "mask() für komplexere Effekte nutzen.",
+        "Eigene Shapes erstellen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#7209B7", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct MaskClipExampleView: View {\n    var body: some View {\n        Image(\"example\")\n            .resizable()\n            .scaledToFit()\n            .frame(height: 250)\n            .clipShape(Circle())\n            .overlay(Circle().stroke(.purple, lineWidth: 6))\n            .shadow(radius: 10)\n            .padding()\n    }\n}\n\n#Preview { MaskClipExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#7209B7"
+    },
+    {
+      "id": "swiftui_063",
+      "title": "MatchedGeometryEffect: Liste → Detail",
+      "description": "Erstelle einen flüssigen Übergang von einer Karte in eine Detailansicht.",
+      "steps": [
+        "Namespace definieren.",
+        "matchedGeometryEffect in beiden Views nutzen.",
+        "Mit Animation togglen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#F72585", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct MGEDetailView: View {\n    @Namespace private var ns\n    @State private var showDetail = false\n\n    var body: some View {\n        VStack {\n            if showDetail {\n                RoundedRectangle(cornerRadius: 20)\n                    .fill(.pink)\n                    .matchedGeometryEffect(id: \"card\", in: ns)\n                    .frame(width: 320, height: 320)\n            } else {\n                RoundedRectangle(cornerRadius: 20)\n                    .fill(.pink)\n                    .matchedGeometryEffect(id: \"card\", in: ns)\n                    .frame(width: 120, height: 120)\n            }\n        }\n        .onTapGesture { withAnimation(.spring()) { showDetail.toggle() } }\n    }\n}\n\n#Preview { MGEDetailView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#F72585"
+    },
+    {
+      "id": "swiftui_064",
+      "title": "Pull-to-Refresh",
+      "description": "Füge eine native Pull-to-Refresh Funktion in ScrollViews hinzu.",
+      "steps": [
+        "List oder ScrollView verwenden.",
+        "refreshable {} hinzufügen.",
+        "Async-Aktion beim Refresh ausführen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#4895EF", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct RefreshExampleView: View {\n    @State private var items = [\"Apple\", \"Banana\", \"Orange\"]\n\n    var body: some View {\n        List(items, id: \\.self) { Text($0) }\n            .refreshable {\n                try? await Task.sleep(nanoseconds: 1_000_000_000)\n                items.append(\"Neu: \\(Date())\")\n            }\n    }\n}\n\n#Preview { RefreshExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#4895EF"
+    },
+    {
+      "id": "swiftui_065",
+      "title": "ScrollView mit Parallax Effekt",
+      "description": "Erstelle einen dynamischen Parallax Header wie in Apple News.",
+      "steps": [
+        "GeometryReader verwenden.",
+        "Bildhöhe dynamisch anpassen.",
+        "Overlay-Inhalt hinzufügen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#560BAD", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct ParallaxExampleView: View {\n    var body: some View {\n        ScrollView {\n            GeometryReader { geo in\n                let y = geo.frame(in: .global).minY\n                Image(\"example\")\n                    .resizable()\n                    .scaledToFill()\n                    .frame(height: y > 0 ? 300 + y : 300)\n                    .clipped()\n            }\n            .frame(height: 300)\n\n            VStack(spacing: 20) {\n                ForEach(1..<20) { i in\n                    Text(\"Inhalt \\(i)\")\n                        .padding()\n                        .frame(maxWidth: .infinity)\n                        .background(.purple.opacity(0.2))\n                        .cornerRadius(10)\n                }\n            }\n            .padding()\n        }\n    }\n}\n\n#Preview { ParallaxExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#560BAD"
+    },
+    {
+      "id": "swiftui_066",
+      "title": "Custom Shape erstellen",
+      "description": "Definiere eigene Shapes mit Path – ideal für besondere UI-Elemente.",
+      "steps": [
+        "Shape-Protokoll implementieren.",
+        "Path im draw(in:) bauen.",
+        "In Views verwenden."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#3A86FF", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct DiamondShape: Shape {\n    func path(in rect: CGRect) -> Path {\n        var p = Path()\n        let midX = rect.midX\n        let midY = rect.midY\n        p.move(to: CGPoint(x: midX, y: rect.minY))\n        p.addLine(to: CGPoint(x: rect.maxX, y: midY))\n        p.addLine(to: CGPoint(x: midX, y: rect.maxY))\n        p.addLine(to: CGPoint(x: rect.minX, y: midY))\n        p.closeSubpath()\n        return p\n    }\n}\n\nstruct ShapeExampleView: View {\n    var body: some View {\n        DiamondShape()\n            .fill(.blue)\n            .frame(width: 200, height: 200)\n            .padding()\n    }\n}\n\n#Preview { ShapeExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#3A86FF"
+    },
+    {
+      "id": "swiftui_067",
+      "title": "Rotation-, Scale- & Opacity-Animation",
+      "description": "Kombiniere verschiedene Animationen für moderne UI-Effekte.",
+      "steps": [
+        "State-Variable erstellen.",
+        "rotationEffect, scaleEffect, opacity animieren.",
+        "withAnimation {} verwenden."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#F77F00", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct TransformAnimationView: View {\n    @State private var animate = false\n\n    var body: some View {\n        VStack(spacing: 30) {\n            Image(systemName: \"star.fill\")\n                .font(.system(size: 80))\n                .foregroundColor(.yellow)\n                .rotationEffect(.degrees(animate ? 360 : 0))\n                .scaleEffect(animate ? 1.4 : 1)\n                .opacity(animate ? 1 : 0.5)\n                .animation(.easeInOut(duration: 1).repeatForever(autoreverses: true), value: animate)\n\n            Button(\"Start Animation\") { animate.toggle() }\n        }\n        .padding()\n    }\n}\n\n#Preview { TransformAnimationView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#F77F00"
+    },
+    {
+      "id": "swiftui_068",
+      "title": "ScrollTransition (iOS 17+)",
+      "description": "Erstelle beeindruckende Scroll-Effekte mit .scrollTransition.",
+      "steps": [
+        "ScrollView verwenden.",
+        "scrollTransition Modifier hinzufügen.",
+        "Visuelle Effekte je nach Sichtbarkeit steuern."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#E5383B", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct ScrollTransitionExampleView: View {\n    var body: some View {\n        ScrollView {\n            ForEach(0..<20) { i in\n                Text(\"Eintrag \\(i)\")\n                    .font(.largeTitle)\n                    .frame(maxWidth: .infinity)\n                    .padding()\n                    .background(.red.opacity(0.3))\n                    .cornerRadius(12)\n                    .scrollTransition(.interactive) { content, phase in\n                        content\n                            .opacity(phase.isIdentity ? 1 : 0.2)\n                            .scaleEffect(phase.isIdentity ? 1 : 0.8)\n                    }\n            }\n            .padding()\n        }\n    }\n}\n\n#Preview { ScrollTransitionExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#E5383B"
     }
 ]

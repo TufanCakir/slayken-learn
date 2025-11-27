@@ -25,4 +25,194 @@
         "categoryIcon": "square.grid.2x2.fill",
         "categoryIconColor": "#0A84FF"
     },
+    {
+      "id": "widgetkit_002",
+      "title": "Widget mit AppStorage-Daten",
+      "description": "Erstelle ein Widget, das automatisch Daten aus AppStorage liest – perfekt für kleine Notizen oder Counter.",
+      "steps": [
+        "AppStorage in Widget und App teilen.",
+        "Wert im WidgetView anzeigen.",
+        "In der App aktualisieren → Widget zeigt es sofort."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#5E5CE6", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+        "import WidgetKit\nimport SwiftUI\n\nstruct SimpleNoteEntry: TimelineEntry { let date: Date; let note: String }\n\nstruct NoteProvider: TimelineProvider {\n    func placeholder(in context: Context) -> SimpleNoteEntry { SimpleNoteEntry(date: .now, note: \"...\") }\n    func getSnapshot(in context: Context, completion: @escaping (SimpleNoteEntry) -> Void) {\n        let note = UserDefaults(suiteName: \"group.app\")?.string(forKey: \"note\") ?? \"Keine Notiz\"\n        completion(SimpleNoteEntry(date: .now, note: note))\n    }\n    func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleNoteEntry>) -> Void) {\n        let note = UserDefaults(suiteName: \"group.app\")?.string(forKey: \"note\") ?? \"Keine Notiz\"\n        let entry = SimpleNoteEntry(date: .now, note: note)\n        completion(Timeline(entries: [entry], policy: .never))\n    }\n}\n\nstruct NoteWidgetView: View {\n    var entry: SimpleNoteEntry\n    var body: some View {\n        Text(entry.note).padding()\n    }\n}\n\n@main\nstruct NoteWidget: Widget {\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: \"note_widget\", provider: NoteProvider()) { entry in\n            NoteWidgetView(entry: entry)\n        }\n    }\n}",
+      "category": "WidgetKit",
+      "categoryIcon": "square.grid.2x2.fill",
+      "categoryIconColor": "#5E5CE6"
+    },
+    {
+      "id": "widgetkit_003",
+      "title": "Widget mit mehreren Größen (Families)",
+      "description": "Baue Widgets, die je nach Größe (small, medium, large) unterschiedliche Layouts anzeigen.",
+      "steps": [
+        "WidgetConfiguration mit .supportedFamilies setzen.",
+        "EntryView mit switch auf context.family.",
+        "Unterschiedliche Layouts für jede Größe."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#00C7BE", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+        "struct MultiSizeView: View {\n    @Environment(\\.widgetFamily) var family\n    var entry: Provider.Entry\n\n    var body: some View {\n        switch family {\n        case .systemSmall: Text(\"📦 Small\")\n        case .systemMedium: Text(\"📦 Medium\")\n        case .systemLarge: Text(\"📦 Large\")\n        default: Text(\"Widget\")\n        }\n    }\n}\n\n@main\nstruct MultiWidget: Widget {\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: \"multi_widget\", provider: Provider()) { entry in\n            MultiSizeView(entry: entry)\n        }\n        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])\n    }\n}",
+      "category": "WidgetKit",
+      "categoryIcon": "square.grid.2x2.fill",
+      "categoryIconColor": "#00C7BE"
+    },
+    {
+      "id": "widgetkit_004",
+      "title": "Intent Widget (Benutzer-Auswahl)",
+      "description": "Baue ein Widget, in dem der Nutzer Inhalte in der App auswählen kann – z. B. Lieblingsquote oder Favorit.",
+      "steps": [
+        "IntentDefinition-Datei erstellen.",
+        "ConfigurationIntent verwenden.",
+        "Widget mit IntentConfiguration bauen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF9F0A", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+        "import WidgetKit\nimport SwiftUI\nimport Intents\n\nstruct IntentEntry: TimelineEntry { let date: Date; let configuration: ConfigurationIntent }\n\n@main\nstruct IntentWidget: Widget {\n    var body: some WidgetConfiguration {\n        IntentConfiguration(kind: \"intent_widget\", intent: ConfigurationIntent.self, provider: Provider()) { entry in\n            Text(entry.configuration.name ?? \"Kein Name\")\n        }\n    }\n}",
+      "category": "WidgetKit",
+      "categoryIcon": "square.grid.2x2.fill",
+      "categoryIconColor": "#FF9F0A"
+    },
+    {
+      "id": "widgetkit_005",
+      "title": "Live Activity (Dynamic Island)",
+      "description": "Erstelle eine Live Activity, die auf dem Homescreen und der Dynamic Island erscheint.",
+      "steps": [
+        "Aktivitäts-Attribute definieren.",
+        "Activity starten und aktualisieren.",
+        "Widget für Dynamic Island Layout bauen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF453A", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+        "import ActivityKit\n\nstruct TimerAttributes: ActivityAttributes {\n    struct ContentState: Codable, Hashable { var progress: Double }\n}\n\nlet activity = try? Activity<TimerAttributes>.request(\n    attributes: .init(),\n    contentState: .init(progress: 0.0),\n    pushType: nil\n)\n\nTask { await activity?.update(using: .init(progress: 0.9)) }",
+      "category": "WidgetKit",
+      "categoryIcon": "square.grid.2x2.fill",
+      "categoryIconColor": "#FF453A"
+    },
+    {
+      "id": "widgetkit_006",
+      "title": "Deep-Linking aus Widgets",
+      "description": "Öffne direkt bestimmte App-Screens durch URL-Schemes.",
+      "steps": [
+        "URL-Scheme in der App definieren.",
+        "Link mit widgetURL() setzen.",
+        "In App mit onOpenURL() abfangen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#30D158", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+        "struct LinkWidgetView: View {\n    var entry: Entry\n    var body: some View {\n        Text(\"➡️ Öffne App Screen\")\n            .widgetURL(URL(string: \"myapp://detail\"))\n    }\n}",
+      "category": "WidgetKit",
+      "categoryIcon": "square.grid.2x2.fill",
+      "categoryIconColor": "#30D158"
+    },
+    {
+      "id": "widgetkit_007",
+      "title": "Countdown Widget",
+      "description": "Widget mit Datum, das automatisch herunterzählt – perfekt für Events oder Release-Timer.",
+      "steps": [
+        "Zieldatum speichern.",
+        "Restzeit berechnen.",
+        "Timeline jede Minute aktualisieren."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FFD60A", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+        "struct CountdownEntry: TimelineEntry { let date: Date; let remaining: String }\n\nfunc getTimeline(in context: Context, completion: @escaping (Timeline<CountdownEntry>) -> Void) {\n    let target = Calendar.current.date(byAdding: .hour, value: 5, to: .now)!\n    let remaining = target.timeIntervalSinceNow\n    let entry = CountdownEntry(date: .now, remaining: \"Noch \\(Int(remaining))s\")\n    completion(Timeline(entries: [entry], policy: .after(.now.addingTimeInterval(60))))\n}",
+      "category": "WidgetKit",
+      "categoryIcon": "timer",
+      "categoryIconColor": "#FFD60A"
+    },
+    {
+      "id": "widgetkit_008",
+      "title": "Lockscreen Widget (Accessory)",
+      "description": "Erstelle Widgets für den iOS-Lockscreen – compact, circular und rectangular.",
+      "steps": [
+        "AccessoryFamily unterstützen.",
+        "Layout komprimiert halten.",
+        "WidgetConfiguration erweitern."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#8E8E93", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+        "@main\nstruct LockWidget: Widget {\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: \"lock\", provider: Provider()) { entry in\n            Text(entry.date, style: .time)\n        }\n        .supportedFamilies([.accessoryCircular, .accessoryRectangular])\n    }\n}",
+      "category": "WidgetKit",
+      "categoryIcon": "square.grid.2x2.fill",
+      "categoryIconColor": "#8E8E93"
+    },
+    {
+      "id": "widgetkit_009",
+      "title": "Widgets mit Bildern",
+      "description": "Zeige Bilder, Emojis, App-Assets oder Remote-Images im Widget.",
+      "steps": [
+        "Image(systemName:) verwenden.",
+        "Assets im Widget Bundle ablegen.",
+        "Für Remote-Bilder: Shared Container nutzen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF6D2D", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+        "struct ImageWidgetView: View {\n    var entry: Entry\n    var body: some View {\n        VStack {\n            Image(systemName: \"star.fill\").font(.largeTitle)\n            Text(\"Stars!\")\n        }\n    }\n}",
+      "category": "WidgetKit",
+      "categoryIcon": "square.grid.2x2.fill",
+      "categoryIconColor": "#FF6D2D"
+    },
+    {
+      "id": "widgetkit_010",
+      "title": "Animierte Widgets (Timeline-Animation)",
+      "description": "Widgets können durch schnelle Timeline-Updates animiert wirken.",
+      "steps": [
+        "Mehrere Timeline-Entries erstellen.",
+        "Jedes Entry → neuer Animationsframe.",
+        "Timeline alle Sekunden aktualisieren."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#B5179E", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+        "func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> Void) {\n    var entries: [Entry] = []\n    for i in 0..<10 {\n        entries.append(Entry(date: .now.addingTimeInterval(Double(i)), value: i))\n    }\n    completion(Timeline(entries: entries, policy: .after(.now.addingTimeInterval(10))))\n}",
+      "category": "WidgetKit",
+      "categoryIcon": "square.grid.2x2.fill",
+      "categoryIconColor": "#B5179E"
+    },
+    {
+      "id": "widgetkit_011",
+      "title": "Shared Data Store (App → Widget Kommunikation)",
+      "description": "Widget und App teilen dieselben Daten mit App Groups.",
+      "steps": [
+        "App Group aktivieren.",
+        "UserDefaults(suiteName:) verwenden.",
+        "Widget liest und zeigt geteilte Werte."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#34C759", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+        "let defaults = UserDefaults(suiteName: \"group.myApp\")!\ndefaults.set(\"Hello Widget\", forKey: \"text\")\n\n// Widget liest:\nlet value = UserDefaults(suiteName: \"group.myApp\")?.string(forKey: \"text\")",
+      "category": "WidgetKit",
+      "categoryIcon": "square.grid.2x2.fill",
+      "categoryIconColor": "#34C759"
+    }
 ]

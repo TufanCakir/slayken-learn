@@ -22,5 +22,95 @@
     "category": "SwiftData",
     "categoryIcon": "swiftdata",
     "categoryIconColor": "#0000FF"
+  },
+  {
+    "id": "swiftdata_002",
+    "title": "SwiftData Beziehungen (One-to-Many)",
+    "description": "Erstelle zwei miteinander verknüpfte SwiftData-Modelle – z. B. Kategorien mit mehreren Einträgen.",
+    "steps": [
+      "Erstelle zwei @Model-Klassen.",
+      "Verknüpfe sie mithilfe von @Relationship.",
+      "Nutze .cascade oder .nullify für Delete Rules."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#560BAD", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass Category {\n    var name: String\n    @Relationship(deleteRule: .cascade) var items: [Item] = []\n    init(name: String) { self.name = name }\n}\n\n@Model\nclass Item {\n    var title: String\n    init(title: String) { self.title = title }\n}\n\nstruct CategoryListView: View {\n    @Environment(\\.modelContext) private var context\n    @Query private var categories: [Category]\n    @State private var newCategory = \"\"\n\n    var body: some View {\n        VStack(spacing: 12) {\n            TextField(\"Kategorie\", text: $newCategory)\n                .textFieldStyle(.roundedBorder)\n\n            Button(\"Hinzufügen\") {\n                let cat = Category(name: newCategory)\n                context.insert(cat)\n                try? context.save()\n                newCategory = \"\"\n            }\n            .buttonStyle(.borderedProminent)\n\n            List(categories) { cat in\n                NavigationLink(destination: ItemListView(category: cat)) {\n                    Text(cat.name)\n                }\n            }\n        }\n        .padding()\n    }\n}\n\nstruct ItemListView: View {\n    @Environment(\\.modelContext) private var context\n    @Bindable var category: Category\n    @State private var newItem = \"\"\n\n    var body: some View {\n        VStack(spacing: 12) {\n            TextField(\"Neuer Eintrag\", text: $newItem)\n                .textFieldStyle(.roundedBorder)\n\n            Button(\"Speichern\") {\n                category.items.append(Item(title: newItem))\n                try? context.save()\n                newItem = \"\"\n            }\n            .buttonStyle(.borderedProminent)\n\n            List(category.items) { item in\n                Text(item.title)\n            }\n        }\n        .padding()\n    }\n}",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#560BAD"
+  },
+  {
+    "id": "swiftdata_003",
+    "title": "Dynamische Filter mit @Query & Predicate",
+    "description": "Filtere SwiftData-Einträge zur Laufzeit – perfekt für Suchfelder.",
+    "steps": [
+      "Verwende @Query mit einem dynamischen Predicate.",
+      "Nutze ein Suchfeld, um live zu filtern.",
+      "Predicate werden automatisch neu berechnet."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#B5179E", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass Product {\n    var title: String\n    init(_ title: String) { self.title = title }\n}\n\nstruct ProductSearchView: View {\n    @Environment(\\.modelContext) private var context\n    @State private var query = \"\"\n\n    @Query private var products: [Product]\n\n    init() {\n        _products = Query(sort: \\Product.title)\n    }\n\n    var filtered: [Product] {\n        if query.isEmpty { return products }\n        return products.filter { $0.title.lowercased().contains(query.lowercased()) }\n    }\n\n    var body: some View {\n        VStack(spacing: 12) {\n            TextField(\"Suche\", text: $query)\n                .textFieldStyle(.roundedBorder)\n\n            List(filtered) { product in\n                Text(product.title)\n            }\n\n            Button(\"Beispiel hinzufügen\") {\n                context.insert(Product(\"Item \\(Int.random(in: 1...99))\"))\n                try? context.save()\n            }\n            .buttonStyle(.borderedProminent)\n        }\n        .padding()\n    }\n}",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#B5179E"
+  },
+  {
+    "id": "swiftdata_004",
+    "title": "SwiftData Migration (Modeländerungen)",
+    "description": "Lerne, wie du neue Felder, Defaults oder Umstrukturierungen in deinen Modellen vornimmst.",
+    "steps": [
+      "Füge neue Properties in deinem @Model hinzu.",
+      "Nutze Default-Werte zur einfachen Migration.",
+      "Die Migration passiert automatisch beim App-Start."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#3A0CA3", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftData\n\n@Model\nclass Player {\n    var name: String\n    var level: Int // 🆕 neues Feld\n    var xp: Int = 0 // 🆕 Default -> automatische Migration\n\n    init(name: String, level: Int = 1) {\n        self.name = name\n        self.level = level\n    }\n}\n\n// Keine zusätzliche Konfiguration nötig – SwiftData migriert automatisch.",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#3A0CA3"
+  },
+  {
+    "id": "swiftdata_005",
+    "title": "Undo & Redo mit ModelContext",
+    "description": "SwiftData unterstützt Undo/Redo automatisch mit dem UndoManager aus SwiftUI.",
+    "steps": [
+      "Hole dir den UndoManager aus @Environment.",
+      "Rufe undo() oder redo() auf.",
+      "Alle SwiftData-Änderungen sind automatisch integriert."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4CC9F0", "#000000"],
+        "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass TaskItem {\n    var title: String\n    init(_ title: String) { self.title = title }\n}\n\nstruct UndoExampleView: View {\n    @Environment(\\.modelContext) private var context\n    @Environment(\\.undoManager) private var undoManager\n    @Query private var tasks: [TaskItem]\n    @State private var title = \"\"\n\n    var body: some View {\n        VStack(spacing: 10) {\n            TextField(\"Neue Aufgabe\", text: $title)\n                .textFieldStyle(.roundedBorder)\n\n            Button(\"Speichern\") {\n                context.insert(TaskItem(title))\n                try? context.save()\n            }\n            .buttonStyle(.borderedProminent)\n\n            HStack {\n                Button(\"↩️ Undo\") { undoManager?.undo() }\n                Button(\"↪️ Redo\") { undoManager?.redo() }\n            }\n\n            List(tasks) { task in\n                Text(task.title)\n            }\n        }\n        .padding()\n    }\n}",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#4CC9F0"
+  },
+  {
+    "id": "swiftdata_006",
+    "title": "SwiftData Performance – Batch Insert & Delete",
+    "description": "Für große Datenmengen brauchst du schnelle Sammeloperationen. Nutze context.insert() in Schleifen und lösche mit .delete() effizient.",
+    "steps": [
+      "Erstelle viele Modelle mit einer Schleife.",
+      "Nutze context.save() erst am Ende.",
+      "Verwende context.delete(model) zum Entfernen."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7209B7", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass LogEntry {\n    var message: String\n    init(_ message: String) { self.message = message }\n}\n\nstruct PerformanceView: View {\n    @Environment(\\.modelContext) private var context\n    @Query private var logs: [LogEntry]\n\n    var body: some View {\n        VStack(spacing: 12) {\n            Button(\"100 Einträge hinzufügen\") {\n                for i in 1...100 {\n                    context.insert(LogEntry(\"Entry #\\(i)\"))\n                }\n                try? context.save()\n            }\n            .buttonStyle(.borderedProminent)\n\n            Button(\"Alles löschen\") {\n                logs.forEach { context.delete($0) }\n                try? context.save()\n            }\n            .buttonStyle(.bordered)\n\n            List(logs) { log in\n                Text(log.message)\n            }\n        }\n        .padding()\n    }\n}",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#7209B7"
   }
 ]

@@ -2,27 +2,181 @@
     {
         "id": "arkit_001",
         "title": "ARKit – Einfache AR-Szene",
-        "description":
-            "Zeige ein 3D-Objekt in der echten Welt mit ARKit und RealityKit.",
+        "description": "Zeige ein 3D-Objekt in der echten Welt mit ARKit und RealityKit.",
         "steps": [
             "RealityKit und ARKit importieren.",
             "ARView erstellen und AnchorEntity hinzufügen.",
             "Ein einfaches ModelEntity platzieren (z. B. Würfel)."
         ],
         "colors": {
-            "backgroundColors": [
-                "#000000",
-                "#5E5CE6",
-                "#000000"
-            ],
-            "textColors": [
-                "#FFFFFF"
-            ]
+            "backgroundColors": ["#000000", "#5E5CE6", "#000000"],
+            "textColors": ["#FFFFFF"]
         },
-        "code":
-            "import SwiftUI\nimport RealityKit\nimport ARKit\n\nstruct ARCubeView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let arView = ARView(frame: .zero)\n        let anchor = AnchorEntity(plane: .horizontal)\n        let box = ModelEntity(mesh: .generateBox(size: 0.1), materials: [SimpleMaterial(color: .blue, isMetallic: true)])\n        anchor.addChild(box)\n        arView.scene.addAnchor(anchor)\n        return arView\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARCubeView() }",
+        "code": "import SwiftUI\nimport RealityKit\nimport ARKit\n\nstruct ARCubeView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let arView = ARView(frame: .zero)\n        let anchor = AnchorEntity(plane: .horizontal)\n        let box = ModelEntity(mesh: .generateBox(size: 0.1), materials: [SimpleMaterial(color: .blue, isMetallic: true)])\n        anchor.addChild(box)\n        arView.scene.addAnchor(anchor)\n        return arView\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARCubeView() }",
         "category": "ARKit",
         "categoryIcon": "arkit",
         "categoryIconColor": "#5E5CE6"
     },
+    {
+        "id": "arkit_002",
+        "title": "AR – Horizontalen Boden erkennen",
+        "description": "Lerne, wie ARKit horizontale Flächen erkennt und ankert.",
+        "steps": [
+            "ARWorldTrackingConfiguration erstellen.",
+            "planeDetection = .horizontal aktivieren.",
+            "Anchor automatisch platzieren."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#5E5CE6", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import SwiftUI\nimport ARKit\nimport RealityKit\n\nstruct ARPlaneDetectionView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let view = ARView(frame: .zero)\n        let config = ARWorldTrackingConfiguration()\n        config.planeDetection = [.horizontal]\n        view.session.run(config)\n        return view\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARPlaneDetectionView() }",
+        "category": "ARKit",
+        "categoryIcon": "arkit",
+        "categoryIconColor": "#5E5CE6"
+    },
+    {
+        "id": "arkit_003",
+        "title": "AR – 3D-Modelle laden (USDZ)",
+        "description": "Importiere 3D-Objekte wie Modelle aus einer .usdz Datei.",
+        "steps": [
+            "ModelEntity.loadAsync() verwenden.",
+            "An AnchorEntity anhängen.",
+            "In AR platzieren."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#5E5CE6", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import SwiftUI\nimport RealityKit\nimport ARKit\n\nstruct ARModelView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let view = ARView(frame: .zero)\n        let anchor = AnchorEntity(plane: .horizontal)\n\n        let _ = ModelEntity.loadAsync(named: \"toy_robot.usdz\").sink { _ in } receiveValue: { model in\n            anchor.addChild(model)\n            view.scene.addAnchor(anchor)\n        }\n        return view\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARModelView() }",
+        "category": "ARKit",
+        "categoryIcon": "arkit",
+        "categoryIconColor": "#5E5CE6"
+    },
+    {
+        "id": "arkit_004",
+        "title": "AR – Objekt platzieren durch Tap",
+        "description": "Tippe auf den Bildschirm, um ein 3D-Objekt an der getroffenen Stelle zu platzieren.",
+        "steps": [
+            "TapGesture hinzufügen.",
+            "Raycast Query erstellen.",
+            "Objekt am Trefferpunkt setzen."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#5E5CE6", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import SwiftUI\nimport RealityKit\nimport ARKit\n\nstruct ARTapPlaceView: UIViewRepresentable {\n    class Coordinator: NSObject {\n        var view: ARView!\n        init(view: ARView) { self.view = view }\n        @objc func handleTap(_ sender: UITapGestureRecognizer) {\n            let location = sender.location(in: view)\n            if let result = view.raycast(from: location, allowing: .existingPlaneInfinite, alignment: .horizontal).first {\n                let anchor = AnchorEntity(world: result.worldTransform)\n                let sphere = ModelEntity(mesh: .generateSphere(radius: 0.05), materials: [SimpleMaterial(color: .red, isMetallic: false)])\n                anchor.addChild(sphere)\n                view.scene.addAnchor(anchor)\n            }\n        }\n    }\n\n    func makeCoordinator() -> Coordinator { Coordinator(view: arView) }\n    private let arView = ARView(frame: .zero)\n\n    func makeUIView(context: Context) -> ARView {\n        let tap = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap))\n        arView.addGestureRecognizer(tap)\n        return arView\n    }\n\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARTapPlaceView() }",
+        "category": "ARKit",
+        "categoryIcon": "arkit",
+        "categoryIconColor": "#5E5CE6"
+    },
+    {
+        "id": "arkit_005",
+        "title": "AR – Licht & Schatten",
+        "description": "Aktiviere automatische Lichtanpassung für realistische 3D-Objekte.",
+        "steps": [
+            "Environment Texturen aktivieren.",
+            "Automatic Lighting für ARView.",
+            "Schattenwurf aktivieren."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#7B78FF", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import SwiftUI\nimport ARKit\nimport RealityKit\n\nstruct ARLightingView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let view = ARView(frame: .zero)\n        view.automaticallyConfigureSession = true\n        view.environment.lighting.resource = .automatic\n        return view\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARLightingView() }",
+        "category": "ARKit",
+        "categoryIcon": "arkit",
+        "categoryIconColor": "#7B78FF"
+    },
+    {
+        "id": "arkit_006",
+        "title": "AR – Menschen- und Körpertracking",
+        "description": "Tracke ein menschliches Skelett und platziere AR-Inhalte daran.",
+        "steps": [
+            "ARBodyTrackingConfiguration verwenden.",
+            "Skeleton Anchor analysieren.",
+            "Modelle an Gelenken befestigen."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#3A86FF", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import SwiftUI\nimport ARKit\nimport RealityKit\n\nstruct ARBodyTrackingView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let view = ARView(frame: .zero)\n        let config = ARBodyTrackingConfiguration()\n        view.session.run(config)\n        return view\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARBodyTrackingView() }",
+        "category": "ARKit",
+        "categoryIcon": "arkit",
+        "categoryIconColor": "#3A86FF"
+    },
+    {
+        "id": "arkit_007",
+        "title": "AR – Face Tracking",
+        "description": "Erstelle Face-Tracking mit Kamera-Mapping auf das Gesicht.",
+        "steps": [
+            "ARFaceTrackingConfiguration verwenden.",
+            "FaceAnchor überwachen.",
+            "Modelle oder Masken aufs Gesicht legen."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF006E", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import SwiftUI\nimport ARKit\nimport RealityKit\n\nstruct ARFaceTrackingView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let view = ARView(frame: .zero)\n        let config = ARFaceTrackingConfiguration()\n        view.session.run(config)\n        return view\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARFaceTrackingView() }",
+        "category": "ARKit",
+        "categoryIcon": "arkit",
+        "categoryIconColor": "#FF006E"
+    },
+    {
+        "id": "arkit_008",
+        "title": "AR – Tiefenmessung (LiDAR)",
+        "description": "Nutze das LiDAR-System für Depth-Sensing und Occlusion.",
+        "steps": [
+            "SceneDepth aktivieren.",
+            "People Occlusion aktivieren.",
+            "Realistische Tiefenwahrnehmung."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#4CC9F0", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import SwiftUI\nimport ARKit\nimport RealityKit\n\nstruct ARLiDARView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let view = ARView(frame: .zero)\n        let config = ARWorldTrackingConfiguration()\n        config.sceneDepth = .automatic\n        config.environmentTexturing = .automatic\n        view.session.run(config)\n        return view\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARLiDARView() }",
+        "category": "ARKit",
+        "categoryIcon": "arkit",
+        "categoryIconColor": "#4CC9F0"
+    },
+    {
+        "id": "arkit_009",
+        "title": "AR – Partikel & VFX",
+        "description": "Füge visuelle Effekte hinzu wie Funken, Feuer oder Magie-Shader.",
+        "steps": [
+            "Particle Systems erstellen.",
+            "Materialien mit ShaderGraph verwenden.",
+            "An Anker befestigen."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#F72585", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import SwiftUI\nimport RealityKit\nimport ARKit\n\nstruct ARParticlesView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let view = ARView(frame: .zero)\n        let anchor = AnchorEntity(plane: .horizontal)\n        let sphere = ModelEntity(mesh: .generateSphere(radius: 0.05))\n        sphere.components.set(ParticleEmitterComponent())\n        anchor.addChild(sphere)\n        view.scene.addAnchor(anchor)\n        return view\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARParticlesView() }",
+        "category": "ARKit",
+        "categoryIcon": "arkit",
+        "categoryIconColor": "#F72585"
+    },
+    {
+        "id": "arkit_010",
+        "title": "AR – Physik & Kollision",
+        "description": "Erstelle physikalische Objekte, die fallen, kollidieren und interagieren.",
+        "steps": [
+            "PhysicsBodyComponent hinzufügen.",
+            "CollisionComponent hinzufügen.",
+            "Gravity aktivieren."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#7209B7", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import SwiftUI\nimport ARKit\nimport RealityKit\n\nstruct ARPhysicsView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let view = ARView(frame: .zero)\n\n        let anchor = AnchorEntity(world: .zero)\n        view.scene.addAnchor(anchor)\n\n        let box = ModelEntity(mesh: .generateBox(size: 0.1))\n        box.components[PhysicsBodyComponent.self] = .init(massProperties: .default, material: .default, mode: .dynamic)\n        box.components[CollisionComponent.self] = .init(shapes: [.generateBox(size: [0.1,0.1,0.1])])\n\n        anchor.addChild(box)\n        return view\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARPhysicsView() }",
+        "category": "ARKit",
+        "categoryIcon": "arkit",
+        "categoryIconColor": "#7209B7"
+    }
 ]

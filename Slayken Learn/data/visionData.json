@@ -25,4 +25,184 @@
         "categoryIcon": "vision.pro",
         "categoryIconColor": "#5E5CE6"
     },
+    {
+      "id": "vision_002",
+      "title": "Gesichtserkennung (Face Detection)",
+      "description": "Erkenne Gesichter in Bildern mithilfe von Vision und markiere ihre Bereiche.",
+      "steps": [
+        "Erstelle eine VNDetectFaceRectanglesRequest.",
+        "Konvertiere dein UIImage in CGImage.",
+        "Lies boundingBox der erkannten Gesichter aus."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#4B7BFF", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import Vision\nimport UIKit\n\nlet image = UIImage(named: \"person\")!\nlet cgImage = image.cgImage!\n\nlet request = VNDetectFaceRectanglesRequest { req, _ in\n    guard let faces = req.results as? [VNFaceObservation] else { return }\n    for face in faces {\n        print(\"😀 Gesicht erkannt: \\(face.boundingBox)\")\n    }\n}\n\nlet handler = VNImageRequestHandler(cgImage: cgImage)\ntry? handler.perform([request])",
+      "category": "Vision",
+      "categoryIcon": "vision.pro",
+      "categoryIconColor": "#4B7BFF"
+    },
+    {
+      "id": "vision_003",
+      "title": "Objekt-Erkennung (VNRecognizedObjectRequest)",
+      "description": "Erkenne vordefinierte Objekte wie Menschen, Tiere, Fahrzeuge usw.",
+      "steps": [
+        "Erstelle eine VNRecognizedObjectRequest.",
+        "Nutze ein Core ML Modell (z. B. YOLO).",
+        "Gib erkannte Objekte mit Confidence aus."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#00A8E8", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import Vision\nimport CoreML\n\nlet model = try! VNCoreMLModel(for: YOLOv3().model)\nlet request = VNRecognizedObjectRequest(model: model) { req, _ in\n    guard let results = req.results as? [VNRecognizedObjectObservation] else { return }\n    for obj in results {\n        let label = obj.labels.first?.identifier ?? \"?\"\n        let confidence = obj.labels.first?.confidence ?? 0\n        print(\"🏷 Objekt: \\(label) – \\(confidence)\")\n    }\n}",
+      "category": "Vision",
+      "categoryIcon": "vision.pro",
+      "categoryIconColor": "#00A8E8"
+    },
+    {
+      "id": "vision_004",
+      "title": "Barcode-Erkennung (QR, EAN, PDF417)",
+      "description": "Scanne Barcodes direkt aus einem Bild – QR, EAN, UPC und viele weitere.",
+      "steps": [
+        "VNDetectBarcodesRequest erstellen.",
+        "Bild über VNImageRequestHandler analysieren.",
+        "Barcode-Inhalt ausgeben."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#28CD41", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import Vision\nimport UIKit\n\nlet request = VNDetectBarcodesRequest { req, _ in\n    guard let barcodes = req.results as? [VNBarcodeObservation] else { return }\n    for code in barcodes {\n        print(\"🔍 Barcode: \\(code.payloadStringValue ?? \"?\")\")\n    }\n}\n\nlet handler = VNImageRequestHandler(cgImage: UIImage(named: \"qr\")!.cgImage!)\ntry? handler.perform([request])",
+      "category": "Vision",
+      "categoryIcon": "vision.pro",
+      "categoryIconColor": "#28CD41"
+    },
+    {
+      "id": "vision_005",
+      "title": "Handpose-Erkennung (VNDetectHumanHandPoseRequest)",
+      "description": "Analysiere Handpositionen und Fingerpunkte – perfekt für AR- oder Gestensteuerung.",
+      "steps": [
+        "Erstelle eine VNDetectHumanHandPoseRequest.",
+        "Analysiere Landmark-Punkte wie Daumen oder Zeigefinger.",
+        "Nutze diese Daten für Gestenerkennung."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF9F0A", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import Vision\n\nlet request = VNDetectHumanHandPoseRequest { req, _ in\n    guard let hands = req.results as? [VNHumanHandPoseObservation] else { return }\n    for hand in hands {\n        if let thumb = try? hand.recognizedPoint(.thumbTip) {\n            print(\"👍 Daumen erkannt: \\(thumb.location)\")\n        }\n    }\n}\n\nlet handler = VNImageRequestHandler(cgImage: UIImage(named: \"hand\")!.cgImage!)\ntry? handler.perform([request])",
+      "category": "Vision",
+      "categoryIcon": "vision.pro",
+      "categoryIconColor": "#FF9F0A"
+    },
+    {
+      "id": "vision_006",
+      "title": "Körpererkennung (Human Body Pose)",
+      "description": "Erkenne Körperhaltung und Skelettpunkte – ideal für Fitness-Apps oder Animation.",
+      "steps": [
+        "VNDetectHumanBodyPoseRequest nutzen.",
+        "Landmarks wie Hüfte, Schultern oder Knie auslesen.",
+        "Pose-Daten weiterverarbeiten."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF453A", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import Vision\n\nlet request = VNDetectHumanBodyPoseRequest { req, _ in\n    guard let poses = req.results as? [VNHumanBodyPoseObservation] else { return }\n    for pose in poses {\n        if let leftHand = try? pose.recognizedPoint(.leftWrist) {\n            print(\"✋ Linkes Handgelenk: \\(leftHand.location)\")\n        }\n    }\n}\n\nlet handler = VNImageRequestHandler(cgImage: UIImage(named: \"body\")!.cgImage!)\ntry? handler.perform([request])",
+      "category": "Vision",
+      "categoryIcon": "vision.pro",
+      "categoryIconColor": "#FF453A"
+    },
+    {
+      "id": "vision_007",
+      "title": "Saliency Detection (Bild-Fokuspunkte)",
+      "description": "Erkenne automatisch wichtige Bereiche eines Bildes – ideal für Cropping oder Fokus.",
+      "steps": [
+        "VNGenerateAttentionBasedSaliencyImageRequest erstellen.",
+        "Heatmap der wichtigen Bereiche ausgeben.",
+        "Bounding Box extrahieren."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#AD51FF", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import Vision\n\nlet request = VNGenerateAttentionBasedSaliencyImageRequest { req, _ in\n    if let result = req.results?.first as? VNSaliencyImageObservation {\n        print(\"🔥 Wichtigste Region: \\(result.boundingBox)\")\n    }\n}\n\nlet handler = VNImageRequestHandler(cgImage: UIImage(named: \"scene\")!.cgImage!)\ntry? handler.perform([request])",
+      "category": "Vision",
+      "categoryIcon": "vision.pro",
+      "categoryIconColor": "#AD51FF"
+    },
+    {
+      "id": "vision_008",
+      "title": "Texterkennung für mehrere Sprachen",
+      "description": "Erkenne Text in Bildern und lege mehrere Sprachen fest.",
+      "steps": [
+        "VNRecognizeTextRequest mit recognitionLanguages konfigurieren.",
+        "Mehrere Sprachen gleichzeitig analysieren.",
+        "Erkannte Texte ausgeben."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#32ADE6", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import Vision\n\nlet request = VNRecognizeTextRequest { req, _ in\n    for result in (req.results as? [VNRecognizedTextObservation]) ?? [] {\n        if let text = result.topCandidates(1).first?.string {\n            print(\"🌍 Text erkannt: \\(text)\")\n        }\n    }\n}\n\nrequest.recognitionLanguages = [\"de-DE\", \"en-US\", \"tr-TR\"]\nrequest.usesLanguageCorrection = true\n\nlet handler = VNImageRequestHandler(cgImage: UIImage(named: \"text_multi\")!.cgImage!)\ntry? handler.perform([request])",
+      "category": "Vision",
+      "categoryIcon": "vision.pro",
+      "categoryIconColor": "#32ADE6"
+    },
+    {
+      "id": "vision_009",
+      "title": "Contours – Linien & Umriss-Erkennung",
+      "description": "Erkenne Kanten, Shapes und Umrisse in einem Bild.",
+      "steps": [
+        "VNDetectContoursRequest erstellen.",
+        "Minimale Linienlänge und Empfindlichkeit einstellen.",
+        "Als Paths ausgeben."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FFD60A", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import Vision\n\nlet request = VNDetectContoursRequest { req, _ in\n    guard let obs = req.results?.first as? VNContoursObservation else { return }\n    print(\"🌀 Gesamt-Linien: \\(obs.contourCount)\")\n}\n\nlet handler = VNImageRequestHandler(cgImage: UIImage(named: \"shape\")!.cgImage!)\ntry? handler.perform([request])",
+      "category": "Vision",
+      "categoryIcon": "vision.pro",
+      "categoryIconColor": "#FFD60A"
+    },
+    {
+      "id": "vision_010",
+      "title": "Face Landmark Detection (Augen, Nase, Mund)",
+      "description": "Erkenne präzise Gesichtsmerkmale wie Augen, Nase, Mund und Kiefer.",
+      "steps": [
+        "Nutze VNDetectFaceLandmarksRequest.",
+        "Lese Punkte wie leftEye oder nose aus.",
+        "Ideal für Filter-Apps."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#F03E53", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import Vision\nimport UIKit\n\nlet request = VNDetectFaceLandmarksRequest { req, _ in\n    guard let faces = req.results as? [VNFaceObservation] else { return }\n    for face in faces {\n        if let landmarks = face.landmarks?.leftEye {\n            print(\"👁 Linkes Auge Punkte: \\(landmarks.normalizedPoints.count)\")\n        }\n    }\n}\n\nlet handler = VNImageRequestHandler(cgImage: UIImage(named: \"face\")!.cgImage!)\ntry? handler.perform([request])",
+      "category": "Vision",
+      "categoryIcon": "vision.pro",
+      "categoryIconColor": "#F03E53"
+    },
+    {
+      "id": "vision_011",
+      "title": "Objekt-Tracking in Videos (VNTrackObjectRequest)",
+      "description": "Verfolge ein Objekt über mehrere Videoframes hinweg – perfekt für AR und Analyse.",
+      "steps": [
+        "Erstelle VNDetectedObjectObservation.",
+        "Initialisiere Tracking-Request.",
+        "Aktualisiere die Bounding Box pro Frame."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#7C3AED", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import Vision\nimport AVFoundation\n\nlet initial = VNDetectedObjectObservation(boundingBox: CGRect(x: 0.4, y: 0.4, width: 0.2, height: 0.2))\n\nlet request = VNTrackObjectRequest(detectedObjectObservation: initial)\nrequest.trackingLevel = .accurate\n\nfunc handleFrame(_ buffer: CVPixelBuffer) {\n    let handler = VNImageRequestHandler(cvPixelBuffer: buffer)\n    try? handler.perform([request])\n\n    if let result = request.results?.first as? VNDetectedObjectObservation {\n        print(\"🎯 Position: \\(result.boundingBox)\")\n    }\n}",
+      "category": "Vision",
+      "categoryIcon": "vision.pro",
+      "categoryIconColor": "#7C3AED"
+    }
 ]

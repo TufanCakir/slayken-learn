@@ -25,4 +25,184 @@
         "categoryIcon": "swift",
         "categoryIconColor": "#FF3B30"
     },
+    {
+        "id": "healthkit_002",
+        "title": "HealthKit Berechtigungen anfordern",
+        "description": "Lerne, wie du systematisch alle HealthKit Permissions korrekt abfragst.",
+        "steps": [
+            "HKHealthStore instanziieren.",
+            "Lesen- und Schreibrechte definieren.",
+            "requestAuthorization korrekt aufrufen."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF9500", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import HealthKit\n\nlet healthStore = HKHealthStore()\nlet readTypes: Set = [ HKObjectType.quantityType(forIdentifier: .heartRate)!, HKObjectType.quantityType(forIdentifier: .stepCount)! ]\nlet writeTypes: Set = [ HKObjectType.quantityType(forIdentifier: .bodyMass)! ]\n\nhealthStore.requestAuthorization(toShare: writeTypes, read: readTypes) { success, error in\n    print(success ? \"✔️ HealthKit erlaubt\" : \"❌ Zugriff verweigert\")\n}",
+        "category": "HealthKit",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#FF9500"
+    },
+    {
+        "id": "healthkit_003",
+        "title": "Herzfrequenz auslesen",
+        "description": "Lese Live- oder historische Herzfrequenz-Daten aus.",
+        "steps": [
+            "heartRate Type definieren.",
+            "HKSampleQuery verwenden.",
+            "Werte extrahieren und anzeigen."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF2D55", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import HealthKit\n\nlet store = HKHealthStore()\nlet type = HKQuantityType.quantityType(forIdentifier: .heartRate)!\n\nlet query = HKSampleQuery(sampleType: type, predicate: nil, limit: 10, sortDescriptors: nil) { _, samples, _ in\n    samples?.forEach { sample in\n        if let quantitySample = sample as? HKQuantitySample {\n            let bpm = quantitySample.quantity.doubleValue(for: HKUnit(from: \"count/min\"))\n            print(\"❤️ BPM: \\(bpm)\")\n        }\n    }\n}\nstore.execute(query)",
+        "category": "HealthKit",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#FF2D55"
+    },
+    {
+        "id": "healthkit_004",
+        "title": "Kalorienverbrauch lesen",
+        "description": "Lese aktive Kalorien (Active Energy Burned) der letzten 24 Stunden.",
+        "steps": [
+            "HKQuantityTypeIdentifier.activeEnergyBurned verwenden.",
+            "StatisticsQuery ausführen.",
+            "Kalorien anzeigen."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FFD60A", "#000000"],
+            "textColors": ["#000000"]
+        },
+        "code": "import HealthKit\n\nlet store = HKHealthStore()\nlet kcalType = HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)!\n\nlet predicate = HKQuery.predicateForSamples(withStart: .now.addingTimeInterval(-86400), end: .now)\n\nlet query = HKStatisticsQuery(quantityType: kcalType, quantitySamplePredicate: predicate, options: .cumulativeSum) { _, result, _ in\n    if let value = result?.sumQuantity()?.doubleValue(for: .kilocalorie()) {\n        print(\"🔥 Kalorien: \\(value)\")\n    }\n}\nstore.execute(query)",
+        "category": "HealthKit",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#FFD60A"
+    },
+    {
+        "id": "healthkit_005",
+        "title": "Schlafdaten lesen",
+        "description": "Greife auf Schlafanalyse-Daten (inBed, asleep) zu.",
+        "steps": [
+            "HKCategoryTypeIdentifier.sleepAnalysis verwenden.",
+            "Predicate für die Nacht setzen.",
+            "Samples analysieren."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#0A84FF", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import HealthKit\n\nlet store = HKHealthStore()\nlet sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!\n\nlet predicate = HKQuery.predicateForSamples(withStart: .now.addingTimeInterval(-86400), end: .now)\n\nlet query = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: 0, sortDescriptors: nil) { _, samples, _ in\n    samples?.forEach { sample in\n        if let category = sample as? HKCategorySample {\n            print(\"💤 Schlafphase: \\(category.value)\")\n        }\n    }\n}\nstore.execute(query)",
+        "category": "HealthKit",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#0A84FF"
+    },
+    {
+        "id": "healthkit_006",
+        "title": "Wasseraufnahme speichern",
+        "description": "Füge Wasser-Trinkdaten in HealthKit ein.",
+        "steps": [
+            "HKQuantityTypeIdentifier.dietaryWater verwenden.",
+            "HKQuantitySample erstellen.",
+            "Mit healthStore.save() speichern."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#34C759", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import HealthKit\n\nlet store = HKHealthStore()\nlet waterType = HKQuantityType.quantityType(forIdentifier: .dietaryWater)!\nlet amount = HKQuantity(unit: .literUnit(with: .milli), doubleValue: 250) // 250ml\n\nlet sample = HKQuantitySample(type: waterType, quantity: amount, start: .now, end: .now)\nstore.save(sample) { success, error in\n    print(success ? \"💧 Wasser gespeichert\" : \"❌ Fehler beim Speichern\")\n}",
+        "category": "HealthKit",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#34C759"
+    },
+    {
+        "id": "healthkit_007",
+        "title": "Gewicht speichern (BodyMass)",
+        "description": "Speichere das aktuelle Körpergewicht in kg.",
+        "steps": [
+            "bodyMass Type wählen.",
+            "HKQuantitySample erstellen.",
+            "Speichern."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#AF52DE", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import HealthKit\n\nlet store = HKHealthStore()\nlet type = HKQuantityType.quantityType(forIdentifier: .bodyMass)!\nlet q = HKQuantity(unit: .gramUnit(with: .kilo), doubleValue: 78.2)\nlet sample = HKQuantitySample(type: type, quantity: q, start: .now, end: .now)\n\nstore.save(sample) { success, error in\n    print(success ? \"⚖️ Gewicht gespeichert\" : \"❌ Fehler\")\n}",
+        "category": "HealthKit",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#AF52DE"
+    },
+    {
+        "id": "healthkit_008",
+        "title": "Ruhepuls (Resting Heart Rate)",
+        "description": "Zeige den Ruhepuls der letzten Tage über HKStatisticsQuery an.",
+        "steps": [
+            "restingHeartRate Type definieren.",
+            "Predicate setzen.",
+            "Wert auslesen."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF3B30", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import HealthKit\n\nlet store = HKHealthStore()\nlet type = HKQuantityType.quantityType(forIdentifier: .restingHeartRate)!\n\nlet predicate = HKQuery.predicateForSamples(withStart: .now.addingTimeInterval(-86400*7), end: .now)\n\nlet query = HKStatisticsQuery(quantityType: type, quantitySamplePredicate: predicate, options: .discreteAverage) { _, result, _ in\n    if let value = result?.averageQuantity()?.doubleValue(for: HKUnit(from: \"count/min\")) {\n        print(\"😴 Ruhepuls: \\(value)\")\n    }\n}\nstore.execute(query)",
+        "category": "HealthKit",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#FF3B30"
+    },
+    {
+        "id": "healthkit_009",
+        "title": "Workouts auslesen",
+        "description": "Greife auf alle aufgezeichneten Trainings-Sessions zu.",
+        "steps": [
+            "HKWorkoutType nutzen.",
+            "SampleQuery ausführen.",
+            "Dauer, Energie & Distanz anzeigen."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#5856D6", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import HealthKit\n\nlet store = HKHealthStore()\nlet type = HKObjectType.workoutType()\n\nlet query = HKSampleQuery(sampleType: type, predicate: nil, limit: 0, sortDescriptors: nil) { _, samples, _ in\n    samples?.forEach { sample in\n        if let workout = sample as? HKWorkout {\n            print(\"🏋️ Workout: Dauer: \\(workout.duration/60) Minuten, kcal: \\(workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()) ?? 0)\")\n        }\n    }\n}\nstore.execute(query)",
+        "category": "HealthKit",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#5856D6"
+    },
+    {
+        "id": "healthkit_010",
+        "title": "Workouts speichern",
+        "description": "Erstelle ein Training (z. B. Laufen) und speichere es in HealthKit.",
+        "steps": [
+            "HKWorkout konfigurieren.",
+            "Metadata hinzufügen.",
+            "Speichern."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF9F0A", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import HealthKit\n\nlet store = HKHealthStore()\nlet workout = HKWorkout(activityType: .running, start: .now.addingTimeInterval(-1800), end: .now, duration: 1800, totalEnergyBurned: HKQuantity(unit: .kilocalorie(), doubleValue: 320), totalDistance: HKQuantity(unit: .meter(), doubleValue: 5000), metadata: nil)\n\nstore.save(workout) { success, error in\n    print(success ? \"🏃 Workout gespeichert\" : \"❌ Fehler beim Workout\")\n}",
+        "category": "HealthKit",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#FF9F0A"
+    },
+    {
+        "id": "healthkit_011",
+        "title": "Blutzucker auslesen",
+        "description": "Lese Blutzuckerdaten (mg/dL oder mmol/L) aus.",
+        "steps": [
+            "HKQuantityTypeIdentifier.bloodGlucose nutzen.",
+            "SampleQuery ausführen.",
+            "Werte konvertieren."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF2D55", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import HealthKit\n\nlet store = HKHealthStore()\nlet glucose = HKQuantityType.quantityType(forIdentifier: .bloodGlucose)!\n\nlet query = HKSampleQuery(sampleType: glucose, predicate: nil, limit: 10, sortDescriptors: nil) { _, samples, _ in\n    samples?.forEach { sample in\n        if let s = sample as? HKQuantitySample {\n            let mg = s.quantity.doubleValue(for: HKUnit(from: \"mg/dL\"))\n            print(\"🩸 Glucose: \\(mg) mg/dL\")\n        }\n    }\n}\nstore.execute(query)",
+        "category": "HealthKit",
+        "categoryIcon": "swift",
+        "categoryIconColor": "#FF2D55"
+    }
 ]

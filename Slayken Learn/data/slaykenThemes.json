@@ -3,7 +3,7 @@
     "id": "1111-AAAA",
     "name": "iOS Light",
     "background": { "type": "solid", "colors": ["#F2F2F7"] },
-    "textHex": "#FFFFFF",
+    "textHex": "#000000",
     "buttonBackgroundHex": "#FFFFFF",
     "buttonTextHex": "#FFFFFF",
     "accentHex": "#007AFF",

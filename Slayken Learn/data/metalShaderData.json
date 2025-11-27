@@ -21,7 +21,7 @@
             ]
         },
         "code":
-            "#include <metal_stdlib>\nusing namespace metal;\n\n// Vertex-Eingabe\nstruct VertexOut {\n    float4 position [[position]];\n    float3 color;\n};\n\n// Vertex Shader\nvertex VertexOut vertex_main(const device float* vertexArray [[buffer(0)]],\n                             uint vertexId [[vertex_id]]) {\n    VertexOut out;\n    int stride = 6; // 3 Position + 3 Farbe\n    int i = int(vertexId * stride);\n    float3 position = float3(vertexArray[i + 0], vertexArray[i + 1], vertexArray[i + 2]);\n    float3 color    = float3(vertexArray[i + 3], vertexArray[i + 4], vertexArray[i + 5]);\n\n    out.position = float4(position, 1.0);\n    out.color = color;\n    return out;\n}\n\n// Fragment Shader\nfragment float4 fragment_main(VertexOut in [[stage_in]]) {\n    return float4(in.color, 1.0);\n}",
+            "#include <metal_stdlib>\nusing namespace metal;\n\n/ Vertex-Eingabe\nstruct VertexOut {\n    float4 position [[position]];\n    float3 color;\n};\n\n/ Vertex Shader\nvertex VertexOut vertex_main(const device float* vertexArray [[buffer(0)]],\n                             uint vertexId [[vertex_id]]) {\n    VertexOut out;\n    int stride = 6; / 3 Position + 3 Farbe\n    int i = int(vertexId * stride);\n    float3 position = float3(vertexArray[i + 0], vertexArray[i + 1], vertexArray[i + 2]);\n    float3 color    = float3(vertexArray[i + 3], vertexArray[i + 4], vertexArray[i + 5]);\n\n    out.position = float4(position, 1.0);\n    out.color = color;\n    return out;\n}\n\n/ Fragment Shader\nfragment float4 fragment_main(VertexOut in [[stage_in]]) {\n    return float4(in.color, 1.0);\n}",
         "category": "Metal Shader",
         "categoryIcon": "cpu",
         "categoryIconColor": "#0A84FF"
@@ -49,9 +49,169 @@
             ]
         },
         "code":
-            "#include <metal_stdlib>\nusing namespace metal;\n\nstruct VertexOut {\n    float4 position [[position]];\n    float3 color;\n};\n\nvertex VertexOut vertex_main(const device float* vertexArray [[buffer(0)]],\n                             uint vertexId [[vertex_id]]) {\n    VertexOut out;\n    int stride = 6; // 3 Position + 3 Farbe\n    int i = int(vertexId * stride);\n\n    float3 position = float3(vertexArray[i + 0], vertexArray[i + 1], vertexArray[i + 2]);\n    float3 color    = float3(vertexArray[i + 3], vertexArray[i + 4], vertexArray[i + 5]);\n\n    out.position = float4(position, 1.0);\n    out.color = color;\n    return out;\n}\n\nfragment float4 fragment_main(VertexOut in [[stage_in]]) {\n    return float4(in.color, 1.0);\n}",
+            "#include <metal_stdlib>\nusing namespace metal;\n\nstruct VertexOut {\n    float4 position [[position]];\n    float3 color;\n};\n\nvertex VertexOut vertex_main(const device float* vertexArray [[buffer(0)]],\n                             uint vertexId [[vertex_id]]) {\n    VertexOut out;\n    int stride = 6; / 3 Position + 3 Farbe\n    int i = int(vertexId * stride);\n\n    float3 position = float3(vertexArray[i + 0], vertexArray[i + 1], vertexArray[i + 2]);\n    float3 color    = float3(vertexArray[i + 3], vertexArray[i + 4], vertexArray[i + 5]);\n\n    out.position = float4(position, 1.0);\n    out.color = color;\n    return out;\n}\n\nfragment float4 fragment_main(VertexOut in [[stage_in]]) {\n    return float4(in.color, 1.0);\n}",
         "category": "Metal Shader",
         "categoryIcon": "cpu",
         "categoryIconColor": "#FF9500"
+    },
+    {
+        "id": "shader_003",
+        "title": "Rotation Matrix Shader",
+        "description": "Dieser Shader rotiert ein 2D- oder 3D-Vertex mithilfe einer Uniform-Matrix. Ideal für animierte Drehungen.",
+        "steps": [
+            "Definiere eine Uniform-Matrix für Transformationen.",
+            "Lese sie im Vertex-Shader über [[buffer(1)]].",
+            "Multipliziere die Vertex-Position mit der Matrix.",
+            "Der Fragment-Shader bleibt unverändert."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#30D158", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+    "#include <metal_stdlib>\nusing namespace metal;\n\nstruct VertexOut {\n    float4 position [[position]];\n    float3 color;\n};\n\nvertex VertexOut vertex_main(const device float* vertices [[buffer(0)]],\n                             constant float4x4& mvp [[buffer(1)]],\n                             uint vid [[vertex_id]]) {\n    int i = int(vid * 6);\n    float3 pos = float3(vertices[i], vertices[i+1], vertices[i+2]);\n    float3 col = float3(vertices[i+3], vertices[i+4], vertices[i+5]);\n\n    VertexOut out;\n    out.position = mvp * float4(pos, 1.0);\n    out.color = col;\n    return out;\n}\n\nfragment float4 fragment_main(VertexOut in [[stage_in]]) {\n    return float4(in.color, 1.0);\n}",
+        "category": "Metal Shader",
+        "categoryIcon": "cpu",
+        "categoryIconColor": "#30D158"
+    },
+    {
+        "id": "shader_004",
+        "title": "Textur Shader (UV Mapping)",
+        "description": "Dieser Shader unterstützt Texturen. Er nutzt UV-Koordinaten pro Vertex und rendert Pixel direkt über eine GPU-Textur.",
+        "steps": [
+            "Definiere UV-Koordinaten im Vertex-Array.",
+            "Gib sie im VertexOut an den Fragment-Shader weiter.",
+            "Sample die Textur im Fragment-Shader.",
+            "Verwende einen Sampler für Filterqualität."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF2D55", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+    "#include <metal_stdlib>\nusing namespace metal;\n\nstruct VertexOut {\n    float4 position [[position]];\n    float2 uv;\n};\n\nvertex VertexOut vertex_main(const device float* data [[buffer(0)]],\n                             uint vid [[vertex_id]]) {\n    int i = int(vid * 5);\n    float3 pos = float3(data[i], data[i+1], data[i+2]);\n    float2 uv  = float2(data[i+3], data[i+4]);\n\n    VertexOut out;\n    out.position = float4(pos,1.0);\n    out.uv = uv;\n    return out;\n}\n\nfragment float4 fragment_main(VertexOut in [[stage_in]],\n                             texture2d<float> tex [[texture(0)]]) {\n    constexpr sampler s(filter::linear);\n    return tex.sample(s, in.uv);\n}",
+        "category": "Metal Shader",
+        "categoryIcon": "cpu",
+        "categoryIconColor": "#FF2D55"
+    },
+    {
+        "id": "shader_005",
+        "title": "Color Pulse Shader",
+        "description": "Ein Shader, der die Farbe animiert. Perfekt für UI-Effekte, Glow oder Boss Attack Effekte.",
+        "steps": [
+            "Nutze eine time-Uniform für Animation.",
+            "Modifiziere im Fragment-Shader die Farbe über sin(time).",
+            "Clippe Werte zwischen 0 und 1.",
+            "Farben pulsen dynamisch über Zeit."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FFD60A", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+    "#include <metal_stdlib>\nusing namespace metal;\n\nfragment float4 fragment_main(float4 pos [[position]],\n                             constant float& time [[buffer(0)]]) {\n    float pulse = (sin(time) + 1.0) * 0.5;\n    return float4(pulse, 0.2, 1.0 - pulse, 1.0);\n}",
+        "category": "Metal Shader",
+        "categoryIcon": "cpu",
+        "categoryIconColor": "#FFD60A"
+    },
+    {
+        "id": "shader_006",
+        "title": "Gouraud Lighting Shader",
+        "description": "Ein einfacher Beleuchtungs-Shader (Vertex Lighting) für 3D-Modelle.",
+        "steps": [
+            "Berechne Licht im Vertex Shader.",
+            "Nutze Normalen zum Lichtwinkel.",
+            "Interpolierte Farbe im Fragment Shader.",
+            "Perfekt für einfache 3D Szenen."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#64D2FF", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+    "#include <metal_stdlib>\nusing namespace metal;\n\nstruct VertexOut {\n    float4 position [[position]];\n    float3 color;\n};\n\nvertex VertexOut vertex_main(const device float* verts [[buffer(0)]],\n                             const device float3* normals [[buffer(1)]],\n                             constant float3& lightDir [[buffer(2)]],\n                             uint id [[vertex_id]]) {\n    float3 pos = float3(verts[id*6], verts[id*6+1], verts[id*6+2]);\n    float3 col = float3(verts[id*6+3], verts[id*6+4], verts[id*6+5]);\n\n    float ndotl = max(dot(normalize(normals[id]), normalize(lightDir)), 0.0);\n    float3 litColor = col * ndotl;\n\n    VertexOut out;\n    out.position = float4(pos,1.0);\n    out.color = litColor;\n    return out;\n}\n\nfragment float4 fragment_main(VertexOut in [[stage_in]]) {\n    return float4(in.color,1.0);\n}",
+        "category": "Metal Shader",
+        "categoryIcon": "cpu",
+        "categoryIconColor": "#64D2FF"
+    },
+    {
+        "id": "shader_007",
+        "title": "Blending Shader (Transparenz)",
+        "description": "Dieser Shader erzeugt halbtransparente Effekte – ideal für UI, Nebel, Magie oder HUD.",
+        "steps": [
+            "Gib im Fragment Shader Alpha < 1.0 zurück.",
+            "Aktiviere Blending in der Render Pipeline.",
+            "Nutze RGBA-Werte für transparente Farben.",
+            "Perfekt für Effekte in Spielen."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF3B30", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+    "/ Fragment Shader mit Transparenz\nfragment float4 fragment_main(VertexOut in [[stage_in]]) {\n    return float4(in.color, 0.5); / 50% transparent\n}\n\n/ Swift Pipeline Setup:\npipelineDescriptor.colorAttachments[0].isBlendingEnabled = true;\npipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add;\npipelineDescriptor.colorAttachments[0].alphaBlendOperation = .add;\npipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .sourceAlpha;\npipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha;",
+        "category": "Metal Shader",
+        "categoryIcon": "cpu",
+        "categoryIconColor": "#FF3B30"
+    },
+    {
+        "id": "shader_008",
+        "title": "Fullscreen Quad Shader",
+        "description": "Basis für Post-Processing: zeichnet ein 2D-Fullscreen-Quad ohne Vertex-Daten.",
+        "steps": [
+            "Nutze vertex_id in range 0–5.",
+            "Generiere Quad-Koordinaten direkt im Shader.",
+            "Ideal für Effekte wie Blur, Bloom, Glow.",
+            "Kein Vertex Buffer erforderlich."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#5E5CE6", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+    "#include <metal_stdlib>\nusing namespace metal;\n\nvertex float4 vertex_main(uint vid [[vertex_id]]) {\n    float2 pos[6] = {\n        {-1,-1}, {1,-1}, {-1,1},\n        {1,-1}, {1,1}, {-1,1}\n    };\n    return float4(pos[vid], 0, 1);\n}\n\nfragment float4 fragment_main() {\n    return float4(0.2,0.2,0.9,1.0);\n}",
+        "category": "Metal Shader",
+        "categoryIcon": "cpu",
+        "categoryIconColor": "#5E5CE6"
+    },
+    {
+        "id": "shader_009",
+        "title": "Compute Shader – Addieren von Arrays",
+        "description": "Ein einfacher Compute Shader, der zwei Arrays GPU-seitig addiert.",
+        "steps": [
+            "Erstelle inputA, inputB und output Arrays.",
+            "Nutze thread_position_in_grid für Index.",
+            "Addiere Werte und speichere im Output.",
+            "Perfekt als Basis für Physik oder KI."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#00FF00", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+    "#include <metal_stdlib>\nusing namespace metal;\n\nkernel void compute_main(const device float* a [[buffer(0)]],\n                         const device float* b [[buffer(1)]],\n                         device float* result [[buffer(2)]],\n                         uint id [[thread_position_in_grid]]) {\n    result[id] = a[id] + b[id];\n}",
+        "category": "Metal Shader",
+        "categoryIcon": "cpu",
+        "categoryIconColor": "#00FF00"
+    },
+    {
+        "id": "shader_010",
+        "title": "Noise Shader (Perlin Style)",
+        "description": "Ein einfacher Noise-Shader, ideal für Feuer, Nebel, Wasser oder Spirit-Effekte in Slayken.",
+        "steps": [
+            "Erzeuge Pseudo-Random Noise per Funktion.",
+            "Interpoliere Werte smoothstep().",
+            "Erzeuge dynamischen Noise über Zeit.",
+            "Nutze ihn für Hintergründe & Effekte."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#0A84FF", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code":
+    "#include <metal_stdlib>\nusing namespace metal;\n\nfloat rand(float2 n) {\n    return fract(sin(dot(n, float2(12.9898,78.233))) * 43758.5453);\n}\n\nfragment float4 fragment_main(float2 uv [[position]]) {\n    float noise = rand(uv * 20.0);\n    return float4(noise, noise*0.2, 1.0 - noise, 1.0);\n}",
+        "category": "Metal Shader",
+        "categoryIcon": "cpu",
+        "categoryIconColor": "#0A84FF"
     }
 ]

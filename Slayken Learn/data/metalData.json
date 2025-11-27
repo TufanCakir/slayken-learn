@@ -22,7 +22,7 @@
             ]
         },
         "code":
-            "import SwiftUI\nimport MetalKit\n\n// Unsere Haupt-Renderklasse\nfinal class Renderer: NSObject, MTKViewDelegate {\n    var device: MTLDevice!\n    var commandQueue: MTLCommandQueue!\n    var pipelineState: MTLRenderPipelineState!\n    var vertexBuffer: MTLBuffer!\n\n    init(mtkView: MTKView) {\n        super.init()\n        self.device = mtkView.device\n        self.commandQueue = device.makeCommandQueue()\n        \n        // Shader laden\n        let library = device.makeDefaultLibrary()\n        let vertexFunc = library?.makeFunction(name: \"vertex_main\")\n        let fragmentFunc = library?.makeFunction(name: \"fragment_main\")\n\n        // Render Pipeline Setup\n        let pipelineDescriptor = MTLRenderPipelineDescriptor()\n        pipelineDescriptor.vertexFunction = vertexFunc\n        pipelineDescriptor.fragmentFunction = fragmentFunc\n        pipelineDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat\n        pipelineState = try! device.makeRenderPipelineState(descriptor: pipelineDescriptor)\n\n        // Vertexdaten (x, y, z, r, g, b)\n        let vertices: [Float] = [\n            0.0,  0.5, 0.0,  1, 0, 0, // oben (rot)\n           -0.5, -0.5, 0.0,  0, 1, 0, // links (grün)\n            0.5, -0.5, 0.0,  0, 0, 1  // rechts (blau)\n        ]\n        vertexBuffer = device.makeBuffer(bytes: vertices,\n                                         length: MemoryLayout<Float>.size * vertices.count,\n                                         options: [])\n    }\n\n    func draw(in view: MTKView) {\n        guard let drawable = view.currentDrawable,\n              let descriptor = view.currentRenderPassDescriptor else { return }\n        \n        let commandBuffer = commandQueue.makeCommandBuffer()\n        let encoder = commandBuffer?.makeRenderCommandEncoder(descriptor: descriptor)\n        \n        encoder?.setRenderPipelineState(pipelineState)\n        encoder?.setVertexBuffer(vertexBuffer, offset: 0, index: 0)\n        encoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)\n        \n        encoder?.endEncoding()\n        commandBuffer?.present(drawable)\n        commandBuffer?.commit()\n    }\n\n    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}\n}\n\nstruct MetalView: UIViewRepresentable {\n    func makeUIView(context: Context) -> MTKView {\n        let view = MTKView()\n        view.device = MTLCreateSystemDefaultDevice()\n        view.clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)\n        let renderer = Renderer(mtkView: view)\n        view.delegate = renderer\n        context.coordinator.renderer = renderer\n        return view\n    }\n\n    func updateUIView(_ uiView: MTKView, context: Context) {}\n    func makeCoordinator() -> Coordinator { Coordinator() }\n\n    class Coordinator {\n        var renderer: Renderer?\n    }\n}",
+            "import SwiftUI\nimport MetalKit\n\n/ Unsere Haupt-Renderklasse\nfinal class Renderer: NSObject, MTKViewDelegate {\n    var device: MTLDevice!\n    var commandQueue: MTLCommandQueue!\n    var pipelineState: MTLRenderPipelineState!\n    var vertexBuffer: MTLBuffer!\n\n    init(mtkView: MTKView) {\n        super.init()\n        self.device = mtkView.device\n        self.commandQueue = device.makeCommandQueue()\n        \n        / Shader laden\n        let library = device.makeDefaultLibrary()\n        let vertexFunc = library?.makeFunction(name: \"vertex_main\")\n        let fragmentFunc = library?.makeFunction(name: \"fragment_main\")\n\n        / Render Pipeline Setup\n        let pipelineDescriptor = MTLRenderPipelineDescriptor()\n        pipelineDescriptor.vertexFunction = vertexFunc\n        pipelineDescriptor.fragmentFunction = fragmentFunc\n        pipelineDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat\n        pipelineState = try! device.makeRenderPipelineState(descriptor: pipelineDescriptor)\n\n        / Vertexdaten (x, y, z, r, g, b)\n        let vertices: [Float] = [\n            0.0,  0.5, 0.0,  1, 0, 0, / oben (rot)\n           -0.5, -0.5, 0.0,  0, 1, 0, / links (grün)\n            0.5, -0.5, 0.0,  0, 0, 1  / rechts (blau)\n        ]\n        vertexBuffer = device.makeBuffer(bytes: vertices,\n                                         length: MemoryLayout<Float>.size * vertices.count,\n                                         options: [])\n    }\n\n    func draw(in view: MTKView) {\n        guard let drawable = view.currentDrawable,\n              let descriptor = view.currentRenderPassDescriptor else { return }\n        \n        let commandBuffer = commandQueue.makeCommandBuffer()\n        let encoder = commandBuffer?.makeRenderCommandEncoder(descriptor: descriptor)\n        \n        encoder?.setRenderPipelineState(pipelineState)\n        encoder?.setVertexBuffer(vertexBuffer, offset: 0, index: 0)\n        encoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)\n        \n        encoder?.endEncoding()\n        commandBuffer?.present(drawable)\n        commandBuffer?.commit()\n    }\n\n    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}\n}\n\nstruct MetalView: UIViewRepresentable {\n    func makeUIView(context: Context) -> MTKView {\n        let view = MTKView()\n        view.device = MTLCreateSystemDefaultDevice()\n        view.clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)\n        let renderer = Renderer(mtkView: view)\n        view.delegate = renderer\n        context.coordinator.renderer = renderer\n        return view\n    }\n\n    func updateUIView(_ uiView: MTKView, context: Context) {}\n    func makeCoordinator() -> Coordinator { Coordinator() }\n\n    class Coordinator {\n        var renderer: Renderer?\n    }\n}",
         "category": "Metal",
         "categoryIcon": "cpu",
         "categoryIconColor": "#800080"
@@ -50,7 +50,159 @@
             ]
         },
         "code":
-            "import SwiftUI\nimport MetalKit\n\nfinal class Renderer: NSObject, MTKViewDelegate {\n    var device: MTLDevice!\n    var commandQueue: MTLCommandQueue!\n    var pipelineState: MTLRenderPipelineState!\n    var vertexBuffer: MTLBuffer!\n\n    init(mtkView: MTKView) {\n        super.init()\n        device = mtkView.device\n        commandQueue = device.makeCommandQueue()\n        \n        // Shader laden\n        let library = device.makeDefaultLibrary()\n        let vertexFunc = library?.makeFunction(name: \"vertex_main\")\n        let fragmentFunc = library?.makeFunction(name: \"fragment_main\")\n        \n        // Render Pipeline Setup\n        let pipelineDescriptor = MTLRenderPipelineDescriptor()\n        pipelineDescriptor.vertexFunction = vertexFunc\n        pipelineDescriptor.fragmentFunction = fragmentFunc\n        pipelineDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat\n        pipelineState = try! device.makeRenderPipelineState(descriptor: pipelineDescriptor)\n        \n        // Quad (2 Dreiecke → 6 Vertices)\n        let vertices: [Float] = [\n            // Dreieck 1\n            -0.5,  0.5, 0.0,  1, 0, 0,   // oben links – rot\n             0.5,  0.5, 0.0,  0, 1, 0,   // oben rechts – grün\n            -0.5, -0.5, 0.0,  0, 0, 1,   // unten links – blau\n\n            // Dreieck 2\n             0.5,  0.5, 0.0,  0, 1, 0,   // oben rechts – grün\n             0.5, -0.5, 0.0,  1, 1, 0,   // unten rechts – gelb\n            -0.5, -0.5, 0.0,  0, 0, 1    // unten links – blau\n        ]\n        \n        vertexBuffer = device.makeBuffer(bytes: vertices,\n                                         length: MemoryLayout<Float>.stride * vertices.count,\n                                         options: [])\n    }\n\n    func draw(in view: MTKView) {\n        guard let drawable = view.currentDrawable,\n              let descriptor = view.currentRenderPassDescriptor else { return }\n        \n        let commandBuffer = commandQueue.makeCommandBuffer()\n        let encoder = commandBuffer?.makeRenderCommandEncoder(descriptor: descriptor)\n        \n        encoder?.setRenderPipelineState(pipelineState)\n        encoder?.setVertexBuffer(vertexBuffer, offset: 0, index: 0)\n        encoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)\n        \n        encoder?.endEncoding()\n        commandBuffer?.present(drawable)\n        commandBuffer?.commit()\n    }\n\n    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}\n}\n\nstruct MetalView: UIViewRepresentable {\n    func makeUIView(context: Context) -> MTKView {\n        let view = MTKView()\n        view.device = MTLCreateSystemDefaultDevice()\n        view.clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)\n        let renderer = Renderer(mtkView: view)\n        view.delegate = renderer\n        context.coordinator.renderer = renderer\n        return view\n    }\n\n    func updateUIView(_ uiView: MTKView, context: Context) {}\n    func makeCoordinator() -> Coordinator { Coordinator() }\n\n    class Coordinator {\n        var renderer: Renderer?\n    }\n}",
+            "import SwiftUI\nimport MetalKit\n\nfinal class Renderer: NSObject, MTKViewDelegate {\n    var device: MTLDevice!\n    var commandQueue: MTLCommandQueue!\n    var pipelineState: MTLRenderPipelineState!\n    var vertexBuffer: MTLBuffer!\n\n    init(mtkView: MTKView) {\n        super.init()\n        device = mtkView.device\n        commandQueue = device.makeCommandQueue()\n        \n        / Shader laden\n        let library = device.makeDefaultLibrary()\n        let vertexFunc = library?.makeFunction(name: \"vertex_main\")\n        let fragmentFunc = library?.makeFunction(name: \"fragment_main\")\n        \n        / Render Pipeline Setup\n        let pipelineDescriptor = MTLRenderPipelineDescriptor()\n        pipelineDescriptor.vertexFunction = vertexFunc\n        pipelineDescriptor.fragmentFunction = fragmentFunc\n        pipelineDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat\n        pipelineState = try! device.makeRenderPipelineState(descriptor: pipelineDescriptor)\n        \n        / Quad (2 Dreiecke → 6 Vertices)\n        let vertices: [Float] = [\n            / Dreieck 1\n            -0.5,  0.5, 0.0,  1, 0, 0,   / oben links – rot\n             0.5,  0.5, 0.0,  0, 1, 0,   / oben rechts – grün\n            -0.5, -0.5, 0.0,  0, 0, 1,   / unten links – blau\n\n            / Dreieck 2\n             0.5,  0.5, 0.0,  0, 1, 0,   / oben rechts – grün\n             0.5, -0.5, 0.0,  1, 1, 0,   / unten rechts – gelb\n            -0.5, -0.5, 0.0,  0, 0, 1    / unten links – blau\n        ]\n        \n        vertexBuffer = device.makeBuffer(bytes: vertices,\n                                         length: MemoryLayout<Float>.stride * vertices.count,\n                                         options: [])\n    }\n\n    func draw(in view: MTKView) {\n        guard let drawable = view.currentDrawable,\n              let descriptor = view.currentRenderPassDescriptor else { return }\n        \n        let commandBuffer = commandQueue.makeCommandBuffer()\n        let encoder = commandBuffer?.makeRenderCommandEncoder(descriptor: descriptor)\n        \n        encoder?.setRenderPipelineState(pipelineState)\n        encoder?.setVertexBuffer(vertexBuffer, offset: 0, index: 0)\n        encoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)\n        \n        encoder?.endEncoding()\n        commandBuffer?.present(drawable)\n        commandBuffer?.commit()\n    }\n\n    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}\n}\n\nstruct MetalView: UIViewRepresentable {\n    func makeUIView(context: Context) -> MTKView {\n        let view = MTKView()\n        view.device = MTLCreateSystemDefaultDevice()\n        view.clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)\n        let renderer = Renderer(mtkView: view)\n        view.delegate = renderer\n        context.coordinator.renderer = renderer\n        return view\n    }\n\n    func updateUIView(_ uiView: MTKView, context: Context) {}\n    func makeCoordinator() -> Coordinator { Coordinator() }\n\n    class Coordinator {\n        var renderer: Renderer?\n    }\n}",
+        "category": "Metal",
+        "categoryIcon": "cpu",
+        "categoryIconColor": "#800080"
+    },
+    {
+        "id": "metal_003",
+        "title": "Rotation via Vertex Shader",
+        "description": "Füge eine Rotation zu deinem 2D-Objekt hinzu – komplett in der GPU über den Vertex-Shader.",
+        "steps": [
+            "Erstelle eine Uniform-Struktur für den Rotationswinkel.",
+            "Berechne die neue Position im Vertex Shader.",
+            "Übergebe Uniforms jedes Frame an die GPU.",
+            "Animierte Rotation über Zeit hinzufügen."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#1E90FF", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import SwiftUI\nimport MetalKit\n\nstruct RotatingTriangle: UIViewRepresentable {\n    func makeUIView(context: Context) -> MTKView {\n        let view = MTKView()\n        view.device = MTLCreateSystemDefaultDevice()\n        view.colorPixelFormat = .bgra8Unorm\n\n        let renderer = RotatingRenderer(view: view)\n        view.delegate = renderer\n        context.coordinator.renderer = renderer\n        return view\n    }\n    func updateUIView(_ uiView: MTKView, context: Context) {}\n    func makeCoordinator() -> Coordinator { Coordinator() }\n    class Coordinator { var renderer: RotatingRenderer? }\n}\n\nfinal class RotatingRenderer: NSObject, MTKViewDelegate {\n    var device: MTLDevice!\n    var queue: MTLCommandQueue!\n    var pipeline: MTLRenderPipelineState!\n    var buffer: MTLBuffer!\n    var time: Float = 0\n\n    init(view: MTKView) {\n        super.init()\n        device = view.device\n        queue = device.makeCommandQueue()\n\n        let vertices: [Float] = [ 0,0.5,0,  -0.5,-0.5,0,  0.5,-0.5,0 ]\n        buffer = device.makeBuffer(bytes: vertices, length: vertices.count*4, options: [])\n\n        let lib = device.makeDefaultLibrary()!\n        let pipelineDesc = MTLRenderPipelineDescriptor()\n        pipelineDesc.vertexFunction = lib.makeFunction(name: \"rotating_vertex\")\n        pipelineDesc.fragmentFunction = lib.makeFunction(name: \"color_fragment\")\n        pipelineDesc.colorAttachments[0].pixelFormat = view.colorPixelFormat\n        pipeline = try! device.makeRenderPipelineState(descriptor: pipelineDesc)\n    }\n\n    func draw(in view: MTKView) {\n        time += 0.01\n        guard let drawable = view.currentDrawable,\n              let pass = view.currentRenderPassDescriptor else { return }\n\n        let command = queue.makeCommandBuffer()!\n        let enc = command.makeRenderCommandEncoder(descriptor: pass)!\n        enc.setRenderPipelineState(pipeline)\n        enc.setVertexBuffer(buffer, offset: 0, index: 0)\n        enc.setVertexBytes(&time, length: 4, index: 1)\n        enc.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)\n        enc.endEncoding()\n        command.present(drawable)\n        command.commit()\n    }\n}\n",
+        "category": "Metal",
+        "categoryIcon": "cpu",
+        "categoryIconColor": "#800080"
+    },
+    {
+        "id": "metal_004",
+        "title": "Texturen laden & anzeigen",
+        "description": "Render ein Bild (PNG/JPEG) als Textur auf einem Rechteck.",
+        "steps": [
+            "Eine Textur mit MTKTextureLoader laden.",
+            "UV-Koordinaten für jeden Vertex definieren.",
+            "Texture Sampler im Fragment Shader verwenden.",
+            "Quad mit drawPrimitives() rendern."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF1493", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import MetalKit\n\n/ Beispiel: Textur laden\nlet loader = MTKTextureLoader(device: device)\nlet texture = try! loader.newTexture(name: \"example\", scaleFactor: 1, bundle: .main)\n\n/ Fragment Shader:\n/ float4 fragment_main(VertexOut in [[stage_in]], texture2d<float> tex [[texture(0)]]) {\n/     constexpr sampler s(filter::linear);\n/     return tex.sample(s, in.uv);\n/ }",
+        "category": "Metal",
+        "categoryIcon": "cpu",
+        "categoryIconColor": "#800080"
+    },
+    {
+        "id": "metal_005",
+        "title": "Depth Buffer (Z-Buffer) aktivieren",
+        "description": "Erstelle eine 3D-Szene, in der Objekte korrekt verdeckt werden.",
+        "steps": [
+            "DepthStencilDescriptor erstellen.",
+            "view.depthStencilPixelFormat setzen.",
+            "Depth Buffer im RenderPass aktivieren.",
+            "Z-Werte für 3D-Vertices setzen."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#00CED1", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "/ Aktivieren des Tiefenpuffers:\nview.depthStencilPixelFormat = .depth32Float\n\nlet depthDesc = MTLDepthStencilDescriptor()\ndepthDesc.depthCompareFunction = .less\ndepthDesc.isDepthWriteEnabled = true\nlet depthState = device.makeDepthStencilState(descriptor: depthDesc)",
+        "category": "Metal",
+        "categoryIcon": "cpu",
+        "categoryIconColor": "#800080"
+    },
+    {
+        "id": "metal_006",
+        "title": "3D Cube rotieren",
+        "description": "Erstelle einen 3D-Würfel aus 36 Vertices und rotiere ihn mit Matrizen.",
+        "steps": [
+            "Vertex-Struktur mit Position & Farbe erstellen.",
+            "Model-View-Projection Matrix berechnen.",
+            "rotateX/Y/Z in GPU anwenden.",
+            "drawIndexedPrimitives() verwenden."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#9400D3", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "/ Beispiel Matrix:\nlet mvp = projection * view * model\nencoder.setVertexBytes(&mvp, length: MemoryLayout<matrix_float4x4>.size, index: 2)",
+        "category": "Metal",
+        "categoryIcon": "cpu",
+        "categoryIconColor": "#800080"
+    },
+    {
+        "id": "metal_007",
+        "title": "Compute Shader – GPU Berechnungen",
+        "description": "Nutze die GPU, um parallele Berechnungen durchzuführen.",
+        "steps": [
+            "ComputePipelineState erstellen.",
+            "Eingabebuffer & Ausgabebuffer erstellen.",
+            "computeEncoder benutzen.",
+            "Threads korrekt dispatchen."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FF8C00", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "let computeFunc = library.makeFunction(name: \"compute_main\")!\nlet computePipeline = try device.makeComputePipelineState(function: computeFunc)\n\nlet encoder = commandBuffer.makeComputeCommandEncoder()!\nencoder.setComputePipelineState(computePipeline)\nencoder.setBuffer(inputBuffer, offset: 0, index: 0)\nencoder.setBuffer(outputBuffer, offset: 0, index: 1)\nencoder.dispatchThreadgroups(...)\nencoder.endEncoding()",
+        "category": "Metal",
+        "categoryIcon": "cpu",
+        "categoryIconColor": "#800080"
+    },
+    {
+        "id": "metal_008",
+        "title": "Post Processing Shader (Blur)",
+        "description": "Füge einen Gaussian Blur im Fragment Shader hinzu.",
+        "steps": [
+            "Fullscreen Quad rendern.",
+            "Kernel-Sampling im Fragment Shader.",
+            "Mehrere Texel im Umkreis abtasten.",
+            "Resultat mischen (blur)."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#1E1EFF", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "/ Fragment Blur Shader:\n/ float4 blur(texture2d<float> tex, float2 uv) {\n/     float2 offsets[5] = {...};\n/     float4 color = float4(0);\n/     for (int i = 0; i < 5; i++) {\n/        color += tex.sample(s, uv + offsets[i]);\n/     }\n/     return color / 5.0;\n/ }",
+        "category": "Metal",
+        "categoryIcon": "cpu",
+        "categoryIconColor": "#800080"
+    },
+    {
+        "id": "metal_009",
+        "title": "Instancing – hunderte Objekte zeichnen",
+        "description": "Nutze die GPU, um viele Objekte effizient zu rendern.",
+        "steps": [
+            "Mehrere Transform-Matrizen an Vertex Shader senden.",
+            "Instance Count in drawPrimitives setzen.",
+            "Shader per instance ID nutzen.",
+            "Performance-Optimierung durch shared VertexBuffer."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#00FF7F", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 36, instanceCount: 200)",
+        "category": "Metal",
+        "categoryIcon": "cpu",
+        "categoryIconColor": "#800080"
+    },
+    {
+        "id": "metal_010",
+        "title": "Metal + SwiftUI Integration (Live Shader)",
+        "description": "Verbinde SwiftUI mit live animierten Metal Shadern.",
+        "steps": [
+            "MTKView über UIViewRepresentable einbetten.",
+            "Time Uniform an Shader senden.",
+            "SwiftUI State nutzen um Shader Parameter zu ändern.",
+            "Perfekte GPU-UI Interaktion."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#C71585", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "struct ShaderControlView: View {\n    @State private var intensity: Float = 0.5\n    var body: some View {\n        VStack {\n            MetalView(intensity: intensity)\n                .frame(height: 300)\n            Slider(value: $intensity, in: 0...1)\n        }\n    }\n}",
         "category": "Metal",
         "categoryIcon": "cpu",
         "categoryIconColor": "#800080"

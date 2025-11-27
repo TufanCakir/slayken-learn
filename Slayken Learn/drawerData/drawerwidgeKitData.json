@@ -20,7 +20,97 @@
     },
     "code": "import WidgetKit\nimport SwiftUI\n\n// MARK: - Datenmodell\nstruct SimpleEntry: TimelineEntry {\n    let date: Date\n}\n\n// MARK: - Provider\nstruct Provider: TimelineProvider {\n    func placeholder(in context: Context) -> SimpleEntry {\n        SimpleEntry(date: Date())\n    }\n\n    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {\n        completion(SimpleEntry(date: Date()))\n    }\n\n    func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> ()) {\n        let entries = [SimpleEntry(date: Date())]\n        completion(Timeline(entries: entries, policy: .atEnd))\n    }\n}\n\n// MARK: - Widget View\nstruct WidgetKitExampleEntryView : View {\n    var entry: Provider.Entry\n\n    var body: some View {\n        ZStack {\n            LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing)\n            VStack {\n                Text(\"WidgetKit 🔷\")\n                    .font(.headline)\n                    .foregroundColor(.white)\n                Text(entry.date, style: .time)\n                    .foregroundColor(.white.opacity(0.8))\n            }\n        }\n    }\n}\n\n// MARK: - Widget Registrierung\n@main\nstruct WidgetKitExample: Widget {\n    let kind: String = \"WidgetKitExample\"\n\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: kind, provider: Provider()) { entry in\n            WidgetKitExampleEntryView(entry: entry)\n        }\n        .configurationDisplayName(\"Beispiel-Widget\")\n        .description(\"Ein einfaches Widget mit Zeitangabe.\")\n        .supportedFamilies([.systemSmall])\n    }\n}\n\n#Preview(as: .systemSmall) {\n    WidgetKitExample()\n} timeline: {\n    SimpleEntry(date: .now)\n}",
     "category": "WidgetKit",
-    "categoryIcon": "square.grid.2x2",
+    "categoryIcon": "square.grid.2x2.fill",
     "categoryIconColor": "#3A86FF"
+  },
+  {
+    "id": "widgetkit_002",
+    "title": "Lock Screen Widget (iOS 16+)",
+    "description": "Erstelle ein kompaktes Lock Screen Widget, ideal für Status, Timer oder Health-Daten.",
+    "steps": [
+      "Erstelle eine neue Widget-Erweiterung.",
+      "Nutze `.accessoryInline`, `.accessoryCircular` oder `.accessoryRectangular`.",
+      "Passe das UI für den gesperrten Bildschirm an."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#8338EC", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import WidgetKit\nimport SwiftUI\n\nstruct LockEntry: TimelineEntry {\n    let date: Date\n    let steps: Int\n}\n\nstruct LockProvider: TimelineProvider {\n    func placeholder(in context: Context) -> LockEntry {\n        LockEntry(date: .now, steps: 1200)\n    }\n    func getSnapshot(in context: Context, completion: @escaping (LockEntry) -> ()) {\n        completion(LockEntry(date: .now, steps: 1200))\n    }\n    func getTimeline(in context: Context, completion: @escaping (Timeline<LockEntry>) -> ()) {\n        completion(Timeline(entries: [LockEntry(date: .now, steps: 1200)], policy: .atEnd))\n    }\n}\n\nstruct LockWidgetView: View {\n    var entry: LockEntry\n    var body: some View {\n        Text(\"🚶‍♂️ \\(entry.steps)\")\n            .font(.headline)\n    }\n}\n\n@main\nstruct LockScreenWidget: Widget {\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: \"lock_widget\", provider: LockProvider()) { entry in\n            LockWidgetView(entry: entry)\n        }\n        .supportedFamilies([.accessoryInline, .accessoryCircular, .accessoryRectangular])\n        .configurationDisplayName(\"Lock Steps\")\n        .description(\"Zeigt Schritte direkt auf dem Sperrbildschirm an.\")\n    }\n}",
+    "category": "WidgetKit",
+    "categoryIcon": "square.grid.2x2.fill",
+    "categoryIconColor": "#8338EC"
+  },
+  {
+    "id": "widgetkit_003",
+    "title": "Widget mit API-Daten",
+    "description": "Lade Daten aus einer Web-API und zeige sie im Widget an – perfekt für Wetter, Uhrzeit, News.",
+    "steps": [
+      "Führe einen API-Request im TimelineProvider aus.",
+      "Dekodiere JSON mit Codable.",
+      "Aktualisiere das Widget in Intervallen."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#3A0CA3", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import WidgetKit\nimport SwiftUI\n\nstruct WeatherEntry: TimelineEntry {\n    let date: Date\n    let temperature: Double\n}\n\nstruct WeatherProvider: TimelineProvider {\n    func placeholder(in context: Context) -> WeatherEntry {\n        WeatherEntry(date: .now, temperature: 0)\n    }\n\n    func getSnapshot(in context: Context, completion: @escaping (WeatherEntry) -> ()) {\n        completion(WeatherEntry(date: .now, temperature: 12.0))\n    }\n\n    func getTimeline(in context: Context, completion: @escaping (Timeline<WeatherEntry>) -> ()) {\n        let url = URL(string: \"https://api.weatherapi.com/v1/current.json?key=DEMO&q=Berlin\")!\n        var temp = 0.0\n        if let data = try? Data(contentsOf: url),\n           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],\n           let current = json[\"current\"] as? [String: Any] {\n            temp = current[\"temp_c\"] as? Double ?? 0\n        }\n\n        let entry = WeatherEntry(date: .now, temperature: temp)\n        completion(Timeline(entries: [entry], policy: .after(.now.addingTimeInterval(1800))))\n    }\n}\n\nstruct WeatherWidgetView: View {\n    var entry: WeatherEntry\n    var body: some View {\n        VStack {\n            Text(\"🌤 Berlin\")\n            Text(\"\\(entry.temperature, specifier: \"%.1f\")°C\")\n                .font(.largeTitle)\n        }\n        .foregroundStyle(.white)\n    }\n}\n\n@main\nstruct WeatherWidget: Widget {\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: \"weather_widget\", provider: WeatherProvider()) { entry in\n            WeatherWidgetView(entry: entry)\n        }\n        .supportedFamilies([.systemSmall, .systemMedium])\n        .configurationDisplayName(\"Wetter Widget\")\n        .description(\"Zeigt die Temperatur aus einer API.\")\n    }\n}",
+    "category": "WidgetKit",
+    "categoryIcon": "square.grid.2x2.fill",
+    "categoryIconColor": "#3A0CA3"
+  },
+  {
+    "id": "widgetkit_004",
+    "title": "Interaktives Widget (iOS 17+)",
+    "description": "Widgets können Buttons enthalten, die App-Funktionen direkt ausführen.",
+    "steps": [
+      "Verwende AppIntents für Trigger-Aktionen.",
+      "Nutze `Button(intent:)` innerhalb des Widgets.",
+      "Aktualisiere Daten mit `WidgetCenter.shared.reloadAllTimelines()`."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#FF006E", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import WidgetKit\nimport SwiftUI\nimport AppIntents\n\nstruct CounterEntry: TimelineEntry {\n    let date: Date\n    let count: Int\n}\n\nstruct IncrementIntent: AppIntent {\n    static var title = LocalizedStringResource(\"Increment Counter\")\n    func perform() async throws -> some IntentResult {\n        CounterStorage.shared.increment()\n        WidgetCenter.shared.reloadAllTimelines()\n        return .result()\n    }\n}\n\nclass CounterStorage {\n    static let shared = CounterStorage()\n    var count = 0\n    func increment() { count += 1 }\n}\n\nstruct CounterProvider: TimelineProvider {\n    func placeholder(in context: Context) -> CounterEntry { CounterEntry(date: .now, count: 0) }\n    func getSnapshot(in context: Context, completion: @escaping (CounterEntry) -> ()) { completion(CounterEntry(date: .now, count: CounterStorage.shared.count)) }\n    func getTimeline(in context: Context, completion: @escaping (Timeline<CounterEntry>) -> ()) {\n        completion(Timeline(entries: [CounterEntry(date: .now, count: CounterStorage.shared.count)], policy: .never))\n    }\n}\n\nstruct CounterWidgetView: View {\n    var entry: CounterEntry\n    var body: some View {\n        VStack(spacing: 8) {\n            Text(\"Zähler: \\(entry.count)\")\n                .font(.title3)\n            Button(intent: IncrementIntent()) {\n                Text(\"➕ Hinzufügen\")\n            }\n            .buttonStyle(.borderedProminent)\n        }\n    }\n}\n\n@main\nstruct CounterWidget: Widget {\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: \"counter_widget\", provider: CounterProvider()) { entry in\n            CounterWidgetView(entry: entry)\n        }\n        .supportedFamilies([.systemSmall, .systemMedium])\n        .configurationDisplayName(\"Interaktiver Zähler\")\n        .description(\"Ein Widget mit interaktivem Button.\")\n    }\n}",
+    "category": "WidgetKit",
+    "categoryIcon": "square.grid.2x2.fill",
+    "categoryIconColor": "#FF006E"
+  },
+  {
+    "id": "widgetkit_005",
+    "title": "Dynamic Island / Live Activity",
+    "description": "Erstelle eine Live Activity, die im Dynamic Island angezeigt wird – perfekt für Timer oder Tracking.",
+    "steps": [
+      "Definiere ein ActivityAttributes-Model.",
+      "Starte eine Activity aus der App.",
+      "Erstelle das Layout für Compact, Minimal und Expanded."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7209B7", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import ActivityKit\nimport SwiftUI\n\nstruct TimerAttributes: ActivityAttributes {\n    public struct ContentState: Codable, Hashable {\n        var remaining: Int\n    }\n}\n\n// Starten der Activity in der App\nfunc startTimerActivity() {\n    let attributes = TimerAttributes()\n    let state = TimerAttributes.ContentState(remaining: 60)\n    let _ = try? Activity<TimerAttributes>.request(attributes: attributes, contentState: state)\n}\n\n// Live Activity UI\nstruct TimerActivityView: View {\n    let context: ActivityViewContext<TimerAttributes>\n    var body: some View {\n        VStack {\n            Text(\"⏳ Noch: \\(context.state.remaining)s\")\n                .font(.headline)\n        }\n        .activityBackgroundTint(.purple)\n        .activitySystemActionForegroundColor(.white)\n    }\n}",
+    "category": "WidgetKit",
+    "categoryIcon": "square.grid.2x2.fill",
+    "categoryIconColor": "#7209B7"
+  },
+  {
+    "id": "widgetkit_006",
+    "title": "Widget mit lokalem Bild",
+    "description": "Zeige Bilder aus deinem Asset-Ordner im Widget an – ideal für Avatare, Icons oder Logos.",
+    "steps": [
+      "Füge Bilder zu Assets hinzu.",
+      "Nutze SwiftUI Image im Widget-View.",
+      "Passe das Layout mit ClipShape & Gradients an."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4CC9F0", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import WidgetKit\nimport SwiftUI\n\nstruct ImageEntry: TimelineEntry {\n    let date: Date\n}\n\nstruct ImageProvider: TimelineProvider {\n    func placeholder(in context: Context) -> ImageEntry { ImageEntry(date: .now) }\n    func getSnapshot(in context: Context, completion: @escaping (ImageEntry) -> ()) { completion(ImageEntry(date: .now)) }\n    func getTimeline(in context: Context, completion: @escaping (Timeline<ImageEntry>) -> ()) {\n        completion(Timeline(entries: [ImageEntry(date: .now)], policy: .never))\n    }\n}\n\nstruct ImageWidgetView: View {\n    var entry: ImageEntry\n    var body: some View {\n        ZStack {\n            LinearGradient(colors: [.cyan, .blue], startPoint: .top, endPoint: .bottom)\n            Image(\"avatar\")\n                .resizable()\n                .scaledToFit()\n                .clipShape(Circle())\n                .shadow(radius: 10)\n        }\n    }\n}\n\n@main\nstruct ImageWidget: Widget {\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: \"image_widget\", provider: ImageProvider()) { entry in\n            ImageWidgetView(entry: entry)\n        }\n        .supportedFamilies([.systemSmall])\n        .configurationDisplayName(\"Bild Widget\")\n        .description(\"Zeigt ein Bild aus deinen Assets an.\")\n    }\n}",
+    "category": "WidgetKit",
+    "categoryIcon": "square.grid.2x2.fill",
+    "categoryIconColor": "#4CC9F0"
   }
 ]

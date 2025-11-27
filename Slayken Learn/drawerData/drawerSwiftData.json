@@ -22,5 +22,96 @@
     "category": "Swift",
     "categoryIcon": "swift",
     "categoryIconColor": "#F72585"
+  },
+  {
+    "id": "swift_002",
+    "title": "Datentypen in Swift",
+    "description": "Erfahre die wichtigsten Datentypen in Swift wie Int, Double, String und Bool.",
+    "steps": [
+      "Nutze Int für ganze Zahlen.",
+      "Double speichert Dezimalzahlen.",
+      "String hält Textdaten.",
+      "Bool ist für true/false Werte."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#B5179E", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import Foundation\n\nlet zahl: Int = 42\nlet preis: Double = 19.99\nlet name: String = \"Tufan\"\nlet istAktiv: Bool = true\n\nprint(zahl, preis, name, istAktiv)",
+    "category": "Swift",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#B5179E"
+  },
+  {
+    "id": "swift_003",
+    "title": "Optionals verstehen",
+    "description": "Optionals bedeuten, dass ein Wert existieren kann – oder nil sein darf.",
+    "steps": [
+      "Nutze ? um einen Optional-Typ zu definieren.",
+      "Verwende if let zum sicheren Entpacken.",
+      "Nutze ?? für Default-Werte."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7209B7", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "var username: String? = \"Tufan\"\n\nif let name = username {\n    print(\"Hallo, \\(name)\")\n} else {\n    print(\"Kein Name vorhanden\")\n}\n\n// Default-Wert\nprint(username ?? \"Unbekannt\")",
+    "category": "Swift",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#7209B7"
+  },
+  {
+    "id": "swift_004",
+    "title": "if / else Bedingungen",
+    "description": "Lerne, wie du Bedingungen in Swift ausführst, um Entscheidungen im Code zu treffen.",
+    "steps": [
+      "Vergleiche Werte mit ==, !=, <, >.",
+      "Nutze if, else if und else.",
+      "Kombiniere Bedingungen mit && und ||."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#3A0CA3", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "let alter = 20\n\nif alter >= 18 {\n    print(\"Du bist volljährig\")\n} else {\n    print(\"Du bist minderjährig\")\n}",
+    "category": "Swift",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#3A0CA3"
+  },
+  {
+    "id": "swift_005",
+    "title": "Funktionen erstellen",
+    "description": "Erstelle wiederverwendbare Blöcke aus Code mit einer Swift-Funktion.",
+    "steps": [
+      "Nutze func als Schlüsselwort.",
+      "Definiere Parameter und Rückgabewerte.",
+      "Rufe Funktionen mehrfach auf."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4895EF", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "func begruessen(name: String) -> String {\n    return \"Hallo, \\(name)!\"\n}\n\nlet text = begruessen(name: \"Tufan\")\nprint(text)",
+    "category": "Swift",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#4895EF"
+  },
+  {
+    "id": "swift_006",
+    "title": "Arrays & Loops",
+    "description": "Lerne, wie du eine Liste aus Werten erstellst und sie mit einer Schleife durchläufst.",
+    "steps": [
+      "Erstelle ein Array mit [].",
+      "Nutze for-in, um über Elemente zu iterieren.",
+      "Greife per Index auf Elemente zu."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4CC9F0", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "let namen = [\"Anna\", \"Markus\", \"Tufan\"]\n\nfor name in namen {\n    print(\"Hallo \\(name)\")\n}\n\nprint(namen[0])",
+    "category": "Swift",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#4CC9F0"
   }
 ]

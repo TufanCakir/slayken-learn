@@ -204,5 +204,95 @@
       "category": "Vision",
       "categoryIcon": "vision.pro",
       "categoryIconColor": "#7C3AED"
+    },
+    {
+      "id": "vision_012",
+      "title": "Dokumenten-Segmentierung (Scanner)",
+      "description": "Erkenne Dokumentränder automatisch – ideal für Scanner-Apps wie Adobe Scan.",
+      "steps": [
+        "VNDetectDocumentSegmentationRequest erstellen.",
+        "Umrisspunkte extrahieren.",
+        "Dokument entzerren oder zuschneiden."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#0A84FF", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import Vision\nimport UIKit\n\nlet request = VNDetectDocumentSegmentationRequest { req, _ in\n    guard let result = req.results?.first as? VNDocumentSegmentationObservation else { return }\n    print(\"📄 Dokument erkannt mit \\(result.points.count) Punkten\")\n}\n\nlet handler = VNImageRequestHandler(cgImage: UIImage(named: \"doc\")!.cgImage!)\ntry? handler.perform([request])",
+      "category": "Vision",
+      "categoryIcon": "vision.pro",
+      "categoryIconColor": "#0A84FF"
+    },
+    {
+      "id": "vision_013",
+      "title": "Personensegmentierung (Hintergrund entfernen)",
+      "description": "Extrahiere Personen aus Bildern – perfekt für Portrait-Effekte, AI-Editing oder AR.",
+      "steps": [
+        "VNGeneratePersonSegmentationRequest nutzen.",
+        "Confidence Map auslesen.",
+        "Maske auf Bild anwenden (Matte)."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#34C759", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import Vision\nimport UIKit\n\nlet request = VNGeneratePersonSegmentationRequest()\nrequest.qualityLevel = .accurate\nrequest.outputPixelFormat = kCVPixelFormatType_OneComponent8\n\nlet handler = VNImageRequestHandler(cgImage: UIImage(named: \"person\")!.cgImage!)\ntry? handler.perform([request])\n\nif let mask = request.results?.first as? VNPixelBufferObservation {\n    print(\"🧍 Maske erzeugt: \\(mask.pixelBuffer)\")\n}",
+      "category": "Vision",
+      "categoryIcon": "vision.pro",
+      "categoryIconColor": "#34C759"
+    },
+    {
+      "id": "vision_014",
+      "title": "CoreML Segmentierung (Objektmasken)",
+      "description": "Nutze ein CoreML-Segmentation-Modell, um Pixel genau zu klassifizieren (Person, Himmel, Haare usw.).",
+      "steps": [
+        "CoreML-Segmentation-Model laden.",
+        "VNCoreMLRequest erstellen.",
+        "Pixel-Labels ausgeben."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF3B30", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import Vision\nimport CoreML\n\nlet model = try! VNCoreMLModel(for: DeepLabV3().model)\nlet request = VNCoreMLRequest(model: model) { req, _ in\n    if let result = req.results?.first as? VNPixelBufferObservation {\n        print(\"🖼 Segmentation PixelBuffer: \\(result.pixelBuffer)\")\n    }\n}\n\nlet handler = VNImageRequestHandler(cgImage: UIImage(named: \"scene\")!.cgImage!)\ntry? handler.perform([request])",
+      "category": "Vision",
+      "categoryIcon": "vision.pro",
+      "categoryIconColor": "#FF3B30"
+    },
+    {
+      "id": "vision_015",
+      "title": "Text-Layout Erkennung (Textblöcke finden)",
+      "description": "Finde automatisch Textblöcke, Überschriften und Layout-Strukturen in einem Dokument.",
+      "steps": [
+        "VNDetectTextRectanglesRequest erstellen.",
+        "Bounding Boxes pro Textblock auslesen.",
+        "Perfekt für OCR-Vorverarbeitung."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF9F0A", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import Vision\nimport UIKit\n\nlet request = VNDetectTextRectanglesRequest { req, _ in\n    guard let boxes = req.results as? [VNTextObservation] else { return }\n    for box in boxes {\n        print(\"🟦 Textblock gefunden: \\(box.boundingBox)\")\n    }\n}\nrequest.reportCharacterBoxes = true\n\nlet handler = VNImageRequestHandler(cgImage: UIImage(named: \"document\")!.cgImage!)\ntry? handler.perform([request])",
+      "category": "Vision",
+      "categoryIcon": "vision.pro",
+      "categoryIconColor": "#FF9F0A"
+    },
+    {
+      "id": "vision_016",
+      "title": "Bild-Ähnlichkeit (Image Similarity)",
+      "description": "Vergleiche zwei Bilder und berechne ihre visuelle Ähnlichkeit. Ideal für KI-Apps oder Fotoverwaltung.",
+      "steps": [
+        "VNGenerateImageFeaturePrintRequest für beide Bilder ausführen.",
+        "Feature Vektoren extrahieren.",
+        "distance() berechnen → je kleiner, desto ähnlicher."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#7C3AED", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import Vision\nimport UIKit\n\nfunc featurePrint(from image: UIImage) -> VNFeaturePrintObservation? {\n    let req = VNGenerateImageFeaturePrintRequest()\n    let handler = VNImageRequestHandler(cgImage: image.cgImage!)\n    try? handler.perform([req])\n    return req.results?.first as? VNFeaturePrintObservation\n}\n\nlet img1 = UIImage(named: \"photo1\")!\nlet img2 = UIImage(named: \"photo2\")!\n\nif let f1 = featurePrint(from: img1), let f2 = featurePrint(from: img2) {\n    var distance: Float = 0\n    try? f1.computeDistance(&distance, to: f2)\n    print(\"🔎 Ähnlichkeit: \\(distance)\")\n}",
+      "category": "Vision",
+      "categoryIcon": "vision.pro",
+      "categoryIconColor": "#7C3AED"
     }
 ]

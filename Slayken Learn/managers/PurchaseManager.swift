@@ -1,6 +1,6 @@
 import Foundation
 import StoreKit
-import Combine
+internal import Combine
 
 @MainActor
 final class PurchaseManager: ObservableObject {

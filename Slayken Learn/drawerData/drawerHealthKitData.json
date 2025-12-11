@@ -18,7 +18,7 @@
         "#FFFFFF"
       ]
     },
-    "code": "import HealthKit\n\nclass HealthKitManager: ObservableObject {\n    private let healthStore = HKHealthStore()\n    @Published var steps: Double = 0\n\n    init() {\n        requestAuthorization()\n    }\n\n    // Berechtigungen anfragen\n    func requestAuthorization() {\n        guard HKHealthStore.isHealthDataAvailable() else {\n            print(\"❌ HealthKit nicht verfügbar\")\n            return\n        }\n\n        guard let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount) else { return }\n\n        healthStore.requestAuthorization(toShare: [], read: [stepType]) { success, error in\n            if success {\n                print(\"✅ HealthKit Zugriff gewährt\")\n                self.fetchSteps()\n            } else if let error = error {\n                print(\"❌ Zugriff verweigert: \\(error.localizedDescription)\")\n            }\n        }\n    }\n\n    // Schrittanzahl abrufen\n    func fetchSteps() {\n        guard let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount) else { return }\n\n        let startOfDay = Calendar.current.startOfDay(for: Date())\n        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: Date(), options: .strictStartDate)\n\n        let query = HKStatisticsQuery(quantityType: stepType, quantitySamplePredicate: predicate, options: .cumulativeSum) { _, result, _ in\n            guard let result = result, let sum = result.sumQuantity() else { return }\n            DispatchQueue.main.async {\n                self.steps = sum.doubleValue(for: HKUnit.count())\n                print(\"🚶 Schritte heute: \\(Int(self.steps))\")\n            }\n        }\n\n        healthStore.execute(query)\n    }\n}\n\n// Beispiel: @StateObject var hkManager = HealthKitManager()",
+    "code": "import HealthKit\n\nclass HealthKitManager: ObservableObject {\n    private let healthStore = HKHealthStore()\n    @Published var steps: Double = 0\n\n    init() {\n        requestAuthorization()\n    }\n\n    / Berechtigungen anfragen\n    func requestAuthorization() {\n        guard HKHealthStore.isHealthDataAvailable() else {\n            print(\"❌ HealthKit nicht verfügbar\")\n            return\n        }\n\n        guard let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount) else { return }\n\n        healthStore.requestAuthorization(toShare: [], read: [stepType]) { success, error in\n            if success {\n                print(\"✅ HealthKit Zugriff gewährt\")\n                self.fetchSteps()\n            } else if let error = error {\n                print(\"❌ Zugriff verweigert: \\(error.localizedDescription)\")\n            }\n        }\n    }\n\n    / Schrittanzahl abrufen\n    func fetchSteps() {\n        guard let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount) else { return }\n\n        let startOfDay = Calendar.current.startOfDay(for: Date())\n        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: Date(), options: .strictStartDate)\n\n        let query = HKStatisticsQuery(quantityType: stepType, quantitySamplePredicate: predicate, options: .cumulativeSum) { _, result, _ in\n            guard let result = result, let sum = result.sumQuantity() else { return }\n            DispatchQueue.main.async {\n                self.steps = sum.doubleValue(for: HKUnit.count())\n                print(\"🚶 Schritte heute: \\(Int(self.steps))\")\n            }\n        }\n\n        healthStore.execute(query)\n    }\n}\n\n/ Beispiel: @StateObject var hkManager = HealthKitManager()",
     "category": "HealthKit",
     "categoryIcon": "heart.fill",
     "categoryIconColor": "#06D6A0"
@@ -190,6 +190,96 @@
     },
     "code":
       "import HealthKit\n\nclass RespirationManager: ObservableObject {\n    private let store = HKHealthStore()\n    @Published var rate: Double = 0\n\n    func requestAccess() {\n        let type = HKQuantityType.quantityType(forIdentifier: .respiratoryRate)!\n        store.requestAuthorization(toShare: [], read: [type]) { s,_ in if s { self.load() } }\n    }\n\n    func load() {\n        let type = HKQuantityType.quantityType(forIdentifier: .respiratoryRate)!\n        let sort = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)\n        let q = HKSampleQuery(sampleType: type, predicate: nil, limit: 1, sortDescriptors: [sort]) { _, samples, _ in\n            if let sample = samples?.first as? HKQuantitySample {\n                let v = sample.quantity.doubleValue(for: .init(from: \"count/min\"))\n                DispatchQueue.main.async { self.rate = v }\n            }\n        }\n        store.execute(q)\n    }\n}",
+    "category": "HealthKit",
+    "categoryIcon": "heart.fill",
+    "categoryIconColor": "#7209B7"
+  },
+  {
+    "id": "healthkit_011",
+    "title": "Live Gesundheitsdaten abonnieren (ObserverQuery)",
+    "description": "Erhalte automatische Updates von HealthKit-Daten, ohne manuell abzufragen – perfekt für Live-Tracking.",
+    "steps": [
+      "Erstelle HKObserverQuery für ein HealthKit-Item.",
+      "Reagiere auf Änderungen über den Handler.",
+      "Starte anschließend eine normale Fetch-Query."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#06D6A0", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import HealthKit\n\nclass LiveStepObserver: ObservableObject {\n    private let store = HKHealthStore()\n    @Published var steps: Double = 0\n\n    func start() {\n        guard let type = HKObjectType.quantityType(forIdentifier: .stepCount) else { return }\n\n        let observer = HKObserverQuery(sampleType: type, predicate: nil) { _, _, _ in\n            self.fetchSteps()\n        }\n\n        store.execute(observer)\n        fetchSteps()\n    }\n\n    private func fetchSteps() {\n        guard let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount) else { return }\n        let start = Calendar.current.startOfDay(for: .now)\n        let predicate = HKQuery.predicateForSamples(withStart: start, end: .now)\n\n        let query = HKStatisticsQuery(quantityType: stepType, quantitySamplePredicate: predicate, options: .cumulativeSum) { _, result, _ in\n            if let q = result?.sumQuantity() {\n                DispatchQueue.main.async { self.steps = q.doubleValue(for: .count()) }\n            }\n        }\n        store.execute(query)\n    }\n}",
+    "category": "HealthKit",
+    "categoryIcon": "heart.fill",
+    "categoryIconColor": "#06D6A0"
+  },
+  {
+    "id": "healthkit_012",
+    "title": "Ruhepuls & VO₂max auslesen",
+    "description": "Greife auf wichtige Fitnessmetriken wie Resting Heart Rate und VO₂max zu.",
+    "steps": [
+      "Fordere Berechtigungen für restingHeartRate & vo2Max an.",
+      "Nutze HKSampleQuery.",
+      "Gib die neuesten Werte aus."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#EF476F", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import HealthKit\n\nclass FitnessCoreManager: ObservableObject {\n    private let store = HKHealthStore()\n    @Published var restingBPM: Double = 0\n    @Published var vo2Max: Double = 0\n\n    func request() {\n        guard let rest = HKQuantityType.quantityType(forIdentifier: .restingHeartRate),\n              let vo2 = HKQuantityType.quantityType(forIdentifier: .vo2Max) else { return }\n\n        store.requestAuthorization(toShare: [], read: [rest, vo2]) { s,_ in\n            if s { self.loadResting(); self.loadVO2() }\n        }\n    }\n\n    private func loadResting() {\n        let type = HKQuantityType.quantityType(forIdentifier: .restingHeartRate)!\n        let sort = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)\n        let query = HKSampleQuery(sampleType: type, predicate: nil, limit: 1, sortDescriptors: [sort]) { _, samples, _ in\n            if let value = (samples?.first as? HKQuantitySample)?.quantity.doubleValue(for: .init(from: \"count/min\")) {\n                DispatchQueue.main.async { self.restingBPM = value }\n            }\n        }\n        store.execute(query)\n    }\n\n    private func loadVO2() {\n        let type = HKQuantityType.quantityType(forIdentifier: .vo2Max)!\n        let sort = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)\n        let query = HKSampleQuery(sampleType: type, predicate: nil, limit: 1, sortDescriptors: [sort]) { _, samples, _ in\n            if let value = (samples?.first as? HKQuantitySample)?.quantity.doubleValue(for: .init(from: \"ml/kg*min\")) {\n                DispatchQueue.main.async { self.vo2Max = value }\n            }\n        }\n        store.execute(query)\n    }\n}",
+    "category": "HealthKit",
+    "categoryIcon": "heart.fill",
+    "categoryIconColor": "#EF476F"
+  },
+  {
+    "id": "healthkit_013",
+    "title": "7-Tage Trend berechnen (Durchschnittswerte)",
+    "description": "Berechne Wochenstatistiken für Schritte, Schlaf oder Kalorien.",
+    "steps": [
+      "Erstelle ein Datum für den Zeitraum (7 Tage).",
+      "Nutze HKStatisticsQuery mit cumulativeSum.",
+      "Berechne Durchschnitt pro Tag."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#FFD166", "#000000"],
+        "textColors": ["#FFFFFF"]
+    },
+    "code": "import HealthKit\n\nclass WeeklyStepsManager: ObservableObject {\n    private let store = HKHealthStore()\n    @Published var dailyAverage: Double = 0\n\n    func request() {\n        guard let steps = HKQuantityType.quantityType(forIdentifier: .stepCount) else { return }\n        store.requestAuthorization(toShare: [], read: [steps]) { s,_ in if s { self.load() } }\n    }\n\n    func load() {\n        guard let type = HKQuantityType.quantityType(forIdentifier: .stepCount) else { return }\n        let start = Calendar.current.date(byAdding: .day, value: -7, to: .now)!\n        let predicate = HKQuery.predicateForSamples(withStart: start, end: .now)\n\n        let q = HKStatisticsQuery(quantityType: type, quantitySamplePredicate: predicate, options: .cumulativeSum) { _, result, _ in\n            if let sum = result?.sumQuantity()?.doubleValue(for: .count()) {\n                DispatchQueue.main.async { self.dailyAverage = sum / 7 }\n            }\n        }\n        store.execute(q)\n    }\n}",
+    "category": "HealthKit",
+    "categoryIcon": "heart.fill",
+    "categoryIconColor": "#FFD166"
+  },
+  {
+    "id": "healthkit_014",
+    "title": "EKG Daten auslesen (Electrocardiogram)",
+    "description": "Lies EKG-Daten eines Nutzers aus – z. B. Herzrhythmusklassifikation.",
+    "steps": [
+      "Fordere Zugriff auf electrocardiogramType an.",
+      "Nutze HKSampleQuery.",
+      "Lies classification und Symptomdaten."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#118AB2", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import HealthKit\n\nclass ECGManager: ObservableObject {\n    private let store = HKHealthStore()\n    @Published var classification: HKElectrocardiogram.Classification = .notSet\n\n    func request() {\n        let type = HKObjectType.electrocardiogramType()\n        store.requestAuthorization(toShare: [], read: [type]) { s,_ in if s { self.load() } }\n    }\n\n    func load() {\n        let type = HKObjectType.electrocardiogramType()\n        let sort = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)\n\n        let query = HKSampleQuery(sampleType: type, predicate: nil, limit: 1, sortDescriptors: [sort]) { _, samples, _ in\n            if let ecg = samples?.first as? HKElectrocardiogram {\n                DispatchQueue.main.async { self.classification = ecg.classification }\n            }\n        }\n        store.execute(query)\n    }\n}",
+    "category": "HealthKit",
+    "categoryIcon": "heart.fill",
+    "categoryIconColor": "#118AB2"
+  },
+  {
+    "id": "healthkit_015",
+    "title": "HealthKit Daten als Diagramm anzeigen (Swift Charts)",
+    "description": "Zeige Schritte, Herzfrequenz oder Energieverbrauch in einer schönen SwiftUI-Chart an.",
+    "steps": [
+      "Daten über HealthKit laden.",
+      "In ein ChartData-Modell umwandeln.",
+      "Mit Swift Charts rendern."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7209B7", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport Charts\n\nstruct StepsChartView: View {\n    let data: [Double]\n\n    var body: some View {\n        Chart {\n            ForEach(Array(data.enumerated()), id: \\.offset) { index, value in\n                LineMark(\n                    x: .value(\"Tag\", index),\n                    y: .value(\"Schritte\", value)\n                )\n            }\n        }\n        .frame(height: 250)\n        .padding()\n    }\n}\n",
     "category": "HealthKit",
     "categoryIcon": "heart.fill",
     "categoryIconColor": "#7209B7"

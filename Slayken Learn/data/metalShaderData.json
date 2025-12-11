@@ -213,5 +213,105 @@
         "category": "Metal Shader",
         "categoryIcon": "cpu",
         "categoryIconColor": "#0A84FF"
+    },
+    {
+      "id": "shader_011",
+      "title": "Normal Map Shader (Bump Mapping)",
+      "description": "Dieser Shader nutzt eine Normal Map, um feine Oberflächenstrukturen zu simulieren – perfekt für 3D-Spirits, Rüstungen oder Bossflächen.",
+      "steps": [
+        "Lade eine Normalmap als zweite Textur.",
+        "Lese pro Pixel die Normale aus der Textur.",
+        "Transformiere sie in den Tangent Space.",
+        "Berechne Licht basierend auf der Normalmap."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#34C759", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "#include <metal_stdlib>\nusing namespace metal;\n\nfragment float4 fragment_main(float2 uv [[stage_in]],\n                             texture2d<float> albedo [[texture(0)]],\n                             texture2d<float> normalMap [[texture(1)]]) {\n\n    constexpr sampler s(filter::linear);\n\n    float3 baseColor = albedo.sample(s, uv).rgb;\n    float3 normal    = normalMap.sample(s, uv).rgb * 2.0 - 1.0;\n\n    float3 lightDir = normalize(float3(0.3, 0.6, 1.0));\n    float diffuse   = max(dot(normal, lightDir), 0.0);\n\n    return float4(baseColor * diffuse, 1.0);\n}",
+      "category": "Metal Shader",
+      "categoryIcon": "cpu",
+      "categoryIconColor": "#34C759"
+    },
+    {
+      "id": "shader_012",
+      "title": "Specular Highlight Shader",
+      "description": "Fügt realistische Glanzlichter hinzu – ideal für Metall-Rüstungen, glänzende Waffen oder futuristische Spirit-Effekte.",
+      "steps": [
+        "Berechne Reflexionswinkel im Fragment Shader.",
+        "Nutze die Phong Specular Formel.",
+        "Passe Shininess an für stärkere Highlights.",
+        "Kombiniere Diffuse + Specular Licht."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FFD700", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "#include <metal_stdlib>\nusing namespace metal;\n\nfragment float4 fragment_main(float3 normal [[stage_in]], float3 pos [[position]]) {\n    float3 N = normalize(normal);\n    float3 L = normalize(float3(0.4, 0.8, 1.0));\n    float3 V = normalize(-pos);\n\n    float3 R = reflect(-L, N);\n\n    float diffuse = max(dot(N, L), 0.0);\n    float spec    = pow(max(dot(R, V), 0.0), 32.0); / Shininess\n\n    float3 color = diffuse * float3(0.5, 0.5, 1.0) + spec * float3(1.0, 1.0, 1.0);\n\n    return float4(color, 1.0);\n}",
+      "category": "Metal Shader",
+      "categoryIcon": "cpu",
+      "categoryIconColor": "#FFD700"
+    },
+    {
+      "id": "shader_013",
+      "title": "Outline Shader (Cartoon Look)",
+      "description": "Ein Shader, der Figuren oder Objekte mit schwarzen Outlines versieht. Perfekt für Cel-Shading, Anime-Look oder Spirit-Border-Effekte.",
+      "steps": [
+        "Bewege den Vertex entlang seiner Normalen nach außen.",
+        "Render die vergrößerte Silhouette schwarz.",
+        "Render das Objekt normal darüber.",
+        "Dadurch entsteht ein 3D-Outline Effekt."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#AF52DE", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "#include <metal_stdlib>\nusing namespace metal;\n\nvertex float4 outline_vertex(float3 pos [[attribute(0)]],\n                             float3 normal [[attribute(1)]],\n                             constant float4x4& mvp [[buffer(2)]]) {\n    float3 offsetPos = pos + normal * 0.03; / Outline Stärke\n    return mvp * float4(offsetPos, 1.0);\n}\n\nfragment float4 outline_frag() {\n    return float4(0, 0, 0, 1); / Schwarz\n}",
+      "category": "Metal Shader",
+      "categoryIcon": "cpu",
+      "categoryIconColor": "#AF52DE"
+    },
+    {
+      "id": "shader_014",
+      "title": "Bloom Extract Shader",
+      "description": "Extrahiert helle Pixel, um Glow/Bloom zu erzeugen – ideal für Spirit-Aura, Boss-Hintergründe und Attack-Effekte.",
+      "steps": [
+        "Lese die Szene-Textur.",
+        "Extrahiere nur helle Pixel (threshold).",
+        "Gebe sie an einen Blur Shader weiter.",
+        "Addiere danach Bloom + Originalbild."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF2D55", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "#include <metal_stdlib>\nusing namespace metal;\n\nfragment float4 bloom_extract(texture2d<float> tex [[texture(0)]], float2 uv [[stage_in]]) {\n    constexpr sampler s(filter::linear);\n    float3 c = tex.sample(s, uv).rgb;\n\n    float brightness = max(max(c.r, c.g), c.b);\n\n    if (brightness > 0.7) { return float4(c,1.0); }\n    else                  { return float4(0,0,0,1); }\n}",
+      "category": "Metal Shader",
+      "categoryIcon": "cpu",
+      "categoryIconColor": "#FF2D55"
+    },
+    {
+      "id": "shader_015",
+      "title": "Dissolve Shader (Burn Effekt)",
+      "description": "Ein Shader, bei dem ein Objekt dynamisch verbrennt oder sich auflöst – ideal für Boss Death, Spirit Fade oder Magieanimation.",
+      "steps": [
+        "Nutze eine Noise Map zur Maskierung.",
+        "Vergleiche Noise mit einem Threshold.",
+        "Verberge Pixel über Schwellenwert.",
+        "Füge Glow/Feuerfarbe an den Rändern hinzu."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF6B00", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "#include <metal_stdlib>\nusing namespace metal;\n\nfragment float4 dissolve_frag(float2 uv [[stage_in]],\n                              texture2d<float> tex [[texture(0)]],\n                              texture2d<float> noiseTex [[texture(1)]],\n                              constant float& threshold [[buffer(0)]]) {\n\n    constexpr sampler s(filter::linear);\n    float4 base = tex.sample(s, uv);\n    float noise = noiseTex.sample(s, uv).r;\n\n    if (noise < threshold) {\n        return base; / sichtbar\n    }\n\n    float edge = smoothstep(threshold, threshold + 0.1, noise);\n    return float4(edge, edge*0.3, 0.0, 1.0); / Feuer-Rand\n}",
+      "category": "Metal Shader",
+      "categoryIcon": "cpu",
+      "categoryIconColor": "#FF6B00"
     }
 ]

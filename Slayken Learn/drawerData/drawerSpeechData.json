@@ -18,7 +18,7 @@
         "#FFFFFF"
       ]
     },
-    "code": "import Speech\nimport AVFoundation\n\nclass SpeechRecognizerManager: NSObject, ObservableObject {\n    private let recognizer = SFSpeechRecognizer(locale: Locale(identifier: \"de-DE\"))\n    private var request: SFSpeechAudioBufferRecognitionRequest?\n    private var recognitionTask: SFSpeechRecognitionTask?\n    private let audioEngine = AVAudioEngine()\n\n    @Published var recognizedText = \"\"\n\n    override init() {\n        super.init()\n        SFSpeechRecognizer.requestAuthorization { authStatus in\n            if authStatus != .authorized {\n                print(\"❌ Zugriff auf Spracherkennung verweigert\")\n            }\n        }\n    }\n\n    func startListening() {\n        recognitionTask?.cancel()\n        recognitionTask = nil\n\n        let audioSession = AVAudioSession.sharedInstance()\n        try? audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)\n        try? audioSession.setActive(true, options: .notifyOthersOnDeactivation)\n\n        request = SFSpeechAudioBufferRecognitionRequest()\n        guard let inputNode = audioEngine.inputNode else { return }\n        guard let request = request else { return }\n\n        recognitionTask = recognizer?.recognitionTask(with: request) { result, error in\n            if let result = result {\n                DispatchQueue.main.async {\n                    self.recognizedText = result.bestTranscription.formattedString\n                }\n            }\n            if error != nil {\n                self.audioEngine.stop()\n                inputNode.removeTap(onBus: 0)\n                self.request = nil\n                self.recognitionTask = nil\n            }\n        }\n\n        let recordingFormat = inputNode.outputFormat(forBus: 0)\n        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in\n            self.request?.append(buffer)\n        }\n\n        audioEngine.prepare()\n        try? audioEngine.start()\n        print(\"🎤 Spracherkennung gestartet…\")\n    }\n\n    func stopListening() {\n        audioEngine.stop()\n        request?.endAudio()\n        print(\"🛑 Spracherkennung gestoppt\")\n    }\n}\n\n// Beispielnutzung (z. B. in SwiftUI):\n// @StateObject var speechManager = SpeechRecognizerManager()\n// Button(\"Start\") { speechManager.startListening() }",
+    "code": "import Speech\nimport AVFoundation\n\nclass SpeechRecognizerManager: NSObject, ObservableObject {\n    private let recognizer = SFSpeechRecognizer(locale: Locale(identifier: \"de-DE\"))\n    private var request: SFSpeechAudioBufferRecognitionRequest?\n    private var recognitionTask: SFSpeechRecognitionTask?\n    private let audioEngine = AVAudioEngine()\n\n    @Published var recognizedText = \"\"\n\n    override init() {\n        super.init()\n        SFSpeechRecognizer.requestAuthorization { authStatus in\n            if authStatus != .authorized {\n                print(\"❌ Zugriff auf Spracherkennung verweigert\")\n            }\n        }\n    }\n\n    func startListening() {\n        recognitionTask?.cancel()\n        recognitionTask = nil\n\n        let audioSession = AVAudioSession.sharedInstance()\n        try? audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)\n        try? audioSession.setActive(true, options: .notifyOthersOnDeactivation)\n\n        request = SFSpeechAudioBufferRecognitionRequest()\n        guard let inputNode = audioEngine.inputNode else { return }\n        guard let request = request else { return }\n\n        recognitionTask = recognizer?.recognitionTask(with: request) { result, error in\n            if let result = result {\n                DispatchQueue.main.async {\n                    self.recognizedText = result.bestTranscription.formattedString\n                }\n            }\n            if error != nil {\n                self.audioEngine.stop()\n                inputNode.removeTap(onBus: 0)\n                self.request = nil\n                self.recognitionTask = nil\n            }\n        }\n\n        let recordingFormat = inputNode.outputFormat(forBus: 0)\n        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in\n            self.request?.append(buffer)\n        }\n\n        audioEngine.prepare()\n        try? audioEngine.start()\n        print(\"🎤 Spracherkennung gestartet…\")\n    }\n\n    func stopListening() {\n        audioEngine.stop()\n        request?.endAudio()\n        print(\"🛑 Spracherkennung gestoppt\")\n    }\n}\n\n/ Beispielnutzung (z. B. in SwiftUI):\n/ @StateObject var speechManager = SpeechRecognizerManager()\n/ Button(\"Start\") { speechManager.startListening() }",
     "category": "Speech",
     "categoryIcon": "microphone",
     "categoryIconColor": "#FF6D2D"
@@ -72,7 +72,7 @@
       "backgroundColors": ["#000000", "#FF3B30", "#000000"],
       "textColors": ["#FFFFFF"]
     },
-    "code": "import Speech\n\nlet keywords = [\"start\", \"stop\", \"hilfe\"]\n\nfunc detectKeywords(_ text: String) {\n    let lower = text.lowercased()\n    for key in keywords {\n        if lower.contains(key) {\n            print(\"🔍 Keyword erkannt: \\(key)\")\n        }\n    }\n}\n\n// in recognitionTask():\n// detectKeywords(result.bestTranscription.formattedString)",
+    "code": "import Speech\n\nlet keywords = [\"start\", \"stop\", \"hilfe\"]\n\nfunc detectKeywords(_ text: String) {\n    let lower = text.lowercased()\n    for key in keywords {\n        if lower.contains(key) {\n            print(\"🔍 Keyword erkannt: \\(key)\")\n        }\n    }\n}\n\n/ in recognitionTask():\n/ detectKeywords(result.bestTranscription.formattedString)",
     "category": "Speech",
     "categoryIcon": "microphone",
     "categoryIconColor": "#FF3B30"
@@ -108,9 +108,99 @@
       "backgroundColors": ["#000000", "#6FDC8C", "#000000"],
         "textColors": ["#FFFFFF"]
     },
-    "code": "import AVFoundation\nimport Speech\n\nclass AudioRecorder: NSObject {\n    var audioEngine = AVAudioEngine()\n    var file: AVAudioFile?\n\n    func startRecording() {\n        let format = audioEngine.inputNode.outputFormat(forBus: 0)\n        let url = FileManager.default.temporaryDirectory.appendingPathComponent(\"recording.m4a\")\n\n        file = try? AVAudioFile(forWriting: url, settings: format.settings)\n\n        audioEngine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: format) { buffer, _ in\n            try? self.file?.write(from: buffer)\n        }\n\n        try? audioEngine.start()\n        print(\"🎙 Aufnahme gestartet…\")\n    }\n\n    func stopRecording() -> URL? {\n        audioEngine.stop()\n        audioEngine.inputNode.removeTap(onBus: 0)\n        print(\"🛑 Aufnahme beendet\")\n        return file?.url\n    }\n}\n\n// Danach einfach: transcribeAudioFile(url)",
+    "code": "import AVFoundation\nimport Speech\n\nclass AudioRecorder: NSObject {\n    var audioEngine = AVAudioEngine()\n    var file: AVAudioFile?\n\n    func startRecording() {\n        let format = audioEngine.inputNode.outputFormat(forBus: 0)\n        let url = FileManager.default.temporaryDirectory.appendingPathComponent(\"recording.m4a\")\n\n        file = try? AVAudioFile(forWriting: url, settings: format.settings)\n\n        audioEngine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: format) { buffer, _ in\n            try? self.file?.write(from: buffer)\n        }\n\n        try? audioEngine.start()\n        print(\"🎙 Aufnahme gestartet…\")\n    }\n\n    func stopRecording() -> URL? {\n        audioEngine.stop()\n        audioEngine.inputNode.removeTap(onBus: 0)\n        print(\"🛑 Aufnahme beendet\")\n        return file?.url\n    }\n}\n\n/ Danach einfach: transcribeAudioFile(url)",
     "category": "Speech",
     "categoryIcon": "microphone",
     "categoryIconColor": "#6FDC8C"
-  }
+  },
+  {
+    "id": "speech_007",
+    "title": "Live-Sprachübersetzung",
+    "description": "Erkenne gesprochene Sprache und übersetze sie live in eine andere Sprache.",
+    "steps": [
+      "Sprache per SpeechRecognizer in Text umwandeln.",
+      "Text an Translate API oder eigenen Übersetzer senden.",
+      "Übersetzten Text live anzeigen."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#0A84FF", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "func translateGermanToEnglish(_ text: String) async -> String {\n    / ⚠️ Beispiel: Dummy Übersetzer\n    / In echter App: Apple Translate API, DeepL, ChatGPT API etc.\n    let map: [String:String] = [\"hallo\": \"hello\", \"wie gehts\": \"how are you\"]\n    let lower = text.lowercased()\n    return map[lower] ?? text\n}\n\n/ In recognitionTask():\n/ Task { translated = await translateGermanToEnglish(result.bestTranscription.formattedString) }",
+    "category": "Speech",
+    "categoryIcon": "microphone",
+    "categoryIconColor": "#0A84FF"
+  },
+  {
+    "id": "speech_008",
+    "title": "Spracherkennung pausieren & fortsetzen",
+    "description": "Pause die laufende Speech-Erkennung, ohne sie komplett zu resetten.",
+    "steps": [
+      "AudioEngine.pause() verwenden.",
+      "Erst bei Resume wieder starten.",
+      "Ideal für Voice-Controlled Games."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#FF6D2D", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "class PauseableSpeechRecognizer: SpeechRecognizerManager {\n    func pause() {\n        audioEngine.pause()\n        print(\"⏸️ Pausiert\")\n    }\n\n    func resume() {\n        try? audioEngine.start()\n        print(\"▶️ Fortgesetzt\")\n    }\n}",
+    "category": "Speech",
+    "categoryIcon": "microphone",
+    "categoryIconColor": "#FF6D2D"
+  },
+  {
+    "id": "speech_009",
+    "title": "Sprachbefehle mit Haptics verbinden",
+    "description": "Erzeuge Vibrationen, wenn bestimmte Wörter erkannt werden.",
+    "steps": [
+      "Sprachtext live analysieren.",
+      "Keywords erkennen.",
+      "Haptic Feedback triggern."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#FFD60A", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import UIKit\n\nfunc checkForHapticWord(_ text: String) {\n    if text.lowercased().contains(\"feuer\") {\n        let generator = UIImpactFeedbackGenerator(style: .heavy)\n        generator.impactOccurred()\n        print(\"🔥 Haptic ausgelöst!\")\n    }\n}",
+    "category": "Speech",
+    "categoryIcon": "microphone",
+    "categoryIconColor": "#FFD60A"
+  },
+      {
+        "id": "speech_010",
+        "title": "Automatische Satz-Erkennung",
+        "description": "Erkenne automatisch Satzenden während der Spracherkennung.",
+        "steps": [
+          "Transkript live analysieren.",
+          "Nach ., !, ? suchen.",
+          "Sätze einzeln weiterverarbeiten."
+        ],
+        "colors": {
+          "backgroundColors": ["#000000", "#30D158", "#000000"],
+          "textColors": ["#FFFFFF"]
+        },
+        "code": "func detectSentences(_ text: String) -> [String] {\n    let delimiters = CharacterSet(charactersIn: \".!?\")\n    return text.components(separatedBy: delimiters).map { $0.trimmingCharacters(in: .whitespaces) }\n}\n\n/ Ausgabe: detectSentences(\"Hallo! Wie geht es dir?\")",
+        "category": "Speech",
+        "categoryIcon": "microphone",
+        "categoryIconColor": "#30D158"
+      },
+    {
+      "id": "speech_011",
+      "title": "Whisper On-Device Integration",
+      "description": "Nutze Whisper (OpenAI) lokal oder über API als Alternative zur Apple Speech API.",
+      "steps": [
+        "Audio als PCM oder WAV ausgeben.",
+        "In Whisper-Model schicken (lokal oder API).",
+        "Transkript zurück in die App einspeisen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#6FDC8C", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "func sendToWhisper(_ url: URL) async throws -> String {\n    / Beispiel API Call\n    let apiURL = URL(string: \"https:/api.openai.com/v1/audio/transcriptions\")!\n\n    var request = URLRequest(apiURL)\n    request.httpMethod = \"POST\"\n\n    / Multipart-FormData mit File\n    / In echter App: Whisper.cpp für Offline-Mode nutzen\n\n    return \"Transkript von Whisper\"\n}",
+      "category": "Speech",
+      "categoryIcon": "microphone",
+      "categoryIconColor": "#6FDC8C"
+    }
 ]

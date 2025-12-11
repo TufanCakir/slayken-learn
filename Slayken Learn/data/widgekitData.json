@@ -115,7 +115,7 @@
         "textColors": ["#FFFFFF"]
       },
       "code":
-        "struct LinkWidgetView: View {\n    var entry: Entry\n    var body: some View {\n        Text(\"➡️ Öffne App Screen\")\n            .widgetURL(URL(string: \"myapp://detail\"))\n    }\n}",
+        "struct LinkWidgetView: View {\n    var entry: Entry\n    var body: some View {\n        Text(\"➡️ Öffne App Screen\")\n            .widgetURL(URL(string: \"myapp:/detail\"))\n    }\n}",
       "category": "WidgetKit",
       "categoryIcon": "square.grid.2x2.fill",
       "categoryIconColor": "#30D158"
@@ -210,9 +210,99 @@
         "textColors": ["#FFFFFF"]
       },
       "code":
-        "let defaults = UserDefaults(suiteName: \"group.myApp\")!\ndefaults.set(\"Hello Widget\", forKey: \"text\")\n\n// Widget liest:\nlet value = UserDefaults(suiteName: \"group.myApp\")?.string(forKey: \"text\")",
+        "let defaults = UserDefaults(suiteName: \"group.myApp\")!\ndefaults.set(\"Hello Widget\", forKey: \"text\")\n\n/ Widget liest:\nlet value = UserDefaults(suiteName: \"group.myApp\")?.string(forKey: \"text\")",
       "category": "WidgetKit",
       "categoryIcon": "square.grid.2x2.fill",
       "categoryIconColor": "#34C759"
+    },
+    {
+      "id": "widgetkit_012",
+      "title": "Wetter-Widget mit API (Async/Await)",
+      "description": "Baue ein Widget, das Live-Wetterdaten per API lädt und anzeigt.",
+      "steps": [
+        "Async API-Call im Provider nutzen.",
+        "Daten in Entry speichern.",
+        "View zeigt Temperatur / Icon."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#0A84FF", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import WidgetKit\nimport SwiftUI\n\nstruct WeatherEntry: TimelineEntry { let date: Date; let temp: Int }\n\nstruct WeatherProvider: TimelineProvider {\n    func placeholder(in context: Context) -> WeatherEntry { WeatherEntry(date: .now, temp: 0) }\n\n    func getSnapshot(in context: Context, completion: @escaping (WeatherEntry) -> Void) {\n        completion(WeatherEntry(date: .now, temp: 14))\n    }\n\n    func getTimeline(in context: Context, completion: @escaping (Timeline<WeatherEntry>) -> Void) {\n        Task {\n            let temp = await fetchTemp()\n            let entry = WeatherEntry(date: .now, temp: temp)\n            completion(Timeline(entries: [entry], policy: .after(.now.addingTimeInterval(900))))\n        }\n    }\n\n    func fetchTemp() async -> Int {\n        / Fake API\n        return Int.random(in: -5...30)\n    }\n}",
+      "category": "WidgetKit",
+      "categoryIcon": "cloud.sun.fill",
+      "categoryIconColor": "#0A84FF"
+    },
+    {
+      "id": "widgetkit_013",
+      "title": "Fortschritts-Widget (XP, Level, Counter)",
+      "description": "Ein Widget zeigt Fortschritt mit Fortschrittsbalken – ideal für Games oder Lernapps.",
+      "steps": [
+        "Entry enthält XP, Level, Progress.",
+        "ProgressView im Widget.",
+        "Timeline zum Live-Update."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#5E5CE6", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "struct XPEntry: TimelineEntry {\n    let date: Date\n    let level: Int\n    let progress: Double\n}\n\nstruct XPWidgetView: View {\n    var entry: XPEntry\n    var body: some View {\n        VStack(alignment: .leading) {\n            Text(\"Level \\(entry.level)\")\n                .font(.headline)\n            ProgressView(value: entry.progress)\n                .tint(.purple)\n            Text(\"XP Progress\")\n                .font(.caption)\n        }\n        .padding()\n    }\n}",
+      "category": "WidgetKit",
+      "categoryIcon": "chart.bar.fill",
+      "categoryIconColor": "#5E5CE6"
+    },
+    {
+      "id": "widgetkit_014",
+      "title": "Kalender-Widget (Nächster Termin)",
+      "description": "Zeige den nächsten bevorstehenden Termin oder Reminder an – ideal für Productivity Apps.",
+      "steps": [
+        "Entry enthält nächstes Datum & Titel.",
+        "Sortierte Liste → erster Eintrag.",
+        "WidgetView formatiert Datum und Zeit."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#00C7BE", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "struct EventEntry: TimelineEntry { let date: Date; let title: String }\n\nstruct EventWidgetView: View {\n    var entry: EventEntry\n    var body: some View {\n        VStack(alignment: .leading) {\n            Text(\"Nächster Termin\")\n                .font(.caption)\n                .opacity(0.7)\n            Text(entry.title)\n                .font(.headline)\n            Text(entry.date, style: .time)\n                .font(.title2)\n        }\n        .padding()\n    }\n}",
+      "category": "WidgetKit",
+      "categoryIcon": "calendar",
+      "categoryIconColor": "#00C7BE"
+    },
+    {
+      "id": "widgetkit_015",
+      "title": "AI Status Widget (Modell geladen)",
+      "description": "Zeige an, ob ein KI-Modell geladen ist, wie viele Tokens genutzt wurden oder ob die GPU aktiv ist.",
+      "steps": [
+        "Entry enthält AI-Status.",
+        "Widget zeigt grünen/roten Indikator.",
+        "Ideal für generative Apps."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF453A", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "struct AIEntry: TimelineEntry {\n    let date: Date\n    let isLoaded: Bool\n}\n\nstruct AIWidgetView: View {\n    var entry: AIEntry\n    var body: some View {\n        HStack {\n            Circle()\n                .fill(entry.isLoaded ? .green : .red)\n                .frame(width: 12, height: 12)\n            Text(entry.isLoaded ? \"Model Loaded\" : \"Idle\")\n                .font(.caption)\n        }\n        .padding()\n    }\n}",
+      "category": "WidgetKit",
+      "categoryIcon": "brain.head.profile",
+      "categoryIconColor": "#FF453A"
+    },
+    {
+      "id": "widgetkit_016",
+      "title": "Now Playing Musik-Widget",
+      "description": "Zeigt Songtitel, Künstler und Fortschritt – wie Apple Musik.",
+      "steps": [
+        "Entry enthält Songname und Fortschritt.",
+        "Timer-basiertes Timeline-Update.",
+        "Optional mit Cover-Art."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#B5179E", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "struct MusicEntry: TimelineEntry {\n    let date: Date\n    let title: String\n    let artist: String\n    let progress: Double\n}\n\nstruct MusicWidgetView: View {\n    var entry: MusicEntry\n    var body: some View {\n        VStack(alignment: .leading) {\n            Text(entry.title).font(.headline)\n            Text(entry.artist).font(.caption)\n            ProgressView(value: entry.progress)\n                .tint(.pink)\n        }\n        .padding()\n    }\n}",
+      "category": "WidgetKit",
+      "categoryIcon": "music.note",
+      "categoryIconColor": "#B5179E"
     }
 ]

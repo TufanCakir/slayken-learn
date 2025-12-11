@@ -178,5 +178,95 @@
     "category": "SwiftUI",
     "categoryIcon": "swift",
     "categoryIconColor": "#4895EF"
+  },
+  {
+    "id": "swiftui_011",
+    "title": "Einfache Animationen",
+    "description": "Lerne, wie du mit SwiftUI Animationen erstellst – z. B. eine skalierende View.",
+    "steps": [
+      "Nutze @State für animierbare Werte",
+      "Verändere Zustand mit withAnimation",
+      "Verwende .animation() Modifier"
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#FF6D2D", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\n\nstruct AnimationExampleView: View {\n    @State private var scale: CGFloat = 1.0\n\n    var body: some View {\n        VStack(spacing: 30) {\n            Circle()\n                .fill(Color.orange)\n                .frame(width: 120, height: 120)\n                .scaleEffect(scale)\n                .animation(.spring(), value: scale)\n\n            Button(\"Animate\") {\n                scale = scale == 1 ? 1.5 : 1\n            }\n            .buttonStyle(.borderedProminent)\n        }\n    }\n}\n\n#Preview { AnimationExampleView() }",
+    "category": "SwiftUI",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#FF6D2D"
+  },
+  {
+    "id": "swiftui_012",
+    "title": "Sheet (Popup) Anzeigen",
+    "description": "Zeige ein SwiftUI-Sheet als Popup – ideal für Einstellungen, Details oder Modals.",
+    "steps": [
+      "Nutze @State für Sheet-Zustand",
+      "Verwende .sheet(isPresented:)",
+      "Baue eigenen Detail-View"
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#5E5CE6", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\n\nstruct SheetExampleView: View {\n    @State private var showSheet = false\n\n    var body: some View {\n        VStack {\n            Button(\"Sheet öffnen\") {\n                showSheet.toggle()\n            }\n            .buttonStyle(.borderedProminent)\n        }\n        .sheet(isPresented: $showSheet) {\n            VStack(spacing: 20) {\n                Text(\"Dies ist ein Sheet!\")\n                    .font(.largeTitle)\n                Button(\"Schließen\") {\n                    showSheet = false\n                }\n            }\n            .padding()\n        }\n    }\n}\n\n#Preview { SheetExampleView() }",
+    "category": "SwiftUI",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#5E5CE6"
+  },
+  {
+    "id": "swiftui_013",
+    "title": "TabView Erstellen",
+    "description": "Baue eine App mit mehreren Tabs – wie Einstellungen, Start, Profil.",
+    "steps": [
+      "TabView erstellen",
+      "Tab mit Label und Symbol definieren",
+      "Views in einzelnen Tabs anzeigen"
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#3DB2FF", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\n\nstruct TabViewExampleView: View {\n    var body: some View {\n        TabView {\n            Text(\"Start\")\n                .tabItem { Label(\"Home\", systemImage: \"house.fill\") }\n\n            Text(\"Suche\")\n                .tabItem { Label(\"Search\", systemImage: \"magnifyingglass\") }\n\n            Text(\"Profil\")\n                .tabItem { Label(\"Profil\", systemImage: \"person.fill\") }\n        }\n    }\n}\n\n#Preview { TabViewExampleView() }",
+    "category": "SwiftUI",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#3DB2FF"
+  },
+  {
+    "id": "swiftui_014",
+    "title": "@Binding verwenden",
+    "description": "Teile Zustände zwischen Views – ein Muss für jedes Menü, Popup oder Komponenten.",
+    "steps": [
+      "Erstelle @State im Parent",
+      "Nutze @Binding im Child",
+      "Synchronisiere Werte automatisch"
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7209B7", "#000000"],
+        "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\n\nstruct BindingExampleView: View {\n    @State private var count = 0\n\n    var body: some View {\n        VStack(spacing: 20) {\n            CounterButton(count: $count)\n            Text(\"Wert: \\(count)\")\n        }\n    }\n}\n\nstruct CounterButton: View {\n    @Binding var count: Int\n\n    var body: some View {\n        Button(\"Add\") {\n            count += 1\n        }\n        .buttonStyle(.borderedProminent)\n    }\n}\n\n#Preview { BindingExampleView() }",
+    "category": "SwiftUI",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#7209B7"
+  },
+  {
+    "id": "swiftui_015",
+    "title": "Grid Layout (LazyVGrid)",
+    "description": "Erstelle flexible Grid-Layouts wie App-Icons, Shop-Items oder Level-Auswahl.",
+    "steps": [
+      "GridItem-Spalten definieren",
+      "LazyVGrid für effiziente Listen",
+      "Items dynamisch generieren"
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4CC9F0", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\n\nstruct GridExampleView: View {\n    let columns = [\n        GridItem(.flexible()),\n        GridItem(.flexible()),\n        GridItem(.flexible())\n    ]\n\n    var body: some View {\n        ScrollView {\n            LazyVGrid(columns: columns, spacing: 20) {\n                ForEach(1...12, id: \\.self) { i in\n                    RoundedRectangle(cornerRadius: 12)\n                        .fill(Color.blue)\n                        .frame(height: 80)\n                        .overlay(Text(\"Item \\(i)\").foregroundColor(.white))\n                }\n            }\n            .padding()\n        }\n    }\n}\n\n#Preview { GridExampleView() }",
+    "category": "SwiftUI",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#4CC9F0"
   }
 ]

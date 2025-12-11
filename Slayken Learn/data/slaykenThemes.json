@@ -482,5 +482,60 @@
         "accentHex": "#90CAF9",
         "category": "Arcane",
         "categoryIcon": "snowflake"
-      }
-    ]
+      },
+        {
+          "id": "FFFF-1111",
+          "name": "Aurora Crystal",
+          "background": { "type": "radial", "colors": ["#002B5B", "#3A7BD5", "#00D2FF"] },
+          "textHex": "#E0F7FA",
+          "buttonBackgroundHex": "#0277BD",
+          "buttonTextHex": "#FFFFFF",
+          "accentHex": "#81D4FA",
+          "category": "Arcane",
+          "categoryIcon": "sparkles"
+        },
+        {
+          "id": "FFFF-2222",
+          "name": "Blazing Horizon",
+          "background": { "type": "linear", "colors": ["#7F0000", "#FF3D00", "#FF9100"] },
+          "textHex": "#FFE0B2",
+          "buttonBackgroundHex": "#E64A19",
+          "buttonTextHex": "#FFFFFF",
+          "accentHex": "#FFAB40",
+          "category": "Slayken",
+          "categoryIcon": "flame.fill"
+        },
+        {
+          "id": "FFFF-3333",
+          "name": "Cyber Matrix",
+          "background": { "type": "linear", "colors": ["#001E2F", "#003F5F", "#00E5FF"] },
+          "textHex": "#B2EBF2",
+          "buttonBackgroundHex": "#004A6F",
+          "buttonTextHex": "#FFFFFF",
+          "accentHex": "#18FFFF",
+          "category": "Cyber",
+          "categoryIcon": "cpu"
+        },
+        {
+          "id": "FFFF-4444",
+          "name": "Emerald Dream",
+          "background": { "type": "radial", "colors": ["#003300", "#1B5E20", "#66BB6A"] },
+          "textHex": "#E8F5E9",
+          "buttonBackgroundHex": "#2E7D32",
+          "buttonTextHex": "#FFFFFF",
+          "accentHex": "#A5D6A7",
+          "category": "Nature",
+          "categoryIcon": "leaf.fill"
+        },
+        {
+          "id": "FFFF-5555",
+          "name": "Lunar Orchid",
+          "background": { "type": "linear", "colors": ["#1A002B", "#4A148C", "#CE93D8"] },
+          "textHex": "#F3E5F5",
+          "buttonBackgroundHex": "#6A1B9A",
+          "buttonTextHex": "#FFFFFF",
+          "accentHex": "#BA68C8",
+          "category": "Mythic",
+          "categoryIcon": "moon.stars"
+        }
+      ]

@@ -6,6 +6,9 @@ struct HomeView: View {
     // 🟢 Environment Objects
     @EnvironmentObject private var themeManager: ThemeManager
     @EnvironmentObject private var profileManager: ProfileManager
+    @EnvironmentObject private var accountLevelManager: AccountLevelManager
+    @EnvironmentObject private var missionManager: MissionManager
+    @EnvironmentObject private var learningEventManager: LearningEventManager
 
     private var currentTheme: SlaykenTheme? { themeManager.currentTheme }
 
@@ -14,7 +17,8 @@ struct HomeView: View {
         min(width * 0.78, 420) // iPad fix
     }
 
-    var body: some View {
+    var body: some View {          
+
         NavigationStack {
             GeometryReader { proxy in
                 let width = proxy.size.width
@@ -64,6 +68,15 @@ struct HomeView: View {
                             .zIndex(15)
                     }
                 }
+                .onAppear {
+                    missionManager.trigger(.appOpened, account: accountLevelManager)
+                }
+                .onReceive(learningEventManager.$lessonCompletedTrigger) { _ in
+                    missionManager.trigger(.lessonCompleted, account: accountLevelManager)
+                }
+                .onChange(of: accountLevelManager.level) { oldLevel, newLevel in
+                    missionManager.trigger(.levelChanged(newLevel: newLevel), account: accountLevelManager)
+                }
                 .background(
                     Group {
                         if let bg = currentTheme?.background.view() {
@@ -87,48 +100,15 @@ struct HomeView: View {
 
 // MARK: - Unterkomponenten
 private extension HomeView {
-    // MARK: - TopBar (Menü + Profil + Name)
     var topBar: some View {
-        HStack(spacing: 12) {
-            // Menü Button
-            Button {
-                withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                    showDrawer.toggle()
-                }
-            } label: {
-                Image(systemName: showDrawer ? "xmark" : "line.3.horizontal")
-                    .font(.system(size: 22, weight: .medium))
-                    .foregroundColor(currentTheme?.accent ?? .white)
-                    .rotationEffect(.degrees(showDrawer ? 90 : 0))
-                    .padding(10)
-                    .background(
-                        Circle()
-                            .fill(currentTheme?.buttonBackground ?? .black.opacity(0.4))
-                            .overlay(
-                                Circle()
-                                    .stroke((currentTheme?.accent ?? .white).opacity(0.3), lineWidth: 0.6)
-                            )
-                            .shadow(color: (currentTheme?.accent ?? .white).opacity(0.2), radius: 5, y: 2)
-                    )
-                    .animation(.spring(response: 0.4, dampingFraction: 0.8), value: showDrawer)
-            }
-
-            Spacer()
-
-            // 🧑 Benutzername
-            VStack(spacing: 2) {
-                Text(profileManager.name.isEmpty ? "Gast" : profileManager.name)
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(currentTheme?.text ?? .white)
-            }
-
-            Spacer()
-
+        VStack(spacing: 8) {
+            AccountHeaderView()
+                .padding(.horizontal, 20)
             // Profil Button (öffnet ProfilView)
-            NavigationLink(destination: ProfileView()
-                .environmentObject(profileManager)
+            NavigationLink(destination: MissionView()
+                .environmentObject(missionManager)
                 .environmentObject(themeManager)) {
-                Image(systemName: "person.crop.circle.fill")
+                Image(systemName: "book.closed.fill")
                     .font(.system(size: 26))
                     .foregroundColor(currentTheme?.accent ?? .white)
                     .padding(8)
@@ -137,6 +117,56 @@ private extension HomeView {
                             .fill(currentTheme?.buttonBackground ?? Color.white.opacity(0.08))
                             .shadow(color: (currentTheme?.accent ?? .white).opacity(0.25), radius: 5, y: 2)
                     )
+            }
+            HStack(spacing: 12) {
+                // Menü Button
+                Button {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        showDrawer.toggle()
+                    }
+                } label: {
+                    Image(systemName: showDrawer ? "xmark" : "line.3.horizontal")
+                        .font(.system(size: 22, weight: .medium))
+                        .foregroundColor(currentTheme?.accent ?? .white)
+                        .rotationEffect(.degrees(showDrawer ? 90 : 0))
+                        .padding(10)
+                        .background(
+                            Circle()
+                                .fill(currentTheme?.buttonBackground ?? .black.opacity(0.4))
+                                .overlay(
+                                    Circle()
+                                        .stroke((currentTheme?.accent ?? .white).opacity(0.3), lineWidth: 0.6)
+                                )
+                                .shadow(color: (currentTheme?.accent ?? .white).opacity(0.2), radius: 5, y: 2)
+                        )
+                        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: showDrawer)
+                }
+
+                Spacer()
+
+                // 🧑 Benutzername
+                VStack(spacing: 2) {
+                    Text(profileManager.name.isEmpty ? "Gast" : profileManager.name)
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(currentTheme?.text ?? .white)
+                }
+
+                Spacer()
+
+                // Profil Button (öffnet ProfilView)
+                NavigationLink(destination: ProfileView()
+                    .environmentObject(profileManager)
+                    .environmentObject(themeManager)) {
+                    Image(systemName: "person.crop.circle.fill")
+                        .font(.system(size: 26))
+                        .foregroundColor(currentTheme?.accent ?? .white)
+                        .padding(8)
+                        .background(
+                            Circle()
+                                .fill(currentTheme?.buttonBackground ?? Color.white.opacity(0.08))
+                                .shadow(color: (currentTheme?.accent ?? .white).opacity(0.25), radius: 5, y: 2)
+                        )
+                }
             }
         }
     }
@@ -154,14 +184,9 @@ private extension HomeView {
     HomeView()
         .environmentObject(ThemeManager())
         .environmentObject(ProfileManager())
+        .environmentObject(AccountLevelManager())
+        .environmentObject(MissionManager())
+        .environmentObject(LearningEventManager())
         .preferredColorScheme(.dark)
 }
 
-
-// MARK: - Preview
-#Preview {
-    HomeView()
-        .environmentObject(ThemeManager())
-        .environmentObject(ProfileManager())
-        .preferredColorScheme(.dark)
-}

@@ -120,7 +120,7 @@
       "backgroundColors": ["#000000", "#B5179E", "#000000"],
       "textColors": ["#FFFFFF"]
     },
-    "code": "import SwiftData\n\n@Model\nclass Player {\n    var name: String\n    var level: Int\n    var xp: Int? // Neu: optional für Migration\n    init(name: String, level: Int, xp: Int? = nil) {\n        self.name = name\n        self.level = level\n        self.xp = xp\n    }\n}",
+    "code": "import SwiftData\n\n@Model\nclass Player {\n    var name: String\n    var level: Int\n    var xp: Int? / Neu: optional für Migration\n    init(name: String, level: Int, xp: Int? = nil) {\n        self.name = name\n        self.level = level\n        self.xp = xp\n    }\n}",
     "category": "SwiftData",
     "categoryIcon": "swiftdata",
     "categoryIconColor": "#B5179E"
@@ -232,5 +232,95 @@
     "category": "SwiftData",
     "categoryIcon": "swiftdata",
     "categoryIconColor": "#560BAD"
+  },
+  {
+    "id": "swiftdata_014",
+    "title": "Validierungen & Constraints",
+    "description": "Lerne, wie du Eingaben überprüfst bevor sie gespeichert werden – perfekt für Formulare.",
+    "steps": [
+      "Erstelle einen Validator im ViewModel.",
+      "Verhindere Inserts bei ungültigen Werten.",
+      "Zeige Fehler im UI an."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7209B7", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass UserProfile {\n    var username: String\n    init(username: String) { self.username = username }\n}\n\nstruct ValidationView: View {\n    @Environment(\\.modelContext) private var context\n    @State private var name = \"\"\n    @State private var error = \"\"\n\n    var body: some View {\n        VStack(spacing: 16) {\n            TextField(\"Username\", text: $name)\n                .textFieldStyle(.roundedBorder)\n\n            if !error.isEmpty {\n                Text(error)\n                    .foregroundColor(.red)\n                    .font(.caption)\n            }\n\n            Button(\"Speichern\") {\n                if name.count < 3 {\n                    error = \"Name muss mindestens 3 Zeichen haben!\"\n                } else {\n                    context.insert(UserProfile(username: name))\n                    try? context.save()\n                    name = \"\"\n                    error = \"\"\n                }\n            }\n            .buttonStyle(.borderedProminent)\n        }\n        .padding()\n    }\n}\n\n#Preview { ValidationView().modelContainer(for: UserProfile.self) }",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#7209B7"
+  },
+  {
+    "id": "swiftdata_015",
+    "title": "Async Queries mit SwiftData (iOS 18+)",
+    "description": "Nutze die neuen asynchronen Query-APIs, um große Datenmengen effizient zu laden.",
+    "steps": [
+      "Verwende ModelContext.fetch() async.",
+      "Nutze Predicate für Filter.",
+      "Perfekt für Hintergrundlisten & Server-Sync."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#3A0CA3", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass Message { var text: String }\n\nstruct AsyncQueryView: View {\n    @Environment(\\.modelContext) private var context\n    @State private var messages: [Message] = []\n\n    var body: some View {\n        List(messages) { m in Text(m.text) }\n            .task {\n                messages = try! await context.fetch(FetchDescriptor<Message>())\n            }\n            .navigationTitle(\"Async Messages\")\n    }\n}\n\n#Preview { AsyncQueryView().modelContainer(for: Message.self) }",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#3A0CA3"
+  },
+  {
+    "id": "swiftdata_016",
+    "title": "SwiftData mit Dateien verknüpfen (Images speichern)",
+    "description": "Speichere Bilder im Dateisystem und referenziere sie effizient über SwiftData.",
+    "steps": [
+      "Speichere Bild in FileManager.",
+      "Speichere Pfad in SwiftData.",
+      "Lade Bild wieder im UI."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#560BAD", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass PhotoItem {\n    var filePath: String\n    init(filePath: String) { self.filePath = filePath }\n}\n\nstruct PhotoView: View {\n    @Environment(\\.modelContext) private var context\n    @Query private var items: [PhotoItem]\n    @State private var image: UIImage? = nil\n\n    func saveImage(_ img: UIImage) {\n        let url = FileManager.default.temporaryDirectory.appending(path: \"photo_\\(UUID().uuidString).png\")\n        if let data = img.pngData() {\n            try? data.write(to: url)\n            context.insert(PhotoItem(filePath: url.path()))\n            try? context.save()\n        }\n    }\n\n    var body: some View {\n        VStack {\n            Button(\"Bild speichern (Dummy)\") {\n                saveImage(UIImage(systemName: \"photo\")!)\n            }\n            .buttonStyle(.borderedProminent)\n\n            List(items) { item in\n                if let img = UIImage(contentsOfFile: item.filePath) {\n                    Image(uiImage: img).resizable().frame(width: 80, height: 80)\n                }\n            }\n        }\n        .padding()\n    }\n}\n\n#Preview { PhotoView().modelContainer(for: PhotoItem.self) }",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#560BAD"
+  },
+  {
+    "id": "swiftdata_017",
+    "title": "Enums in SwiftData speichern",
+    "description": "Lerne, wie du Enums sauber speicherst – ideal für Status, Kategorien & Spielsysteme.",
+    "steps": [
+      "Verwende RawValue (String oder Int).",
+      "Speichere Enum direkt als Property.",
+      "Nutze Codable oder SwiftData-Internes Encoding."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#B5179E", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\nenum TaskState: String, Codable { case open, working, done }\n\n@Model\nclass WorkItem {\n    var title: String\n    var state: TaskState\n    init(title: String, state: TaskState = .open) {\n        self.title = title\n        self.state = state\n    }\n}\n\nstruct EnumExampleView: View {\n    @Query private var items: [WorkItem]\n\n    var body: some View {\n        List(items) { item in\n            HStack {\n                Text(item.title)\n                Spacer()\n                Text(item.state.rawValue)\n                    .foregroundColor(.gray)\n            }\n        }\n    }\n}\n\n#Preview { EnumExampleView().modelContainer(for: WorkItem.self) }",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#B5179E"
+  },
+  {
+    "id": "swiftdata_018",
+    "title": "Mehrere ModelContainer verwenden",
+    "description": "Trenne Datenmodelle in mehrere Speicherbereiche – perfekt für große Apps wie Khione oder Slayken.",
+    "steps": [
+      "Erstelle zwei Containers.",
+      "Nutze unterschiedliche Contexts.",
+      "Perfekt für getrennte Module (Userdaten, Logs, Gameplay)."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4895EF", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass UserData { var name: String }\n\n@Model\nclass GameLog { var message: String }\n\n@main\nstruct MultiStoreApp: App {\n    var body: some Scene {\n        WindowGroup {\n            ContentView()\n        }\n        .modelContainer(for: UserData.self, isDefault: true)\n        .modelContainer(for: GameLog.self)\n    }\n}\n\nstruct ContentView: View {\n    @Environment(\\.modelContext) private var userContext\n    @Environment(\\.modelContext, container: GameLog.self) private var logContext\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Button(\"Add User\") {\n                userContext.insert(UserData(name: \"Tufan\"))\n                try? userContext.save()\n            }\n\n            Button(\"Add Log\") {\n                logContext.insert(GameLog(message: \"Level Up!\"))\n                try? logContext.save()\n            }\n        }\n        .padding()\n    }\n}\n\n#Preview { ContentView() }",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#4895EF"
   }
 ]

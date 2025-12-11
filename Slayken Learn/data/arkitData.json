@@ -178,5 +178,95 @@
         "category": "ARKit",
         "categoryIcon": "arkit",
         "categoryIconColor": "#7209B7"
+    },
+    {
+        "id": "arkit_011",
+        "title": "AR – Handtracking & Gesten",
+        "description": "Tracke Hände und reagiere auf Gesten wie Pinch oder Open Hand.",
+        "steps": [
+            "ARHandTrackingConfiguration verwenden.",
+            "HandAnchor auslesen.",
+            "Gesten wie 'Pinch' erkennen."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#4ECDC4", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import SwiftUI\nimport ARKit\nimport RealityKit\n\nstruct ARHandTrackingView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let view = ARView(frame: .zero)\n        let config = ARHandTrackingConfiguration()\n        view.session.run(config)\n        return view\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARHandTrackingView() }",
+        "category": "ARKit",
+        "categoryIcon": "arkit",
+        "categoryIconColor": "#4ECDC4"
+    },
+    {
+        "id": "arkit_012",
+        "title": "AR – Objekt verfolgen (Object Tracking)",
+        "description": "Lasse ARKit ein echtes Objekt erkennen und digitale Inhalte daran fixieren.",
+        "steps": [
+            "ARObjectTrackingConfiguration verwenden.",
+            "Referenzobjekte scannen oder importieren.",
+            "Modelle an ObjectAnchor platzieren."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#FFD166", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import SwiftUI\nimport ARKit\nimport RealityKit\n\nstruct ARObjectTrackingView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let view = ARView(frame: .zero)\n        guard let referenceObjects = ARReferenceObject.referenceObjects(inGroupNamed: \"AR Resources\", bundle: .main) else { return view }\n        let config = ARObjectScanningConfiguration()\n        config.maximumNumberOfTrackedObjects = 1\n        config.providedReferenceObjects = referenceObjects\n        view.session.run(config)\n        return view\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARObjectTrackingView() }",
+        "category": "ARKit",
+        "categoryIcon": "arkit",
+        "categoryIconColor": "#FFD166"
+    },
+    {
+        "id": "arkit_013",
+        "title": "AR – Bildtracking (Poster, Logos)",
+        "description": "Verfolge 2D-Bilder wie Poster oder Logos und platziere darauf 3D-Content.",
+        "steps": [
+            "ARImageTrackingConfiguration aktivieren.",
+            "Referenzbilder importieren (AR Resources).",
+            "Modelle an ImageAnchor befestigen."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#06D6A0", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import SwiftUI\nimport ARKit\nimport RealityKit\n\nstruct ARImageTrackingView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let view = ARView(frame: .zero)\n        guard let images = ARReferenceImage.referenceImages(inGroupNamed: \"AR Resources\", bundle: .main) else { return view }\n        let config = ARImageTrackingConfiguration()\n        config.trackingImages = images\n        config.maximumNumberOfTrackedImages = 1\n        view.session.run(config)\n        return view\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARImageTrackingView() }",
+        "category": "ARKit",
+        "categoryIcon": "arkit",
+        "categoryIconColor": "#06D6A0"
+    },
+    {
+        "id": "arkit_014",
+        "title": "AR – Virtuelles Portal (Walkthrough)",
+        "description": "Erstelle ein Portal, durch das Benutzer in eine andere AR-Welt gehen können.",
+        "steps": [
+            "Türrahmen als 3D-ModelEntity erstellen.",
+            "Innenraum mit eigenem AnchorEntity platzieren.",
+            "Materials für 'Durchgangseffekt' konfigurieren."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#8338EC", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import SwiftUI\nimport ARKit\nimport RealityKit\n\nstruct ARPortalView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let view = ARView(frame: .zero)\n        let anchor = AnchorEntity(plane: .horizontal)\n\n        / Portal Rahmen\n        let frame = ModelEntity(mesh: .generateBox(size: [0.8, 2.0, 0.1]), materials: [SimpleMaterial(color: .purple, isMetallic: false)])\n        frame.position = [0, 1, 0]\n        anchor.addChild(frame)\n\n        view.scene.addAnchor(anchor)\n        return view\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARPortalView() }",
+        "category": "ARKit",
+        "categoryIcon": "arkit",
+        "categoryIconColor": "#8338EC"
+    },
+    {
+        "id": "arkit_015",
+        "title": "AR – Messen mit AR (Lineal)",
+        "description": "Erstelle ein Messwerkzeug, das Entfernungen in der echten Welt misst.",
+        "steps": [
+            "Raycast Query verwenden.",
+            "Start- und Endpunkt speichern.",
+            "Distanz berechnen und anzeigen."
+        ],
+        "colors": {
+            "backgroundColors": ["#000000", "#118AB2", "#000000"],
+            "textColors": ["#FFFFFF"]
+        },
+        "code": "import SwiftUI\nimport ARKit\nimport RealityKit\n\nstruct ARMeasureView: UIViewRepresentable {\n    class Coordinator {\n        var startPoint: SIMD3<Float>? = nil\n    }\n\n    func makeCoordinator() -> Coordinator { Coordinator() }\n\n    func makeUIView(context: Context) -> ARView {\n        let view = ARView(frame: .zero)\n        let tap = UITapGestureRecognizer(target: context.coordinator, action: #selector(handleTap(_:)))\n        view.addGestureRecognizer(tap)\n        return view\n    }\n\n    @objc func handleTap(_ sender: UITapGestureRecognizer) {}\n\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARMeasureView() }",
+        "category": "ARKit",
+        "categoryIcon": "arkit",
+        "categoryIconColor": "#118AB2"
     }
 ]

@@ -116,7 +116,7 @@
             "textColors": ["#FFFFFF"]
         },
         "code":
-            "class SpeechManager: NSObject, ObservableObject {\n    @Published var text = \"Sag etwas…\"\n    // Starte hier AudioEngine & Task (aus speech_002)\n}\n\nstruct SpeechView: View {\n    @StateObject private var speech = SpeechManager()\n\n    var body: some View {\n        VStack(spacing: 40) {\n            Text(speech.text)\n                .font(.title2)\n                .foregroundColor(.white)\n                .padding()\n\n            Button(\"🎤 Start\") {\n                try? speech.start()\n            }\n            .buttonStyle(.borderedProminent)\n        }\n    }\n}",
+            "class SpeechManager: NSObject, ObservableObject {\n    @Published var text = \"Sag etwas…\"\n    / Starte hier AudioEngine & Task (aus speech_002)\n}\n\nstruct SpeechView: View {\n    @StateObject private var speech = SpeechManager()\n\n    var body: some View {\n        VStack(spacing: 40) {\n            Text(speech.text)\n                .font(.title2)\n                .foregroundColor(.white)\n                .padding()\n\n            Button(\"🎤 Start\") {\n                try? speech.start()\n            }\n            .buttonStyle(.borderedProminent)\n        }\n    }\n}",
         "category": "Speech",
         "categoryIcon": "microphone",
         "categoryIconColor": "#61DAFB"
@@ -139,5 +139,100 @@
         "category": "Speech",
         "categoryIcon": "microphone",
         "categoryIconColor": "#0A84FF"
+    },
+    {
+      "id": "speech_008",
+      "title": "Sprache aufnehmen & automatisch transkribieren",
+      "description": "Nimm deine Stimme als .m4a auf und lasse nach der Aufnahme die komplette Datei transkribieren.",
+      "steps": [
+        "AVAudioRecorder einrichten, um Sprache aufzunehmen.",
+        "Aufnahme stoppen → Datei an Speech API übergeben.",
+        "Ergebnis anzeigen oder speichern."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#30D158", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "import AVFoundation\nimport Speech\n\nclass VoiceRecorder: NSObject, ObservableObject {\n    private var recorder: AVAudioRecorder?\n    private let recognizer = SFSpeechRecognizer(locale: Locale(identifier: \"de-DE\"))!\n\n    func startRecording() throws {\n        let url = URL.documentsDirectory.appending(path: \"voice.m4a\")\n        let settings: [String:Any] = [\n            AVFormatIDKey: kAudioFormatMPEG4AAC,\n            AVSampleRateKey: 44100,\n            AVNumberOfChannelsKey: 1\n        ]\n        recorder = try AVAudioRecorder(url: url, settings: settings)\n        recorder?.record()\n    }\n\n    func stopAndTranscribe() {\n        recorder?.stop()\n        guard let url = recorder?.url else { return }\n\n        let request = SFSpeechURLRecognitionRequest(url: url)\n        recognizer.recognitionTask(with: request) { result, _ in\n            if let text = result?.bestTranscription.formattedString {\n                print(\"📄 Transkript: \\(text)\")\n            }\n        }\n    }\n}",
+      "category": "Speech",
+      "categoryIcon": "microphone",
+      "categoryIconColor": "#30D158"
+    },
+    {
+      "id": "speech_009",
+      "title": "Keyword Spotting (Wake Words)",
+      "description": "Erkenne Schlüsselwörter live – z. B. 'Hey Slayken', 'Attack', 'Spirit', 'Heal'. Perfekt für Voice-Control im Game.",
+      "steps": [
+        "Live Spracherkennung aktivieren.",
+        "Laufend neuesten Textpuffer prüfen.",
+        "Keywords triggern Aktionen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF9500", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "func detectKeywords(_ text: String) {\n    let t = text.lowercased()\n\n    if t.contains(\"hey slayken\") {\n        print(\"🟡 Wake Word erkannt: Hey Slayken!\")\n    }\n    if t.contains(\"attack\") || t.contains(\"angriff\") {\n        print(\"⚔️ Attack Voice Command\")\n    }\n    if t.contains(\"heal\") || t.contains(\"heilen\") {\n        print(\"💚 Heal Voice Command\")\n    }\n}",
+      "category": "Speech",
+      "categoryIcon": "microphone",
+      "categoryIconColor": "#FF9500"
+    },
+    {
+      "id": "speech_010",
+      "title": "Automatische Satztrennung (Punkt-Erkennung)",
+      "description": "Analysiere erkannte Sprache und teile sie sauber in Sätze auf – ideal für Chatbots, Story-Modus oder Notizen.",
+      "steps": [
+        "Transkript live analysieren.",
+        "Auf Satzende-Wörter prüfen.",
+        "Satzliste aktualisieren."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#0A84FF", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "func splitIntoSentences(_ text: String) -> [String] {\n    let delimiters = [\".\", \"?\", \"!\"]\n    var sentences: [String] = []\n    var buffer = \"\"\n\n    for char in text {\n        buffer.append(char)\n        if delimiters.contains(String(char)) {\n            sentences.append(buffer.trimmingCharacters(in: .whitespaces))\n            buffer = \"\"\n        }\n    }\n    return sentences\n}",
+      "category": "Speech",
+      "categoryIcon": "microphone",
+      "categoryIconColor": "#0A84FF"
+    },
+    {
+      "id": "speech_011",
+      "title": "Einfache Emotionserkennung über Stimme (Tonhöhe)",
+      "description": "Analysiere die Tonhöhe des Mikrofon-Signals, um simple Emotionen wie Stress, Lautstärke oder Freude zu erkennen.",
+      "steps": [
+        "AudioEngine Input analysieren.",
+        "Amplitude & Frequenz messen.",
+        "Thresholds definieren für 'laut', 'leise', 'stressig'."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF2D55", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "import AVFoundation\n\nfunc analyzeTone(_ buffer: AVAudioPCMBuffer) {\n    let rms = sqrt(buffer.floatChannelData![0].reduce(0) { $0 + $1*$1 } / Float(buffer.frameLength))\n\n    if rms > 0.25 {\n        print(\"😡 Laut / Stressig\")\n    } else if rms < 0.05 {\n        print(\"😴 Sehr leise / ruhig\")\n    } else {\n        print(\"🙂 Normal gesprochen\")\n    }\n}",
+      "category": "Speech",
+      "categoryIcon": "microphone",
+      "categoryIconColor": "#FF2D55"
+    },
+    {
+      "id": "speech_012",
+      "title": "Voice UI – Sprachbefehle triggern SwiftUI Buttons",
+      "description": "Verknüpfe Sprachbefehle automatisch mit SwiftUI UI Aktionen – wie ein Voice Controller für dein Game.",
+      "steps": [
+        "SpeechManager veröffentlicht den erkannten Text.",
+        "SwiftUI prüft live auf Voice-Trigger.",
+        "Buttons führen Aktionen automatisch aus."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#61DAFB", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "struct VoiceUIExample: View {\n    @StateObject var speech = SpeechManager()\n\n    var body: some View {\n        VStack(spacing: 30) {\n            Text(\"Befehl: \\(speech.text)\")\n                .foregroundColor(.white)\n\n            Button(\"⚔️ Attack\") {\n                print(\"Attack gedrückt\")\n            }\n            .onChange(of: speech.text) { text in\n                if text.lowercased().contains(\"attack\") {\n                    print(\"⚔️ Voice Attack ausgelöst!\")\n                }\n            }\n\n            Button(\"💚 Heal\") {\n                print(\"Heal gedrückt\")\n            }\n            .onChange(of: speech.text) { text in\n                if text.lowercased().contains(\"heal\") {\n                    print(\"💚 Voice Heal ausgelöst!\")\n                }\n            }\n        }\n        .padding()\n    }\n}",
+      "category": "Speech",
+      "categoryIcon": "microphone",
+      "categoryIconColor": "#61DAFB"
     }
 ]

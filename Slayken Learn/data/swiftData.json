@@ -149,7 +149,7 @@
             ]
         },
         "code":
-            "extension String {\n    var isLong: Bool { self.count > 5 }\n}\n\nprint(\"Hallo\".isLong) // false\nprint(\"Hallo Welt\".isLong) // true",
+            "extension String {\n    var isLong: Bool { self.count > 5 }\n}\n\nprint(\"Hallo\".isLong) / false\nprint(\"Hallo Welt\".isLong) / true",
         "category": "Swift",
         "categoryIcon": "swift",
         "categoryIconColor": "#FF9500"
@@ -227,7 +227,7 @@
             ]
         },
         "code":
-            "func swapValues<T>(_ a: inout T, _ b: inout T) {\n    let temp = a\n    a = b\n    b = temp\n}\n\nvar x = 5\nvar y = 10\nswapValues(&x, &y)\nprint(x, y) // 10 5",
+            "func swapValues<T>(_ a: inout T, _ b: inout T) {\n    let temp = a\n    a = b\n    b = temp\n}\n\nvar x = 5\nvar y = 10\nswapValues(&x, &y)\nprint(x, y) / 10 5",
         "category": "Swift",
         "categoryIcon": "swift",
         "categoryIconColor": "#BF5AF2"
@@ -253,7 +253,7 @@
             ]
         },
         "code":
-            "import SwiftUI\n\nstruct AsyncAwaitExampleView: View {\n    @State private var joke = \"Lade Witz...\"\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Text(joke)\n                .multilineTextAlignment(.center)\n                .padding()\n\n            Button(\"Neuen Witz laden\") {\n                Task { await loadJoke() }\n            }\n            .buttonStyle(.borderedProminent)\n        }\n        .padding()\n    }\n\n    func loadJoke() async {\n        guard let url = URL(string: \"https://official-joke-api.appspot.com/random_joke\") else { return }\n        do {\n            let (data, _) = try await URLSession.shared.data(from: url)\n            if let decoded = try? JSONDecoder().decode(Joke.self, from: data) {\n                joke = \"\\(decoded.setup)\\n\\n💬 \\(decoded.punchline)\"\n            }\n        } catch {\n            joke = \"Fehler beim Laden 😅\"\n        }\n    }\n}\n\nstruct Joke: Codable {\n    let setup: String\n    let punchline: String\n}\n\n#Preview { AsyncAwaitExampleView() }",
+            "import SwiftUI\n\nstruct AsyncAwaitExampleView: View {\n    @State private var joke = \"Lade Witz...\"\n\n    var body: some View {\n        VStack(spacing: 20) {\n            Text(joke)\n                .multilineTextAlignment(.center)\n                .padding()\n\n            Button(\"Neuen Witz laden\") {\n                Task { await loadJoke() }\n            }\n            .buttonStyle(.borderedProminent)\n        }\n        .padding()\n    }\n\n    func loadJoke() async {\n        guard let url = URL(string: \"https:/official-joke-api.appspot.com/random_joke\") else { return }\n        do {\n            let (data, _) = try await URLSession.shared.data(from: url)\n            if let decoded = try? JSONDecoder().decode(Joke.self, from: data) {\n                joke = \"\\(decoded.setup)\\n\\n💬 \\(decoded.punchline)\"\n            }\n        } catch {\n            joke = \"Fehler beim Laden 😅\"\n        }\n    }\n}\n\nstruct Joke: Codable {\n    let setup: String\n    let punchline: String\n}\n\n#Preview { AsyncAwaitExampleView() }",
         "category": "Swift",
         "categoryIcon": "swift",
         "categoryIconColor": "#0A84FF"
@@ -357,7 +357,7 @@
             ]
         },
         "code":
-            "import Foundation\n\nlet startTime = CFAbsoluteTimeGetCurrent()\n\n// Beispiel: Aufwändige Schleife\nvar result = 0\nfor i in 0..<1_000_000 {\n    result += i\n}\n\nlet endTime = CFAbsoluteTimeGetCurrent()\nlet elapsed = endTime - startTime\n\nprint(\"✅ Ergebnis: \\(result)\")\nprint(String(format: \"⏱ Laufzeit: %.5f Sekunden\", elapsed))",
+            "import Foundation\n\nlet startTime = CFAbsoluteTimeGetCurrent()\n\n/ Beispiel: Aufwändige Schleife\nvar result = 0\nfor i in 0..<1_000_000 {\n    result += i\n}\n\nlet endTime = CFAbsoluteTimeGetCurrent()\nlet elapsed = endTime - startTime\n\nprint(\"✅ Ergebnis: \\(result)\")\nprint(String(format: \"⏱ Laufzeit: %.5f Sekunden\", elapsed))",
         "category": "Swift",
         "categoryIcon": "swift",
         "categoryIconColor": "#30D158"
@@ -409,7 +409,7 @@
             ]
         },
         "code":
-            "import Foundation\n\nstruct PlayerStruct {\n    var name: String\n    var score: Int\n}\n\nclass PlayerClass {\n    var name: String\n    var score: Int\n    init(name: String, score: Int) {\n        self.name = name\n        self.score = score\n    }\n}\n\nvar structA = PlayerStruct(name: \"Tufan\", score: 100)\nvar structB = structA // Kopie\nstructB.score = 200\nprint(\"Struct A Score: \\(structA.score) – Struct B Score: \\(structB.score)\")\n\nlet classA = PlayerClass(name: \"Tufan\", score: 100)\nlet classB = classA // Referenz\nclassB.score = 200\nprint(\"Class A Score: \\(classA.score) – Class B Score: \\(classB.score)\")",
+            "import Foundation\n\nstruct PlayerStruct {\n    var name: String\n    var score: Int\n}\n\nclass PlayerClass {\n    var name: String\n    var score: Int\n    init(name: String, score: Int) {\n        self.name = name\n        self.score = score\n    }\n}\n\nvar structA = PlayerStruct(name: \"Tufan\", score: 100)\nvar structB = structA / Kopie\nstructB.score = 200\nprint(\"Struct A Score: \\(structA.score) – Struct B Score: \\(structB.score)\")\n\nlet classA = PlayerClass(name: \"Tufan\", score: 100)\nlet classB = classA / Referenz\nclassB.score = 200\nprint(\"Class A Score: \\(classA.score) – Class B Score: \\(classB.score)\")",
         "category": "Swift",
         "categoryIcon": "swift",
         "categoryIconColor": "#FF9500"
@@ -513,7 +513,7 @@
             ]
         },
         "code":
-            "import Foundation\n\nguard let url = URL(string: \"https://jsonplaceholder.typicode.com/posts/1\") else {\n    fatalError(\"❌ Ungültige URL\")\n}\n\nlet task = URLSession.shared.dataTask(with: url) { data, _, error in\n    if let error = error {\n        print(\"🚫 Fehler: \\(error)\")\n        return\n    }\n    if let data = data, let text = String(data: data, encoding: .utf8) {\n        print(\"✅ Antwort:\\n\\(text)\")\n    }\n}\n\ntask.resume()\n\nRunLoop.main.run() // Für CLI-Programme nötig",
+            "import Foundation\n\nguard let url = URL(string: \"https:/jsonplaceholder.typicode.com/posts/1\") else {\n    fatalError(\"❌ Ungültige URL\")\n}\n\nlet task = URLSession.shared.dataTask(with: url) { data, _, error in\n    if let error = error {\n        print(\"🚫 Fehler: \\(error)\")\n        return\n    }\n    if let data = data, let text = String(data: data, encoding: .utf8) {\n        print(\"✅ Antwort:\\n\\(text)\")\n    }\n}\n\ntask.resume()\n\nRunLoop.main.run() / Für CLI-Programme nötig",
         "category": "Swift",
         "categoryIcon": "swift",
         "categoryIconColor": "#0A84FF"
@@ -539,7 +539,7 @@
             ]
         },
         "code":
-            "import Foundation\n\nstruct Post: Codable {\n    let id: Int\n    let title: String\n    let body: String\n}\n\nguard let url = URL(string: \"https://jsonplaceholder.typicode.com/posts/1\") else {\n    fatalError(\"❌ Ungültige URL\")\n}\n\nURLSession.shared.dataTask(with: url) { data, _, error in\n    guard let data = data else { return }\n    do {\n        let post = try JSONDecoder().decode(Post.self, from: data)\n        print(\"📝 Titel: \\(post.title)\")\n        print(\"💬 Inhalt: \\(post.body)\")\n    } catch {\n        print(\"🚫 JSON-Fehler: \\(error)\")\n    }\n}.resume()\n\nRunLoop.main.run()",
+            "import Foundation\n\nstruct Post: Codable {\n    let id: Int\n    let title: String\n    let body: String\n}\n\nguard let url = URL(string: \"https:/jsonplaceholder.typicode.com/posts/1\") else {\n    fatalError(\"❌ Ungültige URL\")\n}\n\nURLSession.shared.dataTask(with: url) { data, _, error in\n    guard let data = data else { return }\n    do {\n        let post = try JSONDecoder().decode(Post.self, from: data)\n        print(\"📝 Titel: \\(post.title)\")\n        print(\"💬 Inhalt: \\(post.body)\")\n    } catch {\n        print(\"🚫 JSON-Fehler: \\(error)\")\n    }\n}.resume()\n\nRunLoop.main.run()",
         "category": "Swift",
         "categoryIcon": "swift",
         "categoryIconColor": "#30D158"
@@ -565,7 +565,7 @@
             ]
         },
         "code":
-            "import Foundation\n\nstruct User: Codable {\n    let id: Int\n    let name: String\n    let email: String\n}\n\nfunc fetchUser() async throws {\n    let url = URL(string: \"https://jsonplaceholder.typicode.com/users/1\")!\n    let (data, _) = try await URLSession.shared.data(from: url)\n    let user = try JSONDecoder().decode(User.self, from: data)\n    print(\"👤 Nutzer: \\(user.name) – 📧 \\(user.email)\")\n}\n\nTask {\n    do {\n        try await fetchUser()\n    } catch {\n        print(\"🚫 Fehler: \\(error)\")\n    }\n}\n\nRunLoop.main.run()",
+            "import Foundation\n\nstruct User: Codable {\n    let id: Int\n    let name: String\n    let email: String\n}\n\nfunc fetchUser() async throws {\n    let url = URL(string: \"https:/jsonplaceholder.typicode.com/users/1\")!\n    let (data, _) = try await URLSession.shared.data(from: url)\n    let user = try JSONDecoder().decode(User.self, from: data)\n    print(\"👤 Nutzer: \\(user.name) – 📧 \\(user.email)\")\n}\n\nTask {\n    do {\n        try await fetchUser()\n    } catch {\n        print(\"🚫 Fehler: \\(error)\")\n    }\n}\n\nRunLoop.main.run()",
         "category": "Swift",
         "categoryIcon": "swift",
         "categoryIconColor": "#FF9500"
@@ -837,5 +837,100 @@
         "category": "Swift",
         "categoryIcon": "swift",
         "categoryIconColor": "#30D158"
+    },
+    {
+      "id": "swift_061",
+      "title": "Result Type verwenden",
+      "description": "Nutze den Result<T, Error> Typ, um Funktionen klar zwischen Erfolg und Fehler unterscheiden zu lassen.",
+      "steps": [
+        "Erstelle eine Funktion, die Result zurückgibt.",
+        "Nutze .success und .failure.",
+        "Verwende switch für Auswertung."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF9F0A", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "enum CalcError: Error { case divisionByZero }\n\nfunc divide(_ a: Double, _ b: Double) -> Result<Double, CalcError> {\n    guard b != 0 else { return .failure(.divisionByZero) }\n    return .success(a / b)\n}\n\nlet result = divide(10, 0)\n\nswitch result {\ncase .success(let value): print(\"Ergebnis: \\(value)\")\ncase .failure(let error): print(\"Fehler: \\(error)\")\n}",
+      "category": "Swift",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#FF9F0A"
+    },
+    {
+      "id": "swift_062",
+      "title": "Deinitializers (deinit)",
+      "description": "Lerne, was passiert, wenn eine Klasse aus dem Speicher entfernt wird – perfekt für Cleanup, Timer stoppen, etc.",
+      "steps": [
+        "deinit in Klassen nutzen",
+        "Instanzen freigeben, um deinit auszulösen",
+        "wird automatisch vom ARC aufgerufen"
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF3B30", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "class Enemy {\n    init() { print(\"👹 Enemy erscheint\") }\n    deinit { print(\"💀 Enemy wurde zerstört\") }\n}\n\nfunc battle() {\n    let enemy = Enemy()\n    print(\"⚔️ Kampf…\")\n}\n\nbattle() / danach verschwindet enemy → deinit wird aufgerufen",
+      "category": "Swift",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#FF3B30"
+    },
+    {
+      "id": "swift_063",
+      "title": "Eigene Property Wrapper erstellen",
+      "description": "Erstelle deinen eigenen Property Wrapper, wie @UserDefault, um Werte automatisch zu speichern.",
+      "steps": [
+        "struct mit @propertyWrapper erstellen",
+        "wrappedValue implementieren",
+        "Wrapper an Properties verwenden"
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#5E5CE6", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "import Foundation\n\n@propertyWrapper\nstruct UserDefault<T> {\n    let key: String\n    let defaultValue: T\n\n    var wrappedValue: T {\n        get { UserDefaults.standard.object(forKey: key) as? T ?? defaultValue }\n        set { UserDefaults.standard.set(newValue, forKey: key) }\n    }\n}\n\nstruct Settings {\n    @UserDefault(key: \"volume\", defaultValue: 50)\n    var volume: Int\n}\n\nvar s = Settings()\ns.volume = 80\nprint(s.volume)",
+      "category": "Swift",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#5E5CE6"
+    },
+    {
+      "id": "swift_064",
+      "title": "ARC – Speicherverwaltung in Swift",
+      "description": "Verstehe, warum Swift kein Garbage Collector braucht und wie Strong, Weak und Unowned funktionieren.",
+      "steps": [
+        "Referenzzyklen erklären",
+        "weak für optionale Referenzen",
+        "unowned für non-optional, aber nicht-owning"
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#30D158", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "class Person {\n    var name: String\n    weak var pet: Pet?\n    init(name: String) { self.name = name }\n}\n\nclass Pet {\n    var name: String\n    unowned var owner: Person\n    init(name: String, owner: Person) { self.name = name; self.owner = owner }\n}\n\nvar p: Person? = Person(name: \"Tufan\")\nvar dog: Pet? = Pet(name: \"Rex\", owner: p!)\np?.pet = dog\n\np = nil / kein Memory Leak dank weak/unowned",
+      "category": "Swift",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#30D158"
+    },
+    {
+      "id": "swift_065",
+      "title": "KeyPaths verstehen",
+      "description": "Nutze KeyPaths, um dynamisch auf Properties zuzugreifen – perfekt für Listen, Filter und Refactoring.",
+      "steps": [
+        "KeyPath mit \\\\ Typ.property erstellen",
+        "Funktion mit KeyPath als Parameter",
+        "Werte dynamisch lesen"
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#BF5AF2", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "struct Player { let name: String; let score: Int }\n\nlet users = [\n    Player(name: \"Tufan\", score: 100),\n    Player(name: \"Alex\", score: 300)\n]\n\nfunc printValues<T>(_ array: [T], keyPath: KeyPath<T, Any>) {\n    array.forEach { print($0[keyPath: keyPath]) }\n}\n\nprintValues(users, keyPath: \\Player.name)\nprintValues(users, keyPath: \\Player.score)",
+      "category": "Swift",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#BF5AF2"
     }
 ]

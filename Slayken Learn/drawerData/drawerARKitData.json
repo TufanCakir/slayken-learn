@@ -193,6 +193,95 @@
     "category": "ARKit",
     "categoryIcon": "arkit",
     "categoryIconColor": "#4C26EF"
+  },
+  {
+    "id": "arkit_011",
+    "title": "Video Texture auf 3D-Objekt",
+    "description": "Spiele ein Video direkt auf einem RealityKit-3D-Modell als dynamische Textur ab.",
+    "steps": [
+      "Video in AVPlayer laden.",
+      "Material aus Video erstellen.",
+      "ModelEntity das Video-Material geben."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#9D4EDD", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport RealityKit\nimport AVFoundation\n\nstruct ARVideoTextureView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let view = ARView(frame: .zero)\n\n        let player = AVPlayer(url: Bundle.main.url(forResource: \"demo\", withExtension: \"mp4\")!)\n        let videoMaterial = VideoMaterial(avPlayer: player)\n\n        let plane = ModelEntity(mesh: .generatePlane(width: 0.5, height: 0.3), materials: [videoMaterial])\n        let anchor = AnchorEntity(world: [0,0,-1])\n        anchor.addChild(plane)\n        view.scene.addAnchor(anchor)\n\n        player.play()\n        return view\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARVideoTextureView() }",
+    "category": "ARKit",
+    "categoryIcon": "arkit",
+    "categoryIconColor": "#9D4EDD"
+  },
+  {
+    "id": "arkit_012",
+    "title": "AR Portal (Durchgang in eine andere Welt)",
+    "description": "Baue ein Portal, durch das der Nutzer in eine virtuelle Szene treten kann.",
+    "steps": [
+      "Erstelle Türrahmen aus Boxen.",
+      "Füge innen Skybox oder 360° Textur ein.",
+      "Nutze AnchorEntity(.plane) als Einstiegspunkt."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#3F37C9", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport RealityKit\nimport ARKit\n\nstruct ARPortalView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let view = ARView(frame: .zero)\n\n        let config = ARWorldTrackingConfiguration()\n        config.planeDetection = [.horizontal]\n        view.session.run(config)\n\n        let anchor = AnchorEntity(plane: .horizontal)\n\n        / Portal-Rahmen\n        let left = ModelEntity(mesh: .generateBox(size: [0.1, 2, 1]), materials: [SimpleMaterial(color: .purple, isMetallic: false)])\n        left.position = [-0.5, 1, 0]\n\n        let right = ModelEntity(mesh: .generateBox(size: [0.1, 2, 1]), materials: [SimpleMaterial(color: .purple, isMetallic: false)])\n        right.position = [0.5, 1, 0]\n\n        let top = ModelEntity(mesh: .generateBox(size: [1.1, 0.2, 1]), materials: [SimpleMaterial(color: .purple, isMetallic: false)])\n        top.position = [0, 2, 0]\n\n        let room = try! ModelEntity.load(named: \"portal_room\")\n        room.position = [0, 1, -1]\n\n        anchor.addChild(left)\n        anchor.addChild(right)\n        anchor.addChild(top)\n        anchor.addChild(room)\n\n        view.scene.addAnchor(anchor)\n        return view\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARPortalView() }",
+    "category": "ARKit",
+    "categoryIcon": "arkit",
+    "categoryIconColor": "#3F37C9"
+  },
+  {
+    "id": "arkit_013",
+    "title": "AR Physik: Gravitation & Kollision",
+    "description": "Simuliere realistische Physik für 3D-Objekte in AR inklusive Schwerkraft & Kollision.",
+    "steps": [
+      "Erstelle ein Boden-Entity mit Collision.",
+      "Füge 3D-Objekte mit RigidBody hinzu.",
+      "Starte Simulation."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7200DA", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport RealityKit\nimport ARKit\n\nstruct ARPhysicsView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let view = ARView(frame: .zero)\n\n        let anchor = AnchorEntity(world: [0,0,-1])\n\n        / Boden\n        let floor = ModelEntity(mesh: .generatePlane(width: 2, height: 2), materials: [SimpleMaterial(color: .gray, isMetallic: false)])\n        floor.collision = CollisionComponent(shapes: [.generatePlane(width: 2, height: 2)])\n        floor.physicsBody = PhysicsBodyComponent(mode: .static)\n        anchor.addChild(floor)\n\n        / Kugel\n        let sphere = ModelEntity(mesh: .generateSphere(radius: 0.1), materials: [SimpleMaterial(color: .cyan, isMetallic: false)])\n        sphere.position = [0, 1, 0]\n        sphere.physicsBody = PhysicsBodyComponent(mode: .dynamic)\n        sphere.collision = CollisionComponent(shapes: [.generateSphere(radius: 0.1)])\n        anchor.addChild(sphere)\n\n        view.scene.addAnchor(anchor)\n        return view\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARPhysicsView() }",
+    "category": "ARKit",
+    "categoryIcon": "arkit",
+    "categoryIconColor": "#7200DA"
+  },
+  {
+    "id": "arkit_014",
+    "title": "AR Shadow Receiver",
+    "description": "Füge Schattenflächen hinzu, damit 3D-Objekte realistisch am Boden verankert wirken.",
+    "steps": [
+      "Erstelle unsichtige ShadowReceiver-Materialien.",
+      "Platziere Plane unter dem Modell.",
+      "Aktiviere realistische Lichtschätzung."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4369EE", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport RealityKit\nimport ARKit\n\nstruct ARShadowReceiverView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let view = ARView(frame: .zero)\n\n        let config = ARWorldTrackingConfiguration()\n        config.environmentTexturing = .automatic\n        view.session.run(config)\n\n        let anchor = AnchorEntity(world: [0,0,-0.7])\n\n        / Modell\n        let model = try! ModelEntity.load(named: \"toy_robot\")\n        anchor.addChild(model)\n\n        / Schattenfläche\n        let shadowPlane = ModelEntity(mesh: .generatePlane(width: 0.8, height: 0.8), materials: [OcclusionMaterial()])\n        shadowPlane.position = [0, -0.01, 0]\n        anchor.addChild(shadowPlane)\n\n        view.scene.addAnchor(anchor)\n        return view\n    }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARShadowReceiverView() }",
+    "category": "ARKit",
+    "categoryIcon": "arkit",
+    "categoryIconColor": "#4369EE"
+  },
+  {
+    "id": "arkit_015",
+    "title": "AR Screenshot erstellen",
+    "description": "Erstelle einen Screenshot der kompletten ARView inklusive 3D-Objekten.",
+    "steps": [
+      "Nutze ARView.snapshot().",
+      "Bild in Photos speichern.",
+      "Optional: UI einblenden oder ausblenden."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4895EF", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport RealityKit\nimport PhotosUI\nimport ARKit\n\nstruct ARSnapshotView: View {\n    @State private var arView = ARView(frame: .zero)\n    @State private var image: UIImage?\n\n    var body: some View {\n        ZStack {\n            ARViewContainer(arView: $arView)\n                .ignoresSafeArea()\n\n            VStack {\n                Spacer()\n                Button(action: takeSnapshot) {\n                    Text(\"📸 Screenshot\")\n                        .padding()\n                        .background(.white.opacity(0.8))\n                        .cornerRadius(12)\n                }.padding()\n            }\n        }\n    }\n\n    func takeSnapshot() {\n        arView.snapshot(saveToHDR: false) { img in\n            guard let img else { return }\n            self.image = img\n            UIImageWriteToSavedPhotosAlbum(img, nil, nil, nil)\n        }\n    }\n}\n\nstruct ARViewContainer: UIViewRepresentable {\n    @Binding var arView: ARView\n    func makeUIView(context: Context) -> ARView { arView }\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\n#Preview { ARSnapshotView() }",
+    "category": "ARKit",
+    "categoryIcon": "arkit",
+    "categoryIconColor": "#4895EF"
   }
-
 ]

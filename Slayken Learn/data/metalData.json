@@ -206,5 +206,100 @@
         "category": "Metal",
         "categoryIcon": "cpu",
         "categoryIconColor": "#800080"
+    },
+    {
+      "id": "metal_011",
+      "title": "Vertex Normals für 3D Beleuchtung",
+      "description": "Lerne, wie du Normalen im Vertex-Shader berechnest und realistische Beleuchtung erzeugst.",
+      "steps": [
+        "Normalen pro Vertex definieren oder berechnen.",
+        "Normal an Fragment Shader übergeben.",
+        "Lambert Beleuchtung implementieren.",
+        "Lichtfarbe & Intensität dynamisch steuern."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#4682B4", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "/ Beispiel Fragment Shader für Lambert Lighting:\nfragment float4 lambert_frag(VertexOut in [[stage_in]]) {\n    float3 light = normalize(float3(0.3, 0.8, 1.0));\n    float diffuse = max(dot(in.normal, light), 0.0);\n    return float4(in.color * diffuse, 1.0);\n}",
+      "category": "Metal",
+      "categoryIcon": "cpu",
+      "categoryIconColor": "#800080"
+    },
+    {
+      "id": "metal_012",
+      "title": "Shadow Mapping – Echtzeit Schatten",
+      "description": "Füge Schatten hinzu, indem du eine Shadow Map aus Sicht der Lichtquelle renderst.",
+      "steps": [
+        "Render Pass für Shadow Map erstellen.",
+        "Depth Texture als Shadow Map nutzen.",
+        "Position in Light Space transformieren.",
+        "Shadow Vergleich im Fragment Shader nutzen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#483D8B", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "/ Shadow Compare\nfloat shadow = depthFromLight + 0.001 < textureDepth ? 1.0 : 0.3;\nreturn float4(color * shadow, 1.0);",
+      "category": "Metal",
+      "categoryIcon": "cpu",
+      "categoryIconColor": "#800080"
+    },
+    {
+      "id": "metal_013",
+      "title": "Performance HUD & GPU Profiling aktivieren",
+      "description": "Sieh genau, wie viele GPU-ms deine Shader brauchen und optimiere deine Pipelines.",
+      "steps": [
+        "Metal HUD im Scheme aktivieren.",
+        "GPU Frame Time analysieren.",
+        "Draw Calls und Threadgroups optimieren.",
+        "Pipeline Effizienz steigern."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#228B22", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "/ Aktivieren in Xcode:\n/ Product → Scheme → Edit Scheme → Diagnostics → Metal → Performance HUD",
+      "category": "Metal",
+      "categoryIcon": "cpu",
+      "categoryIconColor": "#800080"
+    },
+    {
+      "id": "metal_014",
+      "title": "Dynamische Vertex- & Uniform-Buffers",
+      "description": "Aktualisiere GPU-Buffer jedes Frame für Animation, Physics oder UI-Interaktion.",
+      "steps": [
+        "Triple Buffering für flüssige Animation nutzen.",
+        "setVertexBytes oder setBuffer wählen.",
+        "Uniforms pro Frame senden.",
+        "Ideal für bewegte Modelle."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#9370DB", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "encoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.size, index: 1)\nencoder.setVertexBuffer(dynamicVertexBuffer, offset: 0, index: 0)",
+      "category": "Metal",
+      "categoryIcon": "cpu",
+      "categoryIconColor": "#800080"
+    },
+    {
+      "id": "metal_015",
+      "title": "Compute Shader Partikel-System",
+      "description": "Erzeuge tausende Partikel (Feuer, Regen, Funken) ausschließlich auf der GPU.",
+      "steps": [
+        "Buffer für Position, Velocity & Life erstellen.",
+        "Compute Shader aktualisiert alle Partikel parallel.",
+        "Render Pass zeichnet die Partikel als Punkte.",
+        "Perfekt für Schneefall, Funken, Explosionen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF4500", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "/ Compute Shader (vereinfacht)\nkernel void particle_update(device Particle *particles [[buffer(0)]], uint id [[thread_position_in_grid]]) {\n    particles[id].position += particles[id].velocity * 0.016;\n    particles[id].life -= 0.01;\n}",
+      "category": "Metal",
+      "categoryIcon": "cpu",
+      "categoryIconColor": "#800080"
     }
 ]

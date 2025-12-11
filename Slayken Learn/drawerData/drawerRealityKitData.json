@@ -18,7 +18,7 @@
         "#FFFFFF"
       ]
     },
-    "code": "import SwiftUI\nimport RealityKit\nimport ARKit\n\nstruct RealityKitView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let arView = ARView(frame: .zero)\n        let config = ARWorldTrackingConfiguration()\n        config.environmentTexturing = .automatic\n        arView.session.run(config)\n\n        // 🔹 Beispiel-Objekt (3D-Box)\n        let box = ModelEntity(mesh: .generateBox(size: 0.1))\n        box.model?.materials = [SimpleMaterial(color: .cyan, isMetallic: true)]\n\n        let anchor = AnchorEntity(world: [0, 0, -0.3])\n        anchor.addChild(box)\n        arView.scene.addAnchor(anchor)\n\n        return arView\n    }\n\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\nstruct RealityKitExampleView: View {\n    var body: some View {\n        RealityKitView()\n            .ignoresSafeArea()\n            .overlay(\n                Text(\"RealityKit 3D 🌐\")\n                    .font(.title)\n                    .foregroundColor(.white)\n                    .padding(),\n                alignment: .top\n            )\n    }\n}\n\n#Preview {\n    RealityKitExampleView()\n}",
+    "code": "import SwiftUI\nimport RealityKit\nimport ARKit\n\nstruct RealityKitView: UIViewRepresentable {\n    func makeUIView(context: Context) -> ARView {\n        let arView = ARView(frame: .zero)\n        let config = ARWorldTrackingConfiguration()\n        config.environmentTexturing = .automatic\n        arView.session.run(config)\n\n        / 🔹 Beispiel-Objekt (3D-Box)\n        let box = ModelEntity(mesh: .generateBox(size: 0.1))\n        box.model?.materials = [SimpleMaterial(color: .cyan, isMetallic: true)]\n\n        let anchor = AnchorEntity(world: [0, 0, -0.3])\n        anchor.addChild(box)\n        arView.scene.addAnchor(anchor)\n\n        return arView\n    }\n\n    func updateUIView(_ uiView: ARView, context: Context) {}\n}\n\nstruct RealityKitExampleView: View {\n    var body: some View {\n        RealityKitView()\n            .ignoresSafeArea()\n            .overlay(\n                Text(\"RealityKit 3D 🌐\")\n                    .font(.title)\n                    .foregroundColor(.white)\n                    .padding(),\n                alignment: .top\n            )\n    }\n}\n\n#Preview {\n    RealityKitExampleView()\n}",
     "category": "RealityKit",
     "categoryIcon": "rotate.3d",
     "categoryIconColor": "#4895EF"
@@ -346,5 +346,95 @@
     "category": "RealityKit",
     "categoryIcon": "rotate.3d",
     "categoryIconColor": "#4895EF"
+  },
+  {
+    "id": "realitykit_011",
+    "title": "Schatten aktivieren (Soft Shadows)",
+    "description": "Aktiviere realistische, weiche Schatten für deine 3D-Modelle in RealityKit.",
+    "steps": [
+      "DirectionalLightComponent konfigurieren.",
+      "shadow = DirectionalLightComponent.Shadow(enable: true) setzen.",
+      "ShadowDepth oder Range verbessern."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4895EF", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "let light = DirectionalLight()\nlight.light.intensity = 40000\nlight.shadow = DirectionalLightComponent.Shadow(maxDistance: 5, depthBias: 1)\nlet anchor = AnchorEntity(world: [0,1,0])\nanchor.addChild(light)",
+    "category": "RealityKit",
+    "categoryIcon": "rotate.3d",
+    "categoryIconColor": "#4895EF"
+  },
+  {
+    "id": "realitykit_012",
+    "title": "Skybox / Environment Map",
+    "description": "Lade ein HDRI oder Bild als Skybox, um realistische Spiegelungen & Umgebungslicht zu erstellen.",
+    "steps": [
+      "Lade HDRI in TextureResource.",
+      "Erstelle EnvironmentResource.",
+      "Scene versteht automatisch Reflection Lighting."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4361EE", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "let texture = try! await TextureResource.load(named: \"sky.hdr\")\nlet environment = try! await EnvironmentResource(texture: texture)\narView.environment.scene = environment",
+    "category": "RealityKit",
+    "categoryIcon": "rotate.3d",
+    "categoryIconColor": "#4361EE"
+  },
+  {
+    "id": "realitykit_013",
+    "title": "LookAt Tracking (Objekt folgt Ziel)",
+    "description": "Lasse ein 3D-Objekt automatisch ein anderes Entity anschauen – perfekt für Gegner, NPCs oder Kameras.",
+    "steps": [
+      "Positionen von Entity A und B vergleichen.",
+      "Berechne Rotation mit simd_normalize & simd_quatf.",
+      "Setze transform.rotation dynamisch."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#3A0CA3", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "let direction = normalize(target.position(relativeTo: nil) - entity.position(relativeTo: nil))\nentity.transform.rotation = simd_quatf(from: [0,0,1], to: direction)",
+    "category": "RealityKit",
+    "categoryIcon": "rotate.3d",
+    "categoryIconColor": "#3A0CA3"
+  },
+  {
+    "id": "realitykit_014",
+    "title": "LiDAR Mesh Rendering",
+    "description": "Zeige das ARKit-Mesh (gescannte Umgebung) als RealityKit-Geometrie an.",
+    "steps": [
+      "Aktiviere sceneReconstruction in ARWorldTrackingConfiguration.",
+      "Nutze ARMeshAnchors im SessionDelegate.",
+      "Konvertiere Mesh-Daten zu ModelEntity."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7209B7", "#000000"],
+      "textColors": ["#FFFFFF"]
+      },
+      "code": "config.sceneReconstruction = .mesh\n\narView.session.delegate = context.coordinator\n\nfunc session(_ session: ARSession, didAdd anchors: [ARAnchor]) {\n   for a in anchors {\n       if let mesh = a as? ARMeshAnchor {\n           let entity = ModelEntity(mesh: .init(mesh: mesh.geometry, device: arView.device!))\n           arView.scene.addAnchor(AnchorEntity(anchor: mesh))\n       }\n   }\n}",
+      "category": "RealityKit",
+      "categoryIcon": "rotate.3d",
+      "categoryIconColor": "#7209B7"
+  },
+  {
+    "id": "realitykit_015",
+    "title": "Physik-Impulse (Explosionseffekt)",
+    "description": "Wende eine Kraft auf Entities an – perfekt für Explosionen oder Treffer-Effekte.",
+    "steps": [
+      "Entity braucht PhysicsBodyComponent (.dynamic).",
+      "Erzeuge simd_float3 Kraftvektor.",
+      "Nutze applyImpulse(_:relativeTo:)."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#F72585", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "let force = SIMD3<Float>(0, 2, -3)\nsphere.physicsBody?.applyImpulse(force, relativeTo: nil)",
+    "category": "RealityKit",
+    "categoryIcon": "rotate.3d",
+      "categoryIconColor": "#F72585"
   }
 ]

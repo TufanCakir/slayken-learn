@@ -18,7 +18,7 @@
         "#FFFFFF"
       ]
     },
-    "code": "import WidgetKit\nimport SwiftUI\n\n// MARK: - Datenmodell\nstruct SimpleEntry: TimelineEntry {\n    let date: Date\n}\n\n// MARK: - Provider\nstruct Provider: TimelineProvider {\n    func placeholder(in context: Context) -> SimpleEntry {\n        SimpleEntry(date: Date())\n    }\n\n    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {\n        completion(SimpleEntry(date: Date()))\n    }\n\n    func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> ()) {\n        let entries = [SimpleEntry(date: Date())]\n        completion(Timeline(entries: entries, policy: .atEnd))\n    }\n}\n\n// MARK: - Widget View\nstruct WidgetKitExampleEntryView : View {\n    var entry: Provider.Entry\n\n    var body: some View {\n        ZStack {\n            LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing)\n            VStack {\n                Text(\"WidgetKit 🔷\")\n                    .font(.headline)\n                    .foregroundColor(.white)\n                Text(entry.date, style: .time)\n                    .foregroundColor(.white.opacity(0.8))\n            }\n        }\n    }\n}\n\n// MARK: - Widget Registrierung\n@main\nstruct WidgetKitExample: Widget {\n    let kind: String = \"WidgetKitExample\"\n\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: kind, provider: Provider()) { entry in\n            WidgetKitExampleEntryView(entry: entry)\n        }\n        .configurationDisplayName(\"Beispiel-Widget\")\n        .description(\"Ein einfaches Widget mit Zeitangabe.\")\n        .supportedFamilies([.systemSmall])\n    }\n}\n\n#Preview(as: .systemSmall) {\n    WidgetKitExample()\n} timeline: {\n    SimpleEntry(date: .now)\n}",
+    "code": "import WidgetKit\nimport SwiftUI\n\n/ MARK: - Datenmodell\nstruct SimpleEntry: TimelineEntry {\n    let date: Date\n}\n\n/ MARK: - Provider\nstruct Provider: TimelineProvider {\n    func placeholder(in context: Context) -> SimpleEntry {\n        SimpleEntry(date: Date())\n    }\n\n    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {\n        completion(SimpleEntry(date: Date()))\n    }\n\n    func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> ()) {\n        let entries = [SimpleEntry(date: Date())]\n        completion(Timeline(entries: entries, policy: .atEnd))\n    }\n}\n\n/ MARK: - Widget View\nstruct WidgetKitExampleEntryView : View {\n    var entry: Provider.Entry\n\n    var body: some View {\n        ZStack {\n            LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing)\n            VStack {\n                Text(\"WidgetKit 🔷\")\n                    .font(.headline)\n                    .foregroundColor(.white)\n                Text(entry.date, style: .time)\n                    .foregroundColor(.white.opacity(0.8))\n            }\n        }\n    }\n}\n\n/ MARK: - Widget Registrierung\n@main\nstruct WidgetKitExample: Widget {\n    let kind: String = \"WidgetKitExample\"\n\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: kind, provider: Provider()) { entry in\n            WidgetKitExampleEntryView(entry: entry)\n        }\n        .configurationDisplayName(\"Beispiel-Widget\")\n        .description(\"Ein einfaches Widget mit Zeitangabe.\")\n        .supportedFamilies([.systemSmall])\n    }\n}\n\n#Preview(as: .systemSmall) {\n    WidgetKitExample()\n} timeline: {\n    SimpleEntry(date: .now)\n}",
     "category": "WidgetKit",
     "categoryIcon": "square.grid.2x2.fill",
     "categoryIconColor": "#3A86FF"
@@ -54,7 +54,7 @@
       "backgroundColors": ["#000000", "#3A0CA3", "#000000"],
       "textColors": ["#FFFFFF"]
     },
-    "code": "import WidgetKit\nimport SwiftUI\n\nstruct WeatherEntry: TimelineEntry {\n    let date: Date\n    let temperature: Double\n}\n\nstruct WeatherProvider: TimelineProvider {\n    func placeholder(in context: Context) -> WeatherEntry {\n        WeatherEntry(date: .now, temperature: 0)\n    }\n\n    func getSnapshot(in context: Context, completion: @escaping (WeatherEntry) -> ()) {\n        completion(WeatherEntry(date: .now, temperature: 12.0))\n    }\n\n    func getTimeline(in context: Context, completion: @escaping (Timeline<WeatherEntry>) -> ()) {\n        let url = URL(string: \"https://api.weatherapi.com/v1/current.json?key=DEMO&q=Berlin\")!\n        var temp = 0.0\n        if let data = try? Data(contentsOf: url),\n           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],\n           let current = json[\"current\"] as? [String: Any] {\n            temp = current[\"temp_c\"] as? Double ?? 0\n        }\n\n        let entry = WeatherEntry(date: .now, temperature: temp)\n        completion(Timeline(entries: [entry], policy: .after(.now.addingTimeInterval(1800))))\n    }\n}\n\nstruct WeatherWidgetView: View {\n    var entry: WeatherEntry\n    var body: some View {\n        VStack {\n            Text(\"🌤 Berlin\")\n            Text(\"\\(entry.temperature, specifier: \"%.1f\")°C\")\n                .font(.largeTitle)\n        }\n        .foregroundStyle(.white)\n    }\n}\n\n@main\nstruct WeatherWidget: Widget {\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: \"weather_widget\", provider: WeatherProvider()) { entry in\n            WeatherWidgetView(entry: entry)\n        }\n        .supportedFamilies([.systemSmall, .systemMedium])\n        .configurationDisplayName(\"Wetter Widget\")\n        .description(\"Zeigt die Temperatur aus einer API.\")\n    }\n}",
+    "code": "import WidgetKit\nimport SwiftUI\n\nstruct WeatherEntry: TimelineEntry {\n    let date: Date\n    let temperature: Double\n}\n\nstruct WeatherProvider: TimelineProvider {\n    func placeholder(in context: Context) -> WeatherEntry {\n        WeatherEntry(date: .now, temperature: 0)\n    }\n\n    func getSnapshot(in context: Context, completion: @escaping (WeatherEntry) -> ()) {\n        completion(WeatherEntry(date: .now, temperature: 12.0))\n    }\n\n    func getTimeline(in context: Context, completion: @escaping (Timeline<WeatherEntry>) -> ()) {\n        let url = URL(string: \"https:/api.weatherapi.com/v1/current.json?key=DEMO&q=Berlin\")!\n        var temp = 0.0\n        if let data = try? Data(contentsOf: url),\n           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],\n           let current = json[\"current\"] as? [String: Any] {\n            temp = current[\"temp_c\"] as? Double ?? 0\n        }\n\n        let entry = WeatherEntry(date: .now, temperature: temp)\n        completion(Timeline(entries: [entry], policy: .after(.now.addingTimeInterval(1800))))\n    }\n}\n\nstruct WeatherWidgetView: View {\n    var entry: WeatherEntry\n    var body: some View {\n        VStack {\n            Text(\"🌤 Berlin\")\n            Text(\"\\(entry.temperature, specifier: \"%.1f\")°C\")\n                .font(.largeTitle)\n        }\n        .foregroundStyle(.white)\n    }\n}\n\n@main\nstruct WeatherWidget: Widget {\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: \"weather_widget\", provider: WeatherProvider()) { entry in\n            WeatherWidgetView(entry: entry)\n        }\n        .supportedFamilies([.systemSmall, .systemMedium])\n        .configurationDisplayName(\"Wetter Widget\")\n        .description(\"Zeigt die Temperatur aus einer API.\")\n    }\n}",
     "category": "WidgetKit",
     "categoryIcon": "square.grid.2x2.fill",
     "categoryIconColor": "#3A0CA3"
@@ -90,7 +90,7 @@
       "backgroundColors": ["#000000", "#7209B7", "#000000"],
       "textColors": ["#FFFFFF"]
     },
-    "code": "import ActivityKit\nimport SwiftUI\n\nstruct TimerAttributes: ActivityAttributes {\n    public struct ContentState: Codable, Hashable {\n        var remaining: Int\n    }\n}\n\n// Starten der Activity in der App\nfunc startTimerActivity() {\n    let attributes = TimerAttributes()\n    let state = TimerAttributes.ContentState(remaining: 60)\n    let _ = try? Activity<TimerAttributes>.request(attributes: attributes, contentState: state)\n}\n\n// Live Activity UI\nstruct TimerActivityView: View {\n    let context: ActivityViewContext<TimerAttributes>\n    var body: some View {\n        VStack {\n            Text(\"⏳ Noch: \\(context.state.remaining)s\")\n                .font(.headline)\n        }\n        .activityBackgroundTint(.purple)\n        .activitySystemActionForegroundColor(.white)\n    }\n}",
+    "code": "import ActivityKit\nimport SwiftUI\n\nstruct TimerAttributes: ActivityAttributes {\n    public struct ContentState: Codable, Hashable {\n        var remaining: Int\n    }\n}\n\n/ Starten der Activity in der App\nfunc startTimerActivity() {\n    let attributes = TimerAttributes()\n    let state = TimerAttributes.ContentState(remaining: 60)\n    let _ = try? Activity<TimerAttributes>.request(attributes: attributes, contentState: state)\n}\n\n/ Live Activity UI\nstruct TimerActivityView: View {\n    let context: ActivityViewContext<TimerAttributes>\n    var body: some View {\n        VStack {\n            Text(\"⏳ Noch: \\(context.state.remaining)s\")\n                .font(.headline)\n        }\n        .activityBackgroundTint(.purple)\n        .activitySystemActionForegroundColor(.white)\n    }\n}",
     "category": "WidgetKit",
     "categoryIcon": "square.grid.2x2.fill",
     "categoryIconColor": "#7209B7"
@@ -111,6 +111,96 @@
     "code": "import WidgetKit\nimport SwiftUI\n\nstruct ImageEntry: TimelineEntry {\n    let date: Date\n}\n\nstruct ImageProvider: TimelineProvider {\n    func placeholder(in context: Context) -> ImageEntry { ImageEntry(date: .now) }\n    func getSnapshot(in context: Context, completion: @escaping (ImageEntry) -> ()) { completion(ImageEntry(date: .now)) }\n    func getTimeline(in context: Context, completion: @escaping (Timeline<ImageEntry>) -> ()) {\n        completion(Timeline(entries: [ImageEntry(date: .now)], policy: .never))\n    }\n}\n\nstruct ImageWidgetView: View {\n    var entry: ImageEntry\n    var body: some View {\n        ZStack {\n            LinearGradient(colors: [.cyan, .blue], startPoint: .top, endPoint: .bottom)\n            Image(\"avatar\")\n                .resizable()\n                .scaledToFit()\n                .clipShape(Circle())\n                .shadow(radius: 10)\n        }\n    }\n}\n\n@main\nstruct ImageWidget: Widget {\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: \"image_widget\", provider: ImageProvider()) { entry in\n            ImageWidgetView(entry: entry)\n        }\n        .supportedFamilies([.systemSmall])\n        .configurationDisplayName(\"Bild Widget\")\n        .description(\"Zeigt ein Bild aus deinen Assets an.\")\n    }\n}",
     "category": "WidgetKit",
     "categoryIcon": "square.grid.2x2.fill",
+    "categoryIconColor": "#4CC9F0"
+  },
+  {
+    "id": "widgetkit_007",
+    "title": "Kalender Widget (Nächster Termin)",
+    "description": "Zeige den nächsten Termin aus dem Kalender an – ideal für Productivity-Widgets.",
+    "steps": [
+      "Nutze EventKit, um Termine abzurufen.",
+      "Gib den nächsten bevorstehenden Termin im Widget aus.",
+      "Aktualisiere das Widget stündlich."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#3A86FF", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import WidgetKit\nimport SwiftUI\nimport EventKit\n\nstruct CalendarEntry: TimelineEntry {\n    let date: Date\n    let nextEvent: String\n}\n\nstruct CalendarProvider: TimelineProvider {\n    let store = EKEventStore()\n\n    func placeholder(in context: Context) -> CalendarEntry {\n        CalendarEntry(date: .now, nextEvent: \"Kein Termin\")\n    }\n\n    func getSnapshot(in context: Context, completion: @escaping (CalendarEntry) -> ()) {\n        completion(CalendarEntry(date: .now, nextEvent: \"Meeting 14:00\"))\n    }\n\n    func getTimeline(in context: Context, completion: @escaping (Timeline<CalendarEntry>) -> ()) {\n        var next = \"Keine Daten\"\n        store.requestAccess(to: .event) { granted, _ in\n            if granted {\n                let start = Date()\n                let end = Date().addingTimeInterval(60 * 60 * 24)\n                let predicate = store.predicateForEvents(withStart: start, end: end, calendars: nil)\n                let events = store.events(matching: predicate)\n                next = events.first?.title ?? \"Keine Termine\"\n            }\n            let entry = CalendarEntry(date: .now, nextEvent: next)\n            completion(Timeline(entries: [entry], policy: .after(.now.addingTimeInterval(3600))))\n        }\n    }\n}\n\nstruct CalendarWidgetView: View {\n    var entry: CalendarEntry\n    var body: some View {\n        VStack(alignment: .leading) {\n            Text(\"📅 Nächster Termin\")\n                .font(.headline)\n            Text(entry.nextEvent)\n                .font(.title3)\n        }\n        .foregroundStyle(.white)\n    }\n}\n\n@main\nstruct CalendarWidget: Widget {\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: \"calendar_widget\", provider: CalendarProvider()) { entry in\n            CalendarWidgetView(entry: entry)\n        }\n        .supportedFamilies([.systemSmall, .systemMedium])\n        .configurationDisplayName(\"Kalender Widget\")\n        .description(\"Zeigt deinen nächsten Termin an.\")\n    }\n}",
+    "category": "WidgetKit",
+    "categoryIcon": "calendar",
+    "categoryIconColor": "#3A86FF"
+  },
+  {
+    "id": "widgetkit_008",
+    "title": "Countdown Widget",
+    "description": "Zeige einen Countdown zu einem bestimmten Datum – ideal für Events oder Releases.",
+    "steps": [
+      "Berechne die verbleibenden Tage/Stunden.",
+      "Aktualisiere jede Stunde automatisch.",
+      "Zeige das Ziel-Datum im Widget an."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#8338EC", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import WidgetKit\nimport SwiftUI\n\nstruct CountdownEntry: TimelineEntry {\n    let date: Date\n    let remaining: Int\n}\n\nstruct CountdownProvider: TimelineProvider {\n    let target = Calendar.current.date(from: DateComponents(year: 2025, month: 12, day: 12))!\n\n    func placeholder(in context: Context) -> CountdownEntry {\n        CountdownEntry(date: .now, remaining: 99)\n    }\n\n    func getSnapshot(in context: Context, completion: @escaping (CountdownEntry) -> ()) {\n        let days = Calendar.current.dateComponents([.day], from: .now, to: target).day ?? 0\n        completion(CountdownEntry(date: .now, remaining: days))\n    }\n\n    func getTimeline(in context: Context, completion: @escaping (Timeline<CountdownEntry>) -> ()) {\n        let days = Calendar.current.dateComponents([.day], from: .now, to: target).day ?? 0\n        let entry = CountdownEntry(date: .now, remaining: days)\n        completion(Timeline(entries: [entry], policy: .after(.now.addingTimeInterval(3600))))\n    }\n}\n\nstruct CountdownWidgetView: View {\n    var entry: CountdownEntry\n    var body: some View {\n        VStack {\n            Text(\"⏳ Verbleibend\")\n            Text(\"\\(entry.remaining) Tage\")\n                .font(.largeTitle)\n        }\n        .foregroundStyle(.white)\n    }\n}\n\n@main\nstruct CountdownWidget: Widget {\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: \"countdown_widget\", provider: CountdownProvider()) { entry in\n            CountdownWidgetView(entry: entry)\n        }\n        .supportedFamilies([.systemSmall])\n        .configurationDisplayName(\"Countdown\")\n        .description(\"Zeigt verbleibende Tage bis zu einem Event.\")\n    }\n}",
+    "category": "WidgetKit",
+    "categoryIcon": "timer",
+    "categoryIconColor": "#8338EC"
+  },
+  {
+    "id": "widgetkit_009",
+    "title": "Akkustand Widget",
+    "description": "Zeige den aktuellen Akkustand des Geräts als Widget an.",
+    "steps": [
+      "Nutze UIDevice.current.isBatteryMonitoringEnabled.",
+      "Lies batteryLevel aus.",
+      "Aktualisiere das Widget z. B. alle 15 Minuten."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#FF006E", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import WidgetKit\nimport SwiftUI\n\nstruct BatteryEntry: TimelineEntry {\n    let date: Date\n    let battery: Int\n}\n\nstruct BatteryProvider: TimelineProvider {\n    func placeholder(in context: Context) -> BatteryEntry { BatteryEntry(date: .now, battery: 50) }\n\n    func getSnapshot(in context: Context, completion: @escaping (BatteryEntry) -> ()) {\n        BatteryEntry(date: .now, battery: 80)\n    }\n\n    func getTimeline(in context: Context, completion: @escaping (Timeline<BatteryEntry>) -> ()) {\n        UIDevice.current.isBatteryMonitoringEnabled = true\n        let level = Int(UIDevice.current.batteryLevel * 100)\n\n        let entry = BatteryEntry(date: .now, battery: level)\n        completion(Timeline(entries: [entry], policy: .after(.now.addingTimeInterval(900))))\n    }\n}\n\nstruct BatteryWidgetView: View {\n    var entry: BatteryEntry\n    var body: some View {\n        VStack {\n            Text(\"🔋 Akku\")\n            Text(\"\\(entry.battery)%\")\n                .font(.largeTitle)\n        }\n        .foregroundStyle(.white)\n    }\n}\n\n@main\nstruct BatteryWidget: Widget {\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: \"battery_widget\", provider: BatteryProvider()) { entry in\n            BatteryWidgetView(entry: entry)\n        }\n        .supportedFamilies([.systemSmall])\n        .configurationDisplayName(\"Akkustand\")\n        .description(\"Zeigt den Akkustand deines Geräts.\")\n    }\n}",
+    "category": "WidgetKit",
+    "categoryIcon": "battery.100",
+    "categoryIconColor": "#FF006E"
+  },
+  {
+    "id": "widgetkit_010",
+    "title": "Zufalls-Zitat Widget",
+    "description": "Ein Widget, das bei jedem Reload ein neues Zitat anzeigt.",
+    "steps": [
+      "Definiere ein Zitat-Array.",
+      "Wähle ein zufälliges Zitat im Provider.",
+      "Aktualisiere alle paar Stunden."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#F72585", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import WidgetKit\nimport SwiftUI\n\nstruct QuoteEntry: TimelineEntry {\n    let date: Date\n    let quote: String\n}\n\nstruct QuoteProvider: TimelineProvider {\n    let quotes = [\"Der Weg entsteht beim Gehen.\", \"Dream big.\", \"Never give up.\"]\n\n    func placeholder(in context: Context) -> QuoteEntry { QuoteEntry(date: .now, quote: \"Zitat…\") }\n\n    func getSnapshot(in context: Context, completion: @escaping (QuoteEntry) -> ()) {\n        completion(QuoteEntry(date: .now, quote: quotes.randomElement()!))\n    }\n\n    func getTimeline(in context: Context, completion: @escaping (Timeline<QuoteEntry>) -> ()) {\n        let entry = QuoteEntry(date: .now, quote: quotes.randomElement()!)\n        completion(Timeline(entries: [entry], policy: .after(.now.addingTimeInterval(7200))))\n    }\n}\n\nstruct QuoteWidgetView: View {\n    var entry: QuoteEntry\n    var body: some View {\n        Text(entry.quote)\n            .foregroundStyle(.white)\n            .padding()\n    }\n}\n\n@main\nstruct QuoteWidget: Widget {\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: \"quote_widget\", provider: QuoteProvider()) { entry in\n            QuoteWidgetView(entry: entry)\n        }\n        .supportedFamilies([.systemSmall, .systemMedium])\n        .configurationDisplayName(\"Zitate Widget\")\n        .description(\"Zeigt ein zufälliges Zitat an.\")\n    }\n}",
+    "category": "WidgetKit",
+    "categoryIcon": "text.quote",
+    "categoryIconColor": "#F72585"
+  },
+  {
+    "id": "widgetkit_011",
+    "title": "Fitness Schritte Widget",
+    "description": "Zeige deine heutigen Schritte aus HealthKit direkt im Widget.",
+    "steps": [
+      "Lese Schritte mit HKStatisticsQuery aus.",
+      "Gib die Anzahl im Widget aus.",
+      "Reload alle 30 Minuten."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4CC9F0", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import WidgetKit\nimport SwiftUI\nimport HealthKit\n\nstruct StepsEntry: TimelineEntry {\n    let date: Date\n    let steps: Int\n}\n\nclass HealthManager {\n    static let shared = HealthManager()\n    let hk = HKHealthStore()\n}\n\nstruct StepsProvider: TimelineProvider {\n    func placeholder(in context: Context) -> StepsEntry { StepsEntry(date: .now, steps: 0) }\n    func getSnapshot(in context: Context, completion: @escaping (StepsEntry) -> ()) { completion(StepsEntry(date: .now, steps: 5000)) }\n\n    func getTimeline(in context: Context, completion: @escaping (Timeline<StepsEntry>) -> ()) {\n        let type = HKQuantityType.quantityType(forIdentifier: .stepCount)!\n        let now = Date()\n        let start = Calendar.current.startOfDay(for: now)\n\n        let query = HKStatisticsQuery(quantityType: type, quantitySamplePredicate: nil, options: .cumulativeSum) { _, stats, _ in\n            let steps = Int(stats?.sumQuantity()?.doubleValue(for: .count()) ?? 0)\n            let entry = StepsEntry(date: now, steps: steps)\n            completion(Timeline(entries: [entry], policy: .after(now.addingTimeInterval(1800))))\n        }\n\n        HealthManager.shared.hk.execute(query)\n    }\n}\n\nstruct StepsWidgetView: View {\n    var entry: StepsEntry\n    var body: some View {\n        VStack {\n            Text(\"👟 Schritte\")\n            Text(\"\\(entry.steps)\")\n                .font(.largeTitle)\n        }\n        .foregroundStyle(.white)\n    }\n}\n\n@main\nstruct StepsWidget: Widget {\n    var body: some WidgetConfiguration {\n        StaticConfiguration(kind: \"steps_widget\", provider: StepsProvider()) { entry in\n            StepsWidgetView(entry: entry)\n        }\n        .supportedFamilies([.systemSmall, .systemMedium])\n        .configurationDisplayName(\"Schritte Widget\")\n        .description(\"Zeigt heutige Schritte aus HealthKit an.\")\n    }\n}",
+    "category": "WidgetKit",
+    "categoryIcon": "figure.walk",
     "categoryIconColor": "#4CC9F0"
   }
 ]

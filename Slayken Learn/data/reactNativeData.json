@@ -279,7 +279,7 @@
             ]
         },
         "code":
-            "import { useState, useEffect } from 'react';\n\nexport function useTimer() {\n  const [seconds, setSeconds] = useState(0);\n  useEffect(() => {\n    const interval = setInterval(() => setSeconds(s => s + 1), 1000);\n    return () => clearInterval(interval);\n  }, []);\n  return seconds;\n}\n\n// Nutzung\nimport { View, Text } from 'react-native';\nimport { useTimer } from './useTimer';\n\nexport default function TimerScreen() {\n  const seconds = useTimer();\n  return <Text style={{ fontSize: 24 }}>⏱ {seconds}s</Text>;\n}",
+            "import { useState, useEffect } from 'react';\n\nexport function useTimer() {\n  const [seconds, setSeconds] = useState(0);\n  useEffect(() => {\n    const interval = setInterval(() => setSeconds(s => s + 1), 1000);\n    return () => clearInterval(interval);\n  }, []);\n  return seconds;\n}\n\n/ Nutzung\nimport { View, Text } from 'react-native';\nimport { useTimer } from './useTimer';\n\nexport default function TimerScreen() {\n  const seconds = useTimer();\n  return <Text style={{ fontSize: 24 }}>⏱ {seconds}s</Text>;\n}",
         "category": "React Native",
         "categoryIcon": "atom",
         "categoryIconColor": "#61DAFB"
@@ -305,7 +305,7 @@
             ]
         },
         "code":
-            "import { useState, useEffect } from 'react';\nimport { View, Text, ActivityIndicator } from 'react-native';\n\nexport default function ApiExample() {\n  const [data, setData] = useState(null);\n  const [loading, setLoading] = useState(true);\n\n  useEffect(() => {\n    fetch('https://jsonplaceholder.typicode.com/posts/1')\n      .then(res => res.json())\n      .then(json => setData(json))\n      .catch(err => console.error(err))\n      .finally(() => setLoading(false));\n  }, []);\n\n  if (loading) return <ActivityIndicator size=\"large\" />;\n\n  return (\n    <View style={{ padding: 20 }}>\n      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{data.title}</Text>\n      <Text>{data.body}</Text>\n    </View>\n  );\n}",
+            "import { useState, useEffect } from 'react';\nimport { View, Text, ActivityIndicator } from 'react-native';\n\nexport default function ApiExample() {\n  const [data, setData] = useState(null);\n  const [loading, setLoading] = useState(true);\n\n  useEffect(() => {\n    fetch('https:/jsonplaceholder.typicode.com/posts/1')\n      .then(res => res.json())\n      .then(json => setData(json))\n      .catch(err => console.error(err))\n      .finally(() => setLoading(false));\n  }, []);\n\n  if (loading) return <ActivityIndicator size=\"large\" />;\n\n  return (\n    <View style={{ padding: 20 }}>\n      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{data.title}</Text>\n      <Text>{data.body}</Text>\n    </View>\n  );\n}",
         "category": "React Native",
         "categoryIcon": "atom",
         "categoryIconColor": "#0A84FF"
@@ -383,7 +383,7 @@
             ]
         },
         "code":
-            "import * as FileSystem from 'expo-file-system';\nimport { useState } from 'react';\nimport { Button, Text, View } from 'react-native';\n\nexport default function DownloadExample() {\n  const [path, setPath] = useState(null);\n\n  const download = async () => {\n    const result = await FileSystem.downloadAsync(\n      'https://picsum.photos/400',\n      FileSystem.documentDirectory + 'image.jpg'\n    );\n    setPath(result.uri);\n  };\n\n  return (\n    <View style={{ padding: 30 }}>\n      <Button title=\"Bild herunterladen\" onPress={download} />\n      {path && <Text style={{ marginTop: 10 }}>📁 Gespeichert unter: {path}</Text>}\n    </View>\n  );\n}",
+            "import * as FileSystem from 'expo-file-system';\nimport { useState } from 'react';\nimport { Button, Text, View } from 'react-native';\n\nexport default function DownloadExample() {\n  const [path, setPath] = useState(null);\n\n  const download = async () => {\n    const result = await FileSystem.downloadAsync(\n      'https:/picsum.photos/400',\n      FileSystem.documentDirectory + 'image.jpg'\n    );\n    setPath(result.uri);\n  };\n\n  return (\n    <View style={{ padding: 30 }}>\n      <Button title=\"Bild herunterladen\" onPress={download} />\n      {path && <Text style={{ marginTop: 10 }}>📁 Gespeichert unter: {path}</Text>}\n    </View>\n  );\n}",
         "category": "React Native",
         "categoryIcon": "atom",
         "categoryIconColor": "#FF9500"
@@ -538,7 +538,7 @@
             ]
         },
         "code":
-            "import { View, Image } from 'react-native';\nimport { Ionicons } from '@expo/vector-icons';\n\nexport default function ImageExample() {\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: 20 }}>\n      <Image source={require('./assets/logo.png')} style={{ width: 100, height: 100 }} />\n      <Image source={{ uri: 'https://picsum.photos/200' }} style={{ width: 100, height: 100, borderRadius: 20 }} />\n      <Ionicons name=\"rocket\" size={48} color=\"#61DAFB\" />\n    </View>\n  );\n}",
+            "import { View, Image } from 'react-native';\nimport { Ionicons } from '@expo/vector-icons';\n\nexport default function ImageExample() {\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: 20 }}>\n      <Image source={require('./assets/logo.png')} style={{ width: 100, height: 100 }} />\n      <Image source={{ uri: 'https:/picsum.photos/200' }} style={{ width: 100, height: 100, borderRadius: 20 }} />\n      <Ionicons name=\"rocket\" size={48} color=\"#61DAFB\" />\n    </View>\n  );\n}",
         "category": "React Native",
         "categoryIcon": "atom",
         "categoryIconColor": "#61DAFB"
@@ -642,7 +642,7 @@
             ]
         },
         "code":
-            "// Kein direkter Code, aber ein Expo-Build Beispiel\n// Terminal-Befehle:\n// 1️⃣ Login:  npx expo login\n// 2️⃣ Build:  eas build -p ios --profile production\n// 3️⃣ Upload: eas submit -p ios --latest\n\n// Danach erfolgt die Einreichung über App Store Connect.",
+            "/ Kein direkter Code, aber ein Expo-Build Beispiel\n/ Terminal-Befehle:\n/ 1️⃣ Login:  npx expo login\n/ 2️⃣ Build:  eas build -p ios --profile production\n/ 3️⃣ Upload: eas submit -p ios --latest\n\n/ Danach erfolgt die Einreichung über App Store Connect.",
         "category": "React Native",
         "categoryIcon": "atom",
         "categoryIconColor": "#30D158"
@@ -668,7 +668,7 @@
             ]
         },
         "code":
-            "// Beispiel: Button-Komponente testen\nimport { render, fireEvent } from '@testing-library/react-native';\nimport { Button, Text } from 'react-native';\n\ntest('Button reagiert auf Klick', () => {\n  const onPressMock = jest.fn();\n  const { getByText } = render(<Button title=\"Klick mich\" onPress={onPressMock} />);\n  fireEvent.press(getByText('Klick mich'));\n  expect(onPressMock).toHaveBeenCalled();\n});",
+            "/ Beispiel: Button-Komponente testen\nimport { render, fireEvent } from '@testing-library/react-native';\nimport { Button, Text } from 'react-native';\n\ntest('Button reagiert auf Klick', () => {\n  const onPressMock = jest.fn();\n  const { getByText } = render(<Button title=\"Klick mich\" onPress={onPressMock} />);\n  fireEvent.press(getByText('Klick mich'));\n  expect(onPressMock).toHaveBeenCalled();\n});",
         "category": "React Native",
         "categoryIcon": "atom",
         "categoryIconColor": "#61DAFB"
@@ -746,7 +746,7 @@
             ]
         },
         "code":
-            "// JS-Seite\nimport { NativeModules, Button } from 'react-native';\n\nconst { DeviceModule } = NativeModules;\n\nexport default function NativeExample() {\n  return <Button title=\"Geräteinfo\" onPress={() => alert(DeviceModule.getDeviceName())} />;\n}\n\n// iOS (Swift): DeviceModule.swift\n// @objc(DeviceModule)\n// class DeviceModule: NSObject {\n//   @objc func getDeviceName() -> String {\n//     return UIDevice.current.name\n//   }\n// }",
+            "/ JS-Seite\nimport { NativeModules, Button } from 'react-native';\n\nconst { DeviceModule } = NativeModules;\n\nexport default function NativeExample() {\n  return <Button title=\"Geräteinfo\" onPress={() => alert(DeviceModule.getDeviceName())} />;\n}\n\n/ iOS (Swift): DeviceModule.swift\n/ @objc(DeviceModule)\n/ class DeviceModule: NSObject {\n/   @objc func getDeviceName() -> String {\n/     return UIDevice.current.name\n/   }\n/ }",
         "category": "React Native",
         "categoryIcon": "atom",
         "categoryIconColor": "#0A84FF"
@@ -798,7 +798,7 @@
             ]
         },
         "code":
-            "// Beispiel mit Zustand\nimport create from 'zustand';\nimport { Button, Text, View } from 'react-native';\n\nconst useCounterStore = create(set => ({\n  count: 0,\n  increment: () => set(state => ({ count: state.count + 1 }))\n}));\n\nexport default function StoreExample() {\n  const { count, increment } = useCounterStore();\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>\n      <Text style={{ color: '#fff', fontSize: 22 }}>Count: {count}</Text>\n      <Button title=\"+1\" onPress={increment} />\n    </View>\n  );\n}",
+            "/ Beispiel mit Zustand\nimport create from 'zustand';\nimport { Button, Text, View } from 'react-native';\n\nconst useCounterStore = create(set => ({\n  count: 0,\n  increment: () => set(state => ({ count: state.count + 1 }))\n}));\n\nexport default function StoreExample() {\n  const { count, increment } = useCounterStore();\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>\n      <Text style={{ color: '#fff', fontSize: 22 }}>Count: {count}</Text>\n      <Button title=\"+1\" onPress={increment} />\n    </View>\n  );\n}",
         "category": "React Native",
         "categoryIcon": "atom",
         "categoryIconColor": "#61DAFB"
@@ -807,7 +807,7 @@
         "id": "rn_032",
         "title": "Deep Links & URL Routing",
         "description":
-            "Ermögliche es, deine App über Links oder QR-Codes direkt zu öffnen – z. B. slayken://profile/1.",
+            "Ermögliche es, deine App über Links oder QR-Codes direkt zu öffnen – z. B. slayken:/profile/1.",
         "steps": [
             "Konfiguriere Linking in deiner App.",
             "Verwende `Linking.addEventListener` zum Reagieren auf URLs.",
@@ -824,7 +824,7 @@
             ]
         },
         "code":
-            "import * as Linking from 'expo-linking';\nimport { useEffect } from 'react';\nimport { Text, View } from 'react-native';\n\nexport default function DeepLinkExample() {\n  useEffect(() => {\n    const subscription = Linking.addEventListener('url', ({ url }) => alert(`📲 Link geöffnet: ${url}`));\n    return () => subscription.remove();\n  }, []);\n\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>\n      <Text style={{ color: '#fff' }}>Öffne slayken://test in Safari!</Text>\n    </View>\n  );\n}",
+            "import * as Linking from 'expo-linking';\nimport { useEffect } from 'react';\nimport { Text, View } from 'react-native';\n\nexport default function DeepLinkExample() {\n  useEffect(() => {\n    const subscription = Linking.addEventListener('url', ({ url }) => alert(`📲 Link geöffnet: ${url}`));\n    return () => subscription.remove();\n  }, []);\n\n  return (\n    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>\n      <Text style={{ color: '#fff' }}>Öffne slayken:/test in Safari!</Text>\n    </View>\n  );\n}",
         "category": "React Native",
         "categoryIcon": "atom",
         "categoryIconColor": "#0A84FF"
@@ -959,7 +959,7 @@
             "textColors": ["#FFFFFF"]
         },
         "code":
-            "import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';\n\nconst qc = new QueryClient();\n\nfunction Data() {\n  const { data } = useQuery(['posts'], () => fetch('https://jsonplaceholder.typicode.com/posts/1').then(r => r.json()));\n  return <Text style={{color:'#fff'}}>{data?.title}</Text>;\n}\n\nexport default function App() {\n  return <QueryClientProvider client={qc}><Data/></QueryClientProvider>;\n}",
+            "import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';\n\nconst qc = new QueryClient();\n\nfunction Data() {\n  const { data } = useQuery(['posts'], () => fetch('https:/jsonplaceholder.typicode.com/posts/1').then(r => r.json()));\n  return <Text style={{color:'#fff'}}>{data?.title}</Text>;\n}\n\nexport default function App() {\n  return <QueryClientProvider client={qc}><Data/></QueryClientProvider>;\n}",
         "category": "React Native",
         "categoryIcon": "atom",
         "categoryIconColor": "#30D158"
@@ -1187,9 +1187,104 @@
             "textColors": ["#FFFFFF"]
         },
         "code":
-            "import QRCode from 'react-native-qrcode-svg';\n\nexport default function QRExample() {\n  return <QRCode value=\"https://slayken.com\" size={160} />;\n}",
+            "import QRCode from 'react-native-qrcode-svg';\n\nexport default function QRExample() {\n  return <QRCode value=\"https:/slayken.com\" size={160} />;\n}",
         "category": "React Native",
         "categoryIcon": "atom",
         "categoryIconColor": "#0A84FF"
+    },
+    {
+      "id": "rn_051",
+      "title": "Infinite Scroll & Pagination",
+      "description": "Lade mehr Daten, sobald der Nutzer ans Ende der Liste scrollt – perfekt für Feeds, Chats oder News.",
+      "steps": [
+        "Nutze FlatList.onEndReached, um neue Daten zu laden.",
+        "Halte eine page Variable im State.",
+        "Hänge neue Daten an die bestehende Liste an."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#61DAFB", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "import { useState, useEffect } from 'react';\nimport { FlatList, Text, View } from 'react-native';\n\nexport default function InfiniteScroll() {\n  const [page, setPage] = useState(1);\n  const [items, setItems] = useState([]);\n\n  const loadMore = () => setPage(p => p + 1);\n\n  useEffect(() => {\n    fetch(`https:/jsonplaceholder.typicode.com/posts?_limit=10&_page=${page}`)\n      .then(res => res.json())\n      .then(json => setItems(prev => [...prev, ...json]));\n  }, [page]);\n\n  return (\n    <FlatList\n      data={items}\n      keyExtractor={i => i.id.toString()}\n      renderItem={({ item }) => <Text style={{ color:'#fff', padding:12 }}>{item.title}</Text>}\n      onEndReached={loadMore}\n      onEndReachedThreshold={0.5}\n    />\n  );\n}",
+      "category": "React Native",
+      "categoryIcon": "atom",
+      "categoryIconColor": "#61DAFB"
+    },
+    {
+      "id": "rn_052",
+      "title": "Animationen mit Moti (Reanimated Wrapper)",
+      "description": "Moti ist ein Wrapper für Reanimated und macht Animationen extrem einfach – ideal für UI Effekte.",
+      "steps": [
+        "Moti installieren: `npm install moti`.",
+        "AnimatePresence für Fade-In/Fade-Out.",
+        "MotiView für animierte Layouts nutzen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF2D55", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "import { MotiView } from 'moti';\nimport { View } from 'react-native';\n\nexport default function MotiExample() {\n  return (\n    <View style={{ flex:1, justifyContent:'center', alignItems:'center' }}>\n      <MotiView\n        from={{ opacity:0, translateY:20 }}\n        animate={{ opacity:1, translateY:0 }}\n        transition={{ type:'timing', duration:700 }}\n        style={{ width:120, height:120, backgroundColor:'#FF2D55', borderRadius:20 }}\n      />\n    </View>\n  );\n}",
+      "category": "React Native",
+      "categoryIcon": "atom",
+      "categoryIconColor": "#FF2D55"
+    },
+    {
+      "id": "rn_053",
+      "title": "Offline Image Cache mit FastImage",
+      "description": "Lade Bilder extrem schnell mit intelligentem Caching – perfekt für Avatare, Galerien und Shops.",
+      "steps": [
+        "Nutze react-native-fast-image für schnelles Caching.",
+        "Unterstützt Priority, Cache-Control und Preloading.",
+        "Kompatibel mit Expo Bare Workflow."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF9500", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "import FastImage from 'react-native-fast-image';\n\nexport default function CacheImage() {\n  return (\n    <FastImage\n      style={{ width: 180, height: 180, borderRadius:20 }}\n      source={{ uri:'https:/picsum.photos/300', priority: FastImage.priority.high }}\n      resizeMode={FastImage.resizeMode.cover}\n    />\n  );\n}",
+      "category": "React Native",
+      "categoryIcon": "atom",
+      "categoryIconColor": "#FF9500"
+    },
+    {
+      "id": "rn_054",
+      "title": "Multi-Touch Gesten: Pinch, Rotate, Pan",
+      "description": "Reagiere auf Zoom-Gesten, Rotation und Drag – ideal für Bilder, Karten oder 3D-Objekte.",
+      "steps": [
+        "Nutze GestureHandler v2 (React Native Gesture Handler).",
+        "PinchGestureHandler für Zoom.",
+        "RotationGestureHandler für Drehung."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#30D158", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "import { Gesture, GestureDetector } from 'react-native-gesture-handler';\nimport Animated, { useSharedValue, useAnimatedStyle } from 'react-native-reanimated';\n\nexport default function MultiGesture() {\n  const scale = useSharedValue(1);\n\n  const pinch = Gesture.Pinch().onUpdate(e => {\n    scale.value = e.scale;\n  });\n\n  const style = useAnimatedStyle(() => ({ transform:[{ scale: scale.value }] }));\n\n  return (\n    <GestureDetector gesture={pinch}>\n      <Animated.View style={[{ width:200, height:200, backgroundColor:'#30D158', borderRadius:20 }, style]} />\n    </GestureDetector>\n  );\n}",
+      "category": "React Native",
+      "categoryIcon": "atom",
+      "categoryIconColor": "#30D158"
+    },
+    {
+      "id": "rn_055",
+      "title": "Skeleton Loader / Shimmer Effekt",
+      "description": "Zeige Ladezustände mit einem animierten Shimmer-Placeholder an – perfekt für Profile, Listen & Artikel.",
+      "steps": [
+        "Verwende react-native-linear-gradient.",
+        "Nutze Animated.loop für den Shimmer Move.",
+        "Positioniere das Overlay über das Placeholder-Element."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#0A84FF", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code":
+    "import { View, Animated } from 'react-native';\nimport LinearGradient from 'react-native-linear-gradient';\nimport { useEffect, useRef } from 'react';\n\nexport default function Skeleton() {\n  const animated = useRef(new Animated.Value(-1)).current;\n\n  useEffect(() => {\n    Animated.loop(\n      Animated.timing(animated, {\n        toValue: 1,\n        duration: 1200,\n        useNativeDriver: true,\n      })\n    ).start();\n  }, []);\n\n  const translateX = animated.interpolate({ inputRange:[-1,1], outputRange:[-200,200] });\n\n  return (\n    <View style={{ width:200, height:120, backgroundColor:'#333', overflow:'hidden', borderRadius:16 }}>\n      <Animated.View style={{ flex:1, transform:[{ translateX }] }}>\n        <LinearGradient\n          colors={['transparent','rgba(255,255,255,0.3)','transparent']}\n          style={{ flex:1 }}\n        />\n      </Animated.View>\n    </View>\n  );\n}",
+      "category": "React Native",
+      "categoryIcon": "atom",
+      "categoryIconColor": "#0A84FF"
     }
 ]

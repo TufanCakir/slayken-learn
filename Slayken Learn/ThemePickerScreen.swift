@@ -48,7 +48,7 @@ struct ThemePickerScreen: View {
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)
                 }
-                .background(themeManager.currentTheme?.text)
+                .background(.white)
                 .padding(.horizontal, 12)
                 .padding(.top, 8)
                 .padding(.bottom, 4)

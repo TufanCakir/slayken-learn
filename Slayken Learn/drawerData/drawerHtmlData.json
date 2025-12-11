@@ -66,7 +66,7 @@
       "backgroundColors": ["#000000", "#7209B7", "#000000"],
       "textColors": ["#FFFFFF"]
     },
-    "code": "<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"UTF-8\">\n    <title>Links Beispiel</title>\n</head>\n<body>\n    <a href=\"https://example.com\" target=\"_blank\">Besuche Example</a>\n</body>\n</html>",
+    "code": "<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"UTF-8\">\n    <title>Links Beispiel</title>\n</head>\n<body>\n    <a href=\"https:/example.com\" target=\"_blank\">Besuche Example</a>\n</body>\n</html>",
     "category": "HTML",
     "categoryIcon": "chevron.left.forwardslash.chevron.right",
     "categoryIconColor": "#FF6D2D"
@@ -318,7 +318,7 @@
       "backgroundColors": ["#000000", "#7209B7", "#000000"],
       "textColors": ["#FFFFFF"]
     },
-    "code": "<!DOCTYPE html>\n<html>\n<body>\n<a href=\"https://example.com\" target=\"_blank\">\n    <img src=\"bild.png\" width=\"200\">\n</a>\n</body>\n</html>",
+    "code": "<!DOCTYPE html>\n<html>\n<body>\n<a href=\"https:/example.com\" target=\"_blank\">\n    <img src=\"bild.png\" width=\"200\">\n</a>\n</body>\n</html>",
     "category": "HTML",
     "categoryIcon": "chevron.left.forwardslash.chevron.right",
     "categoryIconColor": "#FF6D2D"
@@ -336,7 +336,7 @@
       "backgroundColors": ["#000000", "#7209B7", "#000000"],
       "textColors": ["#FFFFFF"]
     },
-    "code": "<!DOCTYPE html>\n<html>\n<body>\n<iframe src=\"https://example.com\" width=\"300\" height=\"200\"></iframe>\n</body>\n</html>",
+    "code": "<!DOCTYPE html>\n<html>\n<body>\n<iframe src=\"https:/example.com\" width=\"300\" height=\"200\"></iframe>\n</body>\n</html>",
     "category": "HTML",
     "categoryIcon": "chevron.left.forwardslash.chevron.right",
     "categoryIconColor": "#FF6D2D"
@@ -372,7 +372,7 @@
       "backgroundColors": ["#000000", "#7209B7", "#000000"],
       "textColors": ["#FFFFFF"]
     },
-    "code": "<!DOCTYPE html>\n<html>\n<body>\n<a href=\"https://example.com\">\n    <button style=\"padding:10px;\">Go!</button>\n</a>\n</body>\n</html>",
+    "code": "<!DOCTYPE html>\n<html>\n<body>\n<a href=\"https:/example.com\">\n    <button style=\"padding:10px;\">Go!</button>\n</a>\n</body>\n</html>",
     "category": "HTML",
     "categoryIcon": "chevron.left.forwardslash.chevron.right",
     "categoryIconColor": "#FF6D2D"
@@ -391,6 +391,96 @@
       "textColors": ["#FFFFFF"]
     },
     "code": "<!DOCTYPE html>\n<html>\n<head>\n<style>\n.responsive {\n    width: 100%;\n    max-width: 300px;\n    height: auto;\n}\n</style>\n</head>\n<body>\n    <img src=\"bild.png\" class=\"responsive\">\n</body>\n</html>",
+    "category": "HTML",
+    "categoryIcon": "chevron.left.forwardslash.chevron.right",
+    "categoryIconColor": "#FF6D2D"
+  },
+  {
+    "id": "html_023",
+    "title": "Formular-Validierung (Basics)",
+    "description": "Lerne, wie du HTML-Felder direkt mit Validierung versiehst – ohne JavaScript.",
+    "steps": [
+      "Nutze required für Pflichtfelder.",
+      "Nutze minlength und maxlength.",
+      "Nutze pattern für eigene Regeln (z. B. nur Zahlen)."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7209B7", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "<!DOCTYPE html>\n<html>\n<body>\n<form>\n    <input type=\"text\" placeholder=\"Name\" required minlength=\"3\">\n    <input type=\"text\" placeholder=\"Nur Zahlen\" pattern=\"[0-9]+\">\n    <button>Absenden</button>\n</form>\n</body>\n</html>",
+    "category": "HTML",
+    "categoryIcon": "chevron.left.forwardslash.chevron.right",
+    "categoryIconColor": "#FF6D2D"
+  },
+  {
+    "id": "html_024",
+    "title": "Navigation Bar erstellen",
+    "description": "Baue eine einfache Navbar mit Links – perfekt für Webseiten-Menüs.",
+    "steps": [
+      "Erstelle ein <nav>-Element.",
+      "Nutze <a>-Tags als Menüeinträge.",
+      "Stylen mit display: flex."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7209B7", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "<!DOCTYPE html>\n<html>\n<head>\n<style>\nnav {\n    display: flex;\n    gap: 20px;\n    background: #7209B7;\n    padding: 10px;\n}\nnav a {\n    color: white;\n    text-decoration: none;\n}\n</style>\n</head>\n<body>\n<nav>\n    <a href=\"#\">Home</a>\n    <a href=\"#\">About</a>\n    <a href=\"#\">Kontakt</a>\n</nav>\n</body>\n</html>",
+    "category": "HTML",
+    "categoryIcon": "chevron.left.forwardslash.chevron.right",
+    "categoryIconColor": "#FF6D2D"
+  },
+  {
+    "id": "html_025",
+    "title": "CSS Grid Basics",
+    "description": "Erstelle ein modernes Layout mit CSS Grid – ideal für Galerien & Dashboards.",
+    "steps": [
+      "Nutze display: grid.",
+      "Definiere grid-template-columns.",
+      "Lege Abstände mit gap fest."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7209B7", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "<!DOCTYPE html>\n<html>\n<head>\n<style>\n.grid {\n    display: grid;\n    grid-template-columns: repeat(3, 1fr);\n    gap: 10px;\n}\n.item {\n    background: cyan;\n    padding: 20px;\n}\n</style>\n</head>\n<body>\n<div class=\"grid\">\n    <div class=\"item\">1</div>\n    <div class=\"item\">2</div>\n    <div class=\"item\">3</div>\n</div>\n</body>\n</html>",
+    "category": "HTML",
+    "categoryIcon": "chevron.left.forwardslash.chevron.right",
+    "categoryIconColor": "#FF6D2D"
+  },
+  {
+    "id": "html_026",
+    "title": "Responsive Layout (Media Queries)",
+    "description": "Lerne, wie Webseiten automatisch auf mobile Screens reagieren.",
+    "steps": [
+      "Nutze @media screen für Breakpoints.",
+      "Passe Schriftgrößen oder Layout an.",
+      "Simuliere in Browser DevTools."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7209B7", "#000000"],
+        "textColors": ["#FFFFFF"]
+    },
+    "code": "<!DOCTYPE html>\n<html>\n<head>\n<style>\np { font-size: 20px; }\n\n@media screen and (max-width: 600px) {\n    p { font-size: 14px; color: yellow; }\n}\n</style>\n</head>\n<body>\n<p>Ich passe mich der Bildschirmgröße an!</p>\n</body>\n</html>",
+    "category": "HTML",
+    "categoryIcon": "chevron.left.forwardslash.chevron.right",
+    "categoryIconColor": "#FF6D2D"
+  },
+  {
+    "id": "html_027",
+    "title": "Einfache CSS Animation erstellen",
+    "description": "Nutze CSS keyframes, um Elemente zu animieren – ohne JavaScript.",
+    "steps": [
+      "Definiere @keyframes.",
+      "Nutze animation-duration und animation-name.",
+      "Wende Animation auf ein HTML-Element an."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7209B7", "#000000"],
+        "textColors": ["#FFFFFF"]
+    },
+    "code": "<!DOCTYPE html>\n<html>\n<head>\n<style>\n.box {\n    width: 100px;\n    height: 100px;\n    background: cyan;\n    animation: move 2s infinite alternate;\n}\n@keyframes move {\n    from { transform: translateX(0); }\n    to { transform: translateX(200px); }\n}\n</style>\n</head>\n<body>\n<div class=\"box\"></div>\n</body>\n</html>",
     "category": "HTML",
     "categoryIcon": "chevron.left.forwardslash.chevron.right",
     "categoryIconColor": "#FF6D2D"

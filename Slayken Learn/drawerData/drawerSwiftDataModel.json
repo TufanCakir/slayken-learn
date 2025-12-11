@@ -18,7 +18,7 @@
         "#FFFFFF"
       ]
     },
-    "code": "import SwiftUI\nimport SwiftData\n\n// 1️⃣ Datenmodell definieren\n@Model\nclass Note {\n    var title: String\n    var createdAt: Date\n\n    init(title: String, createdAt: Date = .now) {\n        self.title = title\n        self.createdAt = createdAt\n    }\n}\n\n// 2️⃣ Haupt-App mit ModelContainer\n@main\nstruct NotesApp: App {\n    var body: some Scene {\n        WindowGroup {\n            ContentView()\n        }\n        .modelContainer(for: Note.self)\n    }\n}\n\n// 3️⃣ Daten in SwiftUI anzeigen und speichern\nstruct ContentView: View {\n    @Environment(\\.modelContext) private var context\n    @Query private var notes: [Note]\n    @State private var newTitle = \"\"\n\n    var body: some View {\n        NavigationStack {\n            VStack(spacing: 20) {\n                TextField(\"Neue Notiz\", text: $newTitle)\n                    .textFieldStyle(.roundedBorder)\n                    .padding()\n\n                Button(\"Speichern\") {\n                    let note = Note(title: newTitle)\n                    context.insert(note)\n                    try? context.save()\n                    newTitle = \"\"\n                }\n                .buttonStyle(.borderedProminent)\n\n                List(notes) { note in\n                    VStack(alignment: .leading) {\n                        Text(note.title)\n                            .font(.headline)\n                        Text(note.createdAt, style: .date)\n                            .font(.caption)\n                            .foregroundColor(.gray)\n                    }\n                }\n            }\n            .navigationTitle(\"SwiftData Notizen\")\n        }\n    }\n}\n\n#Preview { ContentView() }",
+    "code": "import SwiftUI\nimport SwiftData\n\n/ 1️⃣ Datenmodell definieren\n@Model\nclass Note {\n    var title: String\n    var createdAt: Date\n\n    init(title: String, createdAt: Date = .now) {\n        self.title = title\n        self.createdAt = createdAt\n    }\n}\n\n/ 2️⃣ Haupt-App mit ModelContainer\n@main\nstruct NotesApp: App {\n    var body: some Scene {\n        WindowGroup {\n            ContentView()\n        }\n        .modelContainer(for: Note.self)\n    }\n}\n\n/ 3️⃣ Daten in SwiftUI anzeigen und speichern\nstruct ContentView: View {\n    @Environment(\\.modelContext) private var context\n    @Query private var notes: [Note]\n    @State private var newTitle = \"\"\n\n    var body: some View {\n        NavigationStack {\n            VStack(spacing: 20) {\n                TextField(\"Neue Notiz\", text: $newTitle)\n                    .textFieldStyle(.roundedBorder)\n                    .padding()\n\n                Button(\"Speichern\") {\n                    let note = Note(title: newTitle)\n                    context.insert(note)\n                    try? context.save()\n                    newTitle = \"\"\n                }\n                .buttonStyle(.borderedProminent)\n\n                List(notes) { note in\n                    VStack(alignment: .leading) {\n                        Text(note.title)\n                            .font(.headline)\n                        Text(note.createdAt, style: .date)\n                            .font(.caption)\n                            .foregroundColor(.gray)\n                    }\n                }\n            }\n            .navigationTitle(\"SwiftData Notizen\")\n        }\n    }\n}\n\n#Preview { ContentView() }",
     "category": "SwiftData",
     "categoryIcon": "swiftdata",
     "categoryIconColor": "#0000FF"
@@ -72,7 +72,7 @@
       "backgroundColors": ["#000000", "#3A0CA3", "#000000"],
       "textColors": ["#FFFFFF"]
     },
-    "code": "import SwiftData\n\n@Model\nclass Player {\n    var name: String\n    var level: Int // 🆕 neues Feld\n    var xp: Int = 0 // 🆕 Default -> automatische Migration\n\n    init(name: String, level: Int = 1) {\n        self.name = name\n        self.level = level\n    }\n}\n\n// Keine zusätzliche Konfiguration nötig – SwiftData migriert automatisch.",
+    "code": "import SwiftData\n\n@Model\nclass Player {\n    var name: String\n    var level: Int / 🆕 neues Feld\n    var xp: Int = 0 / 🆕 Default -> automatische Migration\n\n    init(name: String, level: Int = 1) {\n        self.name = name\n        self.level = level\n    }\n}\n\n/ Keine zusätzliche Konfiguration nötig – SwiftData migriert automatisch.",
     "category": "SwiftData",
     "categoryIcon": "swiftdata",
     "categoryIconColor": "#3A0CA3"
@@ -112,5 +112,95 @@
     "category": "SwiftData",
     "categoryIcon": "swiftdata",
     "categoryIconColor": "#7209B7"
+  },
+  {
+    "id": "swiftdata_007",
+    "title": "Sortierung & Pagination",
+    "description": "Sortiere SwiftData-Einträge und lade nur eine begrenzte Anzahl – ideal für Chats, Leaderboards oder große Listen.",
+    "steps": [
+      "Nutze Query(sort: ...) für Sortierung.",
+      "Begrenze die Anzahl mit fetchLimit.",
+      "Für Pagination mehrere Queries verwenden."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4895EF", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass Message {\n    var text: String\n    var createdAt: Date = .now\n    init(_ text: String) { self.text = text }\n}\n\nstruct MessageListView: View {\n    @Query(sort: \\Message.createdAt, order: .reverse, fetchLimit: 20)\n    private var recentMessages: [Message]\n\n    var body: some View {\n        List(recentMessages) { msg in\n            Text(msg.text)\n        }\n    }\n}",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#4895EF"
+  },
+  {
+    "id": "swiftdata_008",
+    "title": "Async/Await mit SwiftData",
+    "description": "Verarbeite große Datensätze im Hintergrund – vermeide UI-Lags und steigere Performance.",
+    "steps": [
+      "Nutze Task { ... } für Hintergrundarbeit.",
+      "insert() oder delete() in Tasks aufrufen.",
+      "Danach context.save() ausführen."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#30D158", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass LogEntry {\n    var text: String\n    init(_ text: String) { self.text = text }\n}\n\nstruct AsyncInsertView: View {\n    @Environment(\\.modelContext) private var context\n\n    var body: some View {\n        Button(\"1000 Einträge async speichern\") {\n            Task {\n                for i in 0..<1000 {\n                    context.insert(LogEntry(\"Entry #\\(i)\"))\n                }\n                try? context.save()\n            }\n        }\n        .buttonStyle(.borderedProminent)\n    }\n}",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#30D158"
+  },
+  {
+    "id": "swiftdata_009",
+    "title": "Many-to-Many Beziehungen",
+    "description": "Erstelle zwei Modelle, die sich gegenseitig referenzieren – z. B. Spieler, die an mehreren Events teilnehmen.",
+    "steps": [
+      "Verwende @Relationship(inverse:) für bidirektionale Beziehungen.",
+      "Both-Side Arrays für Many-to-Many definieren.",
+      "Daten automatisch über SwiftData synchronisieren lassen."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#F72585", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftData\n\n@Model\nclass Player {\n    var name: String\n    @Relationship(inverse: \\Event.players) var events: [Event] = []\n    init(_ name: String) { self.name = name }\n}\n\n@Model\nclass Event {\n    var title: String\n    @Relationship var players: [Player] = []\n    init(_ title: String) { self.title = title }\n}\n\n/ Eintragen\nevent.players.append(player)\nplayer.events.append(event)",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#F72585"
+  },
+  {
+    "id": "swiftdata_010",
+    "title": "SwiftData + @Bindable",
+    "description": "Bearbeite SwiftData-Modelle direkt in der UI – ohne extra ViewModels.",
+    "steps": [
+      "@Bindable in der View verwenden.",
+      "Änderungen werden automatisch persistiert.",
+      "Ideal für Edit-Formulare und Settings."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#3A0CA3", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass UserProfile {\n    var username: String = \"\"\n    var bio: String = \"\"\n}\n\nstruct EditProfileView: View {\n    @Bindable var user: UserProfile\n\n    var body: some View {\n        Form {\n            TextField(\"Benutzername\", text: $user.username)\n            TextField(\"Bio\", text: $user.bio)\n        }\n    }\n}",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#3A0CA3"
+  },
+  {
+    "id": "swiftdata_011",
+    "title": "SwiftData Export & JSON Backup",
+    "description": "Exportiere Daten als JSON – ideal für Backups, Debugging oder Cloud-Sync.",
+    "steps": [
+      "Model-Daten abrufen.",
+      "Codierbares Mirror-Struct erstellen.",
+      "Daten als JSON speichern oder teilen."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#B5179E", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "import SwiftUI\nimport SwiftData\n\n@Model\nclass Savegame {\n    var stage: Int\n    var level: Int\n    var xp: Int\n    init(stage: Int, level: Int, xp: Int) {\n        self.stage = stage\n        this.level = level\n        this.xp = xp\n    }\n}\n\nstruct ExportView: View {\n    @Query private var saves: [Savegame]\n\n    var body: some View {\n        Button(\"JSON Exportieren\") {\n            if let first = saves.first {\n                let dict: [String: Any] = [\n                    \"stage\": first.stage,\n                    \"level\": first.level,\n                    \"xp\": first.xp\n                ]\n                if let json = try? JSONSerialization.data(withJSONObject: dict, options: .prettyPrinted) {\n                    print(String(decoding: json, as: UTF8.self))\n                }\n            }\n        }\n        .buttonStyle(.borderedProminent)\n    }\n}",
+    "category": "SwiftData",
+    "categoryIcon": "swiftdata",
+    "categoryIconColor": "#B5179E"
   }
 ]

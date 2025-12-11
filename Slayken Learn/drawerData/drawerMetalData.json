@@ -184,5 +184,95 @@
     "category": "Metal",
     "categoryIcon": "cpu",
     "categoryIconColor": "#3A0CA3"
+  },
+  {
+    "id": "metal_011",
+    "title": "Depth Buffer Rendering",
+    "description": "Nutze einen Z-Buffer, damit Objekte sich korrekt gegenseitig überdecken – essentiell für 3D-Rendering.",
+    "steps": [
+      "Aktiviere depthStencilPixelFormat im MTKView.",
+      "Erstelle eine DepthStencilState.",
+      "Übergebe Depth Buffer in den Render Pass."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4361EE", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "view.depthStencilPixelFormat = .depth32Float\n\nlet depthDesc = MTLDepthStencilDescriptor()\ndepthDesc.isDepthWriteEnabled = true\ndepthDesc.depthCompareFunction = .less\ndepthState = device.makeDepthStencilState(descriptor: depthDesc)",
+    "category": "Metal",
+    "categoryIcon": "cpu",
+    "categoryIconColor": "#4361EE"
+  },
+  {
+    "id": "metal_012",
+    "title": "Instancing (Viele Objekte effizient rendern)",
+    "description": "Zeichne hunderte oder tausende Meshes mit einem einzigen drawCall – extrem performant.",
+    "steps": [
+      "Erstelle einen Instance Buffer.",
+      "Übergebe Transform-Daten an Vertex Shader.",
+      "Nutze drawPrimitives(instanceCount:)."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#7209B7", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "encoder.setVertexBuffer(instanceBuffer, offset: 0, index: 1)\nencoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3, instanceCount: 200)",
+    "category": "Metal",
+    "categoryIcon": "cpu",
+    "categoryIconColor": "#7209B7"
+  },
+  {
+    "id": "metal_013",
+    "title": "GPU Particle System",
+    "description": "Erstelle ein performantes Partikelsystem auf der GPU – ideal für Feuer, Rauch oder magische Effekte.",
+    "steps": [
+      "Compute Shader berechnet neue Partikelpositionen.",
+      "Vertex Shader rendert die Partikel als Punkte.",
+      "Nutze Randomness und Gravity Uniforms."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#B5179E", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "/ compute shader (update)\nkernel void updateParticles(device Particle *particles [[buffer(0)]], uint id [[thread_position_in_grid]]) {\n    particles[id].position += particles[id].velocity * 0.016;\n    particles[id].velocity.y -= 0.01; / gravity\n}",
+    "category": "Metal",
+    "categoryIcon": "cpu",
+    "categoryIconColor": "#B5179E"
+  },
+  {
+    "id": "metal_014",
+    "title": "Post-Processing Fullscreen Shader",
+    "description": "Erstelle einen separaten Render-Pass, um Effekte wie Bloom, Vignette oder Film Grain zu erzeugen.",
+    "steps": [
+      "Render Szene in eine Texture.",
+      "Erzeuge ein Fullscreen Quad.",
+      "Wende Fragment Shader auf jeden Pixel an."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#F72585", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "/ fullscreen quad\ndrawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)\n\n/ fragment shader\nreturn float4(tex.sample(sampler, in.uv).rgb * 1.2, 1); / simple brightening",
+    "category": "Metal",
+    "categoryIcon": "cpu",
+    "categoryIconColor": "#F72585"
+  },
+  {
+    "id": "metal_015",
+    "title": "Custom Material Shader für RealityKit",
+    "description": "Nutze einen Metal Shader als benutzerdefiniertes Material in RealityKit – perfekt für Glow, Hologramme oder Fire Shader.",
+    "steps": [
+      "Erstelle ein CustomMaterial in RealityKit.",
+      "Binde deinen eigenen .metal Fragment Shader ein.",
+      "Wende das Material auf ein ModelEntity an."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4895EF", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "let shader = CustomMaterial.SurfaceShader(named: \"custom_hologram\", in: .main)\nlet material = try! CustomMaterial(surfaceShader: shader)\nentity.model?.materials = [material]",
+    "category": "Metal",
+    "categoryIcon": "cpu",
+    "categoryIconColor": "#4895EF"
   }
 ]

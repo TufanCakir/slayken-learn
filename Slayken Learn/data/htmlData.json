@@ -103,7 +103,7 @@
       "backgroundColors": ["#000000", "#FF6D2D", "#000000"],
       "textColors": ["#FFFFFF"]
     },
-    "code": "<!DOCTYPE html>\n<html>\n<body>\n  <a href=\\\"https://example.com\\\" target=\\\"_blank\\\">Öffne Example</a>\n</body>\n</html>",
+    "code": "<!DOCTYPE html>\n<html>\n<body>\n  <a href=\\\"https:/example.com\\\" target=\\\"_blank\\\">Öffne Example</a>\n</body>\n</html>",
     "category": "HTML",
     "categoryIcon": "chevron.left.forwardslash.chevron.right",
     "categoryIconColor": "#FF6D2D"
@@ -319,7 +319,7 @@
       "backgroundColors": ["#000000", "#FF6D2D", "#000000"],
       "textColors": ["#FFFFFF"]
     },
-    "code": "<!DOCTYPE html>\n<html>\n<body>\n<a href=\\\"https://example.com\\\" target=\\\"_blank\\\">\n  <img src=\\\"bild.png\\\" width=\\\"200\\\">\n</a>\n</body>\n</html>",
+    "code": "<!DOCTYPE html>\n<html>\n<body>\n<a href=\\\"https:/example.com\\\" target=\\\"_blank\\\">\n  <img src=\\\"bild.png\\\" width=\\\"200\\\">\n</a>\n</body>\n</html>",
     "category": "HTML",
     "categoryIcon": "chevron.left.forwardslash.chevron.right",
     "categoryIconColor": "#FF6D2D"
@@ -337,7 +337,7 @@
       "backgroundColors": ["#000000", "#FF6D2D", "#000000"],
       "textColors": ["#FFFFFF"]
     },
-    "code": "<!DOCTYPE html>\n<html>\n<body>\n<iframe src=\\\"https://example.com\\\" width=\\\"300\\\" height=\\\"200\\\"></iframe>\n</body>\n</html>",
+    "code": "<!DOCTYPE html>\n<html>\n<body>\n<iframe src=\\\"https:/example.com\\\" width=\\\"300\\\" height=\\\"200\\\"></iframe>\n</body>\n</html>",
     "category": "HTML",
     "categoryIcon": "chevron.left.forwardslash.chevron.right",
     "categoryIconColor": "#FF6D2D"
@@ -373,7 +373,7 @@
       "backgroundColors": ["#000000", "#FF6D2D", "#000000"],
       "textColors": ["#FFFFFF"]
     },
-    "code": "<!DOCTYPE html>\n<html>\n<body>\n<a href=\\\"https://google.com\\\">\n  <button style=\\\"padding:10px;\\\">Go</button>\n</a>\n</body>\n</html>",
+    "code": "<!DOCTYPE html>\n<html>\n<body>\n<a href=\\\"https:/google.com\\\">\n  <button style=\\\"padding:10px;\\\">Go</button>\n</a>\n</body>\n</html>",
     "category": "HTML",
     "categoryIcon": "chevron.left.forwardslash.chevron.right",
     "categoryIconColor": "#FF6D2D"
@@ -445,7 +445,7 @@
       "backgroundColors": ["#000000", "#FF6D2D", "#000000"],
       "textColors": ["#FFFFFF"]
     },
-    "code": "<!DOCTYPE html>\\n<html>\\n<head>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Roboto&display=swap\\\" rel=\\\"stylesheet\\\">\\n<style>\\nbody { font-family: 'Roboto', sans-serif; }\\n</style>\\n</head>\\n<body>Text</body>\\n</html>",
+    "code": "<!DOCTYPE html>\\n<html>\\n<head>\\n<link href=\\\"https:/fonts.googleapis.com/css2?family=Roboto&display=swap\\\" rel=\\\"stylesheet\\\">\\n<style>\\nbody { font-family: 'Roboto', sans-serif; }\\n</style>\\n</head>\\n<body>Text</body>\\n</html>",
     "category": "HTML",
     "categoryIcon": "chevron.left.forwardslash.chevron.right",
     "categoryIconColor": "#FF6D2D"
@@ -1076,6 +1076,96 @@
       "textColors": ["#FFFFFF"]
     },
     "code": "<!DOCTYPE html>\\n<html>\\n<head>\\n<style>\\n.box { width: 100vw; height: 50vh; background: orange; }\\n</style>\\n</head>\\n<body>\\n<div class=\\\"box\\\"></div>\\n</body>\\n</html>",
+    "category": "HTML",
+    "categoryIcon": "chevron.left.forwardslash.chevron.right",
+    "categoryIconColor": "#FF6D2D"
+  },
+  {
+    "id": "html_061",
+    "title": "Sticky Header erstellen",
+    "description": "Lerne, wie ein Header beim Scrollen immer oben bleibt.",
+    "steps": [
+      "Erstelle einen Header im HTML.",
+      "Nutze CSS position: sticky.",
+      "Setze top: 0 für die Position."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#FF6D2D", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "<!DOCTYPE html>\n<html>\n<head>\n<style>\nheader {\n  position: sticky;\n  top: 0;\n  background: orange;\n  padding: 10px;\n  color: white;\n}\n</style>\n</head>\n<body>\n<header>Sticky Header</header>\n<p>Scroll runter...</p>\n<p style=\"height: 1500px;\"></p>\n</body>\n</html>",
+    "category": "HTML",
+    "categoryIcon": "chevron.left.forwardslash.chevron.right",
+    "categoryIconColor": "#FF6D2D"
+  },
+  {
+    "id": "html_062",
+    "title": "Flexbox Grundlagen",
+    "description": "Lerne die wichtigsten Flexbox-Regeln für moderne Layouts.",
+    "steps": [
+      "Nutze display: flex.",
+      "Setze justify-content und align-items.",
+      "Ordne Elemente flexibel an."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#FF6D2D", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "<!DOCTYPE html>\n<html>\n<head>\n<style>\n.container {\n  display: flex;\n  gap: 10px;\n  justify-content: center;\n  align-items: center;\n}\n.box {\n  background: #ff6d2d;\n  padding: 20px;\n  color: white;\n}\n</style>\n</head>\n<body>\n<div class=\"container\">\n  <div class=\"box\">1</div>\n  <div class=\"box\">2</div>\n  <div class=\"box\">3</div>\n</div>\n</body>\n</html>",
+    "category": "HTML",
+    "categoryIcon": "chevron.left.forwardslash.chevron.right",
+    "categoryIconColor": "#FF6D2D"
+  },
+  {
+    "id": "html_063",
+    "title": "Grid Layout erstellen",
+    "description": "Lerne, wie CSS Grid funktioniert – das mächtigste Layoutsystem.",
+    "steps": [
+      "Nutze display: grid.",
+      "Definiere Spalten mit grid-template-columns.",
+      "Füge Grid-Abstände mit gap hinzu."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#FF6D2D", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "<!DOCTYPE html>\n<html>\n<head>\n<style>\n.grid {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 10px;\n}\n.item {\n  background: #ff6d2d;\n  padding: 20px;\n  color: white;\n  text-align: center;\n}\n</style>\n</head>\n<body>\n<div class=\"grid\">\n  <div class=\"item\">1</div>\n  <div class=\"item\">2</div>\n  <div class=\"item\">3</div>\n</div>\n</body>\n</html>",
+    "category": "HTML",
+    "categoryIcon": "chevron.left.forwardslash.chevron.right",
+    "categoryIconColor": "#FF6D2D"
+  },
+  {
+    "id": "html_064",
+    "title": "Modal Fenster mit HTML & CSS",
+    "description": "Baue ein einfaches Popup ohne JavaScript.",
+    "steps": [
+      "Nutze das details-Tag als Popup-Container.",
+      "Style den summary-Button.",
+      "Nutze absolute Positionierung für das Fenster."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#FF6D2D", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "<!DOCTYPE html>\n<html>\n<head>\n<style>\ndetails[open] .modal {\n  display: block;\n}\n.modal {\n  display: none;\n  position: fixed;\n  top: 50%; left: 50%;\n  transform: translate(-50%, -50%);\n  background: #222;\n  padding: 20px;\n  color: white;\n  border: 2px solid #ff6d2d;\n}\n</style>\n</head>\n<body>\n<details>\n  <summary>Öffne Modal</summary>\n  <div class=\"modal\">Ich bin ein Modal!</div>\n</details>\n</body>\n</html>",
+    "category": "HTML",
+    "categoryIcon": "chevron.left.forwardslash.chevron.right",
+    "categoryIconColor": "#FF6D2D"
+  },
+  {
+    "id": "html_065",
+    "title": "Sticky Footer erstellen",
+    "description": "Platziere einen Footer immer unten am Bildschirm.",
+    "steps": [
+      "Nutze position: fixed.",
+      "Setze bottom: 0.",
+      "Verwende 100% Breite."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#FF6D2D", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "<!DOCTYPE html>\n<html>\n<head>\n<style>\nfooter {\n  position: fixed;\n  bottom: 0;\n  width: 100%;\n  background: #ff6d2d;\n  color: white;\n  text-align: center;\n  padding: 10px;\n}\n</style>\n</head>\n<body>\n<p>Content...</p>\n<footer>Footer unten</footer>\n</body>\n</html>",
     "category": "HTML",
     "categoryIcon": "chevron.left.forwardslash.chevron.right",
     "categoryIconColor": "#FF6D2D"

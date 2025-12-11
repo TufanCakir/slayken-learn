@@ -18,7 +18,7 @@
         "#FFFFFF"
       ]
     },
-    "code": "import Foundation\n\n// ✅ Konstanten mit let\nlet maxSpeed = 120\n\n// ✅ Variablen mit var\nvar currentSpeed = 80\n\n// Werte ändern\ncurrentSpeed = 100\n\n// Ausgabe\nprint(\"Aktuelle Geschwindigkeit: \\(currentSpeed) km/h\")",
+    "code": "import Foundation\n\n/ ✅ Konstanten mit let\nlet maxSpeed = 120\n\n/ ✅ Variablen mit var\nvar currentSpeed = 80\n\n/ Werte ändern\ncurrentSpeed = 100\n\n/ Ausgabe\nprint(\"Aktuelle Geschwindigkeit: \\(currentSpeed) km/h\")",
     "category": "Swift",
     "categoryIcon": "swift",
     "categoryIconColor": "#F72585"
@@ -55,7 +55,7 @@
       "backgroundColors": ["#000000", "#7209B7", "#000000"],
       "textColors": ["#FFFFFF"]
     },
-    "code": "var username: String? = \"Tufan\"\n\nif let name = username {\n    print(\"Hallo, \\(name)\")\n} else {\n    print(\"Kein Name vorhanden\")\n}\n\n// Default-Wert\nprint(username ?? \"Unbekannt\")",
+    "code": "var username: String? = \"Tufan\"\n\nif let name = username {\n    print(\"Hallo, \\(name)\")\n} else {\n    print(\"Kein Name vorhanden\")\n}\n\n/ Default-Wert\nprint(username ?? \"Unbekannt\")",
     "category": "Swift",
     "categoryIcon": "swift",
     "categoryIconColor": "#7209B7"
@@ -110,6 +110,96 @@
       "textColors": ["#FFFFFF"]
     },
     "code": "let namen = [\"Anna\", \"Markus\", \"Tufan\"]\n\nfor name in namen {\n    print(\"Hallo \\(name)\")\n}\n\nprint(namen[0])",
+    "category": "Swift",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#4CC9F0"
+  },
+  {
+    "id": "swift_007",
+    "title": "Dictionaries (Key-Value Speicher)",
+    "description": "Speichere Werte anhand von eindeutigen Schlüsseln – ideal für Zuordnungen wie Einstellungen oder Profile.",
+    "steps": [
+      "Nutze [Key: Value] für ein Dictionary.",
+      "Greife per Schlüssel auf Werte zu.",
+      "Füge neue Einträge per dictionary[key] = value hinzu."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#30D158", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "var spieler: [String : Int] = [\n    \"Leben\": 100,\n    \"Mana\": 50\n]\n\nprint(spieler[\"Leben\"] ?? 0)\n\nspieler[\"Gold\"] = 200\nprint(spieler)",
+    "category": "Swift",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#30D158"
+  },
+  {
+    "id": "swift_008",
+    "title": "Enums (Aufzählungstypen)",
+    "description": "Mit Enums definierst du feste Kategorien – ideal für Spielzustände, Charaktertypen oder Netzwerkstatus.",
+    "steps": [
+      "Erstelle ein enum mit festen Fällen.",
+      "Nutze switch für unterschiedliche Aktionen.",
+      "Enums können auch Werte speichern (Associated Values)."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#FF6D2D", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "enum Element {\n    case feuer\n    case wasser\n    case blitz\n}\n\nlet typ = Element.feuer\n\nswitch typ {\ncase .feuer:  print(\"🔥 Feuer!\")\ncase .wasser: print(\"💧 Wasser!\")\ncase .blitz:  print(\"⚡️ Blitz!\")\n}",
+    "category": "Swift",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#FF6D2D"
+  },
+  {
+    "id": "swift_009",
+    "title": "Structs erstellen",
+    "description": "Structs sind perfekte Bausteine für Datenmodelle – wie Spieler, Items oder Bosse.",
+    "steps": [
+      "Struct mit Properties erstellen.",
+      "Initialisieren über Struct(...).",
+      "Instanz verwenden und Werte ändern."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#3F37C9", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "struct Spieler {\n    var name: String\n    var leben: Int\n}\n\nvar hero = Spieler(name: \"Tufan\", leben: 120)\nprint(hero)\n\nhero.leben = 150\nprint(hero)",
+    "category": "Swift",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#3F37C9"
+  },
+  {
+    "id": "swift_010",
+    "title": "Klassen & Initializer",
+    "description": "Klassen sind wie Structs – aber referenzbasiert und ideal für komplexe Logik und Game-Controller.",
+    "steps": [
+      "Klasse mit class definieren.",
+      "Eigener init-Initializer.",
+      "Instanz erstellen und verwenden."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#560BAD", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "class Enemy {\n    var hp: Int\n\n    init(hp: Int) {\n        self.hp = hp\n    }\n\n    func attack() {\n        print(\"Der Gegner greift an!\")\n    }\n}\n\nlet boss = Enemy(hp: 300)\nboss.attack()",
+    "category": "Swift",
+    "categoryIcon": "swift",
+    "categoryIconColor": "#560BAD"
+  },
+  {
+    "id": "swift_011",
+    "title": "Closures (anonyme Funktionen)",
+    "description": "Closures sind kleine, funktionale Code-Blöcke – ideal für Callbacks, Timer, Animationen oder SwiftUI-Aktionen.",
+    "steps": [
+      "Erstelle ein Closure direkt als Variable.",
+      "Gib Parameter & Rückgabewerte optional an.",
+      "Nutze Closures als Argumente für Funktionen."
+    ],
+    "colors": {
+      "backgroundColors": ["#000000", "#4CC9F0", "#000000"],
+      "textColors": ["#FFFFFF"]
+    },
+    "code": "let begruessung = { (name: String) -> String in\n    return \"Hallo, \\(name)\"\n}\n\nprint(begruessung(\"Tufan\"))\n\nfunc ausführen(_ block: () -> Void) {\n    block()\n}\n\nausführen { print(\"Closure ausgeführt!\") }",
     "category": "Swift",
     "categoryIcon": "swift",
     "categoryIconColor": "#4CC9F0"

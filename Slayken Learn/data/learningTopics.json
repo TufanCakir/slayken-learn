@@ -490,7 +490,7 @@
             ]
         },
         "code":
-            "import SwiftUI\n\nstruct AsyncImageExampleView: View {\n    var body: some View {\n        AsyncImage(url: URL(string: \"https://picsum.photos/300\")) { image in\n            image.resizable().scaledToFit().cornerRadius(12)\n        } placeholder: {\n            ProgressView()\n        }\n        .frame(width: 200, height: 200)\n        .padding()\n    }\n}\n\n#Preview {\n    AsyncImageExampleView()\n}",
+            "import SwiftUI\n\nstruct AsyncImageExampleView: View {\n    var body: some View {\n        AsyncImage(url: URL(string: \"https:/picsum.photos/300\")) { image in\n            image.resizable().scaledToFit().cornerRadius(12)\n        } placeholder: {\n            ProgressView()\n        }\n        .frame(width: 200, height: 200)\n        .padding()\n    }\n}\n\n#Preview {\n    AsyncImageExampleView()\n}",
         "category": "SwiftUI",
         "categoryIcon": "swift",
     },
@@ -822,7 +822,7 @@
             ]
         },
         "code":
-            "import SwiftUI\n\nstruct AsyncImageAdvancedView: View {\n    let imageURL = URL(string: \"https://picsum.photos/400\")!\n    @State private var loaded = false\n\n    var body: some View {\n        VStack(spacing: 20) {\n            AsyncImage(url: imageURL) { phase in\n                switch phase {\n                case .empty:\n                    ProgressView()\n                case .success(let image):\n                    image.resizable()\n                        .scaledToFit()\n                        .cornerRadius(12)\n                        .opacity(loaded ? 1 : 0)\n                        .onAppear { withAnimation(.easeIn(duration: 0.5)) { loaded = true } }\n                case .failure:\n                    Image(systemName: \"xmark.octagon.fill\")\n                        .font(.largeTitle)\n                        .foregroundColor(.red)\n                @unknown default:\n                    EmptyView()\n                }\n            }\n            .frame(width: 250, height: 250)\n        }\n        .padding()\n    }\n}\n\n#Preview { AsyncImageAdvancedView() }",
+            "import SwiftUI\n\nstruct AsyncImageAdvancedView: View {\n    let imageURL = URL(string: \"https:/picsum.photos/400\")!\n    @State private var loaded = false\n\n    var body: some View {\n        VStack(spacing: 20) {\n            AsyncImage(url: imageURL) { phase in\n                switch phase {\n                case .empty:\n                    ProgressView()\n                case .success(let image):\n                    image.resizable()\n                        .scaledToFit()\n                        .cornerRadius(12)\n                        .opacity(loaded ? 1 : 0)\n                        .onAppear { withAnimation(.easeIn(duration: 0.5)) { loaded = true } }\n                case .failure:\n                    Image(systemName: \"xmark.octagon.fill\")\n                        .font(.largeTitle)\n                        .foregroundColor(.red)\n                @unknown default:\n                    EmptyView()\n                }\n            }\n            .frame(width: 250, height: 250)\n        }\n        .padding()\n    }\n}\n\n#Preview { AsyncImageAdvancedView() }",
         "category": "SwiftUI",
         "categoryIcon": "swift",
         "categoryIconColor": "#FF9F1C"
@@ -1212,5 +1212,95 @@
       "category": "SwiftUI",
       "categoryIcon": "swift",
       "categoryIconColor": "#E5383B"
+    },
+    {
+      "id": "swiftui_069",
+      "title": "Canvas – 2D Rendering",
+      "description": "Nutze Canvas, um eigene 2D-Grafiken, Effekte und Animationen zu zeichnen.",
+      "steps": [
+        "Canvas View erstellen.",
+        "Path, Shapes oder Text zeichnen.",
+        "Animationen mit TimelineView verbinden."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#4CC9F0", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct CanvasExampleView: View {\n    var body: some View {\n        Canvas { context, size in\n            let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)\n            let gradient = Gradient(colors: [.blue, .purple])\n            context.fill(Path(rect), with: .linearGradient(gradient, startPoint: .top, endPoint: .bottom))\n\n            var circle = Path()\n            circle.addEllipse(in: CGRect(x: size.width/2 - 50, y: size.height/2 - 50, width: 100, height: 100))\n            context.stroke(circle, with: .color(.white), lineWidth: 4)\n        }\n        .frame(height: 250)\n        .cornerRadius(12)\n        .padding()\n    }\n}\n\n#Preview { CanvasExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#4CC9F0"
+    },
+    {
+      "id": "swiftui_070",
+      "title": "Background Blur (Material)",
+      "description": "Erstelle moderne iOS-Blur-Effekte mit .ultraThinMaterial – perfekt für Panels & HUDs.",
+      "steps": [
+        "Material als Hintergrund verwenden.",
+        "Rundungen & Schatten hinzufügen.",
+        "Optional Glas-Effekt animieren."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#5E60CE", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct BlurBackgroundExampleView: View {\n    var body: some View {\n        ZStack {\n            Image(\"example\")\n                .resizable()\n                .scaledToFill()\n                .ignoresSafeArea()\n\n            VStack(spacing: 20) {\n                Text(\"Glassmorphism Panel\")\n                    .font(.title2)\n                    .bold()\n                Text(\"Modern iOS Style\")\n                    .foregroundColor(.white.opacity(0.8))\n            }\n            .padding(30)\n            .background(.ultraThinMaterial)\n            .cornerRadius(20)\n            .shadow(radius: 20)\n            .padding()\n        }\n    }\n}\n\n#Preview { BlurBackgroundExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#5E60CE"
+    },
+    {
+      "id": "swiftui_071",
+      "title": "VideoPlayer integrieren",
+      "description": "Spiele lokale oder entfernte Videos in deiner SwiftUI App ab.",
+      "steps": [
+        "AVKit importieren.",
+        "VideoPlayer mit URL oder Bundle Video verbinden.",
+        "Steuerelemente optional ein-/ausblenden."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#E63946", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\nimport AVKit\n\nstruct VideoPlayerExampleView: View {\n    private let url = URL(string: \"https:/www.apple.com/105/media/us/iphone-15-pro/2023/29bb7999-545b-44d4-a2e5-743ffb391d4b/films/product/iphone-15-pro-product-tpl-cc-us-2023_1280x720h.mp4\")!\n\n    var body: some View {\n        VideoPlayer(player: AVPlayer(url: url))\n            .frame(height: 260)\n            .cornerRadius(16)\n            .padding()\n    }\n}\n\n#Preview { VideoPlayerExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#E63946"
+    },
+    {
+      "id": "swiftui_072",
+      "title": "GeometryReader – dynamische Layouts",
+      "description": "Reagiere auf Bildschirmgrößen, Scrollpositionen oder Layout-Änderungen.",
+      "steps": [
+        "GeometryProxy verwenden.",
+        "Position & Größe dynamisch berechnen.",
+        "Adaptive UI erstellen."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#FF9F1C", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct GeometryReaderExampleView: View {\n    var body: some View {\n        GeometryReader { geo in\n            VStack(spacing: 20) {\n                Text(\"Breite: \\(Int(geo.size.width))\")\n                Text(\"Höhe: \\(Int(geo.size.height))\")\n                RoundedRectangle(cornerRadius: 12)\n                    .fill(.orange)\n                    .frame(width: geo.size.width * 0.6, height: 80)\n            }\n            .frame(maxWidth: .infinity, maxHeight: .infinity)\n        }\n    }\n}\n\n#Preview { GeometryReaderExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#FF9F1C"
+    },
+    {
+      "id": "swiftui_073",
+      "title": "ScrollView + LazyHStack (horizontales Scrolling)",
+      "description": "Baue einen horizontalen Slider für Karten, Bilder oder Menüs.",
+      "steps": [
+        "ScrollView(.horizontal) verwenden.",
+        "LazyHStack für Performance.",
+        "Karten mit Shadow & CornerRadius gestalten."
+      ],
+      "colors": {
+        "backgroundColors": ["#000000", "#4361EE", "#000000"],
+        "textColors": ["#FFFFFF"]
+      },
+      "code": "import SwiftUI\n\nstruct HorizontalScrollExampleView: View {\n    var body: some View {\n        ScrollView(.horizontal, showsIndicators: false) {\n            LazyHStack(spacing: 20) {\n                ForEach(1..<10) { i in\n                    RoundedRectangle(cornerRadius: 16)\n                        .fill(.blue.opacity(0.7))\n                        .frame(width: 180, height: 120)\n                        .overlay(Text(\"Card \\(i)\").foregroundColor(.white).bold())\n                        .shadow(radius: 10)\n                }\n            }\n            .padding()\n        }\n    }\n}\n\n#Preview { HorizontalScrollExampleView() }",
+      "category": "SwiftUI",
+      "categoryIcon": "swift",
+      "categoryIconColor": "#4361EE"
     }
 ]

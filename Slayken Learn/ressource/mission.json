@@ -30,5 +30,77 @@
         "xpReward": 100,
         "target": 5,
         "category": "progression"
-    }
-]
+    },
+        {
+            "id": "mission_daily_3",
+            "title": "Teile eine Lektion",
+            "description": "Teile eine Lektion oder deinen Fortschritt mit einem Freund.",
+            "xpReward": 40,
+            "target": 1,
+            "category": "daily"
+        },
+        {
+            "id": "mission_daily_4",
+            "title": "Lerne 10 Minuten",
+            "description": "Verbringe mindestens 10 Minuten aktiv in einer Lektion.",
+            "xpReward": 60,
+            "target": 10,
+            "category": "daily"
+        },
+        {
+            "id": "mission_daily_5",
+            "title": "Öffne eine Kategorie",
+            "description": "Rufe eine beliebige Wissenskategorie auf.",
+            "xpReward": 25,
+            "target": 1,
+            "category": "daily"
+        },
+        {
+            "id": "mission_weekly_2",
+            "title": "Lerne an 3 Tagen",
+            "description": "Öffne die App und lerne an mindestens drei unterschiedlichen Tagen.",
+            "xpReward": 200,
+            "target": 3,
+            "category": "weekly"
+        },
+        {
+            "id": "mission_weekly_3",
+            "title": "Erziele 300 XP",
+            "description": "Sammle mindestens 300 Erfahrungspunkte innerhalb einer Woche.",
+            "xpReward": 250,
+            "target": 300,
+            "category": "weekly"
+        },
+        {
+            "id": "mission_weekly_4",
+            "title": "Wiederhole Lektionen",
+            "description": "Schließe zwei Lektionen erneut ab, um dein Wissen zu festigen.",
+            "xpReward": 120,
+            "target": 2,
+            "category": "weekly"
+        },
+        {
+            "id": "mission_progression_2",
+            "title": "Erreiche Level 10",
+            "description": "Steige im Lernsystem bis Level 10 auf.",
+            "xpReward": 200,
+            "target": 10,
+            "category": "progression"
+        },
+        {
+            "id": "mission_progression_3",
+            "title": "Verdiene 1000 XP insgesamt",
+            "description": "Fülle deine Erfahrungspunkte-Summe auf mindestens 1000.",
+            "xpReward": 150,
+            "target": 1000,
+            "category": "progression"
+        },
+        {
+            "id": "mission_progression_4",
+            "title": "Beende 20 Lektionen",
+            "description": "Schließe insgesamt 20 Lektionen im gesamten Lernsystem ab.",
+            "xpReward": 300,
+            "target": 20,
+            "category": "progression"
+        }
+    ]

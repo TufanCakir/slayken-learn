@@ -3,5 +3,10 @@ import Foundation
 enum MissionEventType {
     case appOpened
     case lessonCompleted
-    case levelChanged(newLevel: Int)
+    case lessonRepeated
+    case lessonShared
+    case categoryOpened
+    case learningMinutes(Int)
+    case xpGained(Int)
+    case levelChanged(Int)
 }

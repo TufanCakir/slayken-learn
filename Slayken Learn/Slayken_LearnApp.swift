@@ -9,28 +9,38 @@ import SwiftUI
 
 @main
 struct Slayken_LearnApp: App {
+
+    // MARK: - Global Managers
     @StateObject private var purchaseManager = PurchaseManager()
     @StateObject private var themeManager = ThemeManager()
     @StateObject private var profileManager = ProfileManager()
-    @StateObject var accountManager = AccountLevelManager()
-    @StateObject var missionManager = MissionManager()
+    @StateObject private var accountManager = AccountLevelManager()
+    @StateObject private var missionManager = MissionManager()
+    @StateObject private var learningEventManager = LearningEventManager()
 
-    @State private var showOnboarding = true
-    
+    // MARK: - Onboarding State (persistiert)
+    @AppStorage("didShowOnboarding") private var didShowOnboarding = false
+
     var body: some Scene {
         WindowGroup {
-            if showOnboarding {
-                OnboardingView(showOnboarding: $showOnboarding)
-                    .environmentObject(themeManager)
-                    .environmentObject(profileManager)
-            } else {
-                RootTabView()
-                    .environmentObject(purchaseManager)
-                    .environmentObject(themeManager)
-                    .environmentObject(profileManager)
-                    .environmentObject(accountManager)
-                    .environmentObject(missionManager)
+            Group {
+                if !didShowOnboarding {
+                    OnboardingView(showOnboarding: $didShowOnboarding)
+                } else {
+                    RootTabView()
+                        .onAppear {
+                            // ✅ Daily Mission: App geöffnet
+                            missionManager.trigger(.appOpened, account: accountManager)
+                        }
+                }
             }
+            // MARK: - Environment
+            .environmentObject(purchaseManager)
+            .environmentObject(themeManager)
+            .environmentObject(profileManager)
+            .environmentObject(accountManager)
+            .environmentObject(missionManager)
+            .environmentObject(learningEventManager)
         }
     }
 }

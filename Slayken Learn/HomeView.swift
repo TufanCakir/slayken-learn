@@ -1,62 +1,51 @@
 import SwiftUI
 
 struct HomeView: View {
+
+    // MARK: - UI State
     @State private var showDrawer = false
 
-    // 🟢 Environment Objects
+    // MARK: - Environment
     @EnvironmentObject private var themeManager: ThemeManager
     @EnvironmentObject private var profileManager: ProfileManager
-    @EnvironmentObject private var accountLevelManager: AccountLevelManager
+    @EnvironmentObject private var accountManager: AccountLevelManager
     @EnvironmentObject private var missionManager: MissionManager
     @EnvironmentObject private var learningEventManager: LearningEventManager
 
-    private var currentTheme: SlaykenTheme? { themeManager.currentTheme }
+    private var theme: SlaykenTheme? { themeManager.currentTheme }
 
-    // MARK: - Drawerbreite dynamisch berechnen
-    private func drawerWidth(for width: CGFloat) -> CGFloat {
-        min(width * 0.78, 420) // iPad fix
+    private func drawerWidth(_ total: CGFloat) -> CGFloat {
+        min(total * 0.78, 420.0)
     }
 
-    var body: some View {          
-
+    var body: some View {
         NavigationStack {
-            GeometryReader { proxy in
-                let width = proxy.size.width
-
+            GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    // MARK: - Hauptinhalt
+
                     VStack(spacing: 0) {
-                        topBar
-                            .padding(.top, safeTopInset() + 6)
+                        topBar(safeAreaTop: geo.safeAreaInsets.top)
+                            .padding(.top, geo.safeAreaInsets.top + 6)
                             .padding(.horizontal, 16)
                             .padding(.bottom, 10)
-                            .background(
-                                currentTheme?.background.view()
-                                    .blur(radius: 15)
-                                    .opacity(0.5)
-                                    .overlay(Color.black.opacity(0.2))
-                            )
-                            .shadow(color: (currentTheme?.accent ?? .white).opacity(0.2), radius: 6, y: 2)
+                            .background(topBarBackground)
                             .zIndex(10)
 
-                        // 📚 Hauptinhalt
                         LearningListView()
                             .disabled(showDrawer)
                             .blur(radius: showDrawer ? 6 : 0)
-                            .scaleEffect(showDrawer ? 0.96 : 1.0)
+                            .scaleEffect(showDrawer ? 0.96 : 1)
                             .animation(.spring(response: 0.45, dampingFraction: 0.85), value: showDrawer)
                     }
 
-                    // MARK: - Drawer
                     if showDrawer {
                         SideDrawerView(showDrawer: $showDrawer)
-                            .frame(width: drawerWidth(for: width))
+                            .frame(width: drawerWidth(geo.size.width))
                             .transition(.move(edge: .leading).combined(with: .opacity))
-                            .shadow(color: .black.opacity(0.4), radius: 10, x: 4, y: 0)
+                            .shadow(color: .black.opacity(0.4), radius: 10, x: 4)
                             .zIndex(20)
                     }
 
-                    // 🔲 Overlay bei geöffnetem Drawer
                     if showDrawer {
                         Color.black.opacity(0.35)
                             .ignoresSafeArea()
@@ -68,116 +57,109 @@ struct HomeView: View {
                             .zIndex(15)
                     }
                 }
-                .onAppear {
-                    missionManager.trigger(.appOpened, account: accountLevelManager)
-                }
-                .onReceive(learningEventManager.$lessonCompletedTrigger) { _ in
-                    missionManager.trigger(.lessonCompleted, account: accountLevelManager)
-                }
-                .onChange(of: accountLevelManager.level) { oldLevel, newLevel in
-                    missionManager.trigger(.levelChanged(newLevel: newLevel), account: accountLevelManager)
-                }
-                .background(
-                    Group {
-                        if let bg = currentTheme?.background.view() {
-                            bg
-                        } else {
-                            LinearGradient(
-                                colors: [.black, .blue.opacity(0.8)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        }
-                    }
-                    .ignoresSafeArea()
-                )
+                .background(backgroundView)
             }
             .navigationBarHidden(true)
             .preferredColorScheme(.dark)
+            .onReceive(learningEventManager.$lessonCompletedTrigger) { _ in
+                missionManager.trigger(.lessonCompleted, account: accountManager)
+            }
+            .onChange(of: accountManager.level) { _, newLevel in
+                missionManager.trigger(.levelChanged(newLevel), account: accountManager)
+            }
         }
     }
 }
 
-// MARK: - Unterkomponenten
 private extension HomeView {
-    var topBar: some View {
+    func topBar(safeAreaTop: CGFloat) -> some View {
         VStack(spacing: 8) {
             AccountHeaderView()
-                .padding(.horizontal, 20)
-            // Profil Button (öffnet ProfilView)
-            NavigationLink(destination: MissionView()
-                .environmentObject(missionManager)
-                .environmentObject(themeManager)) {
-                Image(systemName: "book.closed.fill")
-                    .font(.system(size: 26))
-                    .foregroundColor(currentTheme?.accent ?? .white)
-                    .padding(8)
-                    .background(
-                        Circle()
-                            .fill(currentTheme?.buttonBackground ?? Color.white.opacity(0.08))
-                            .shadow(color: (currentTheme?.accent ?? .white).opacity(0.25), radius: 5, y: 2)
-                    )
-            }
-            HStack(spacing: 12) {
-                // Menü Button
-                Button {
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                        showDrawer.toggle()
-                    }
-                } label: {
-                    Image(systemName: showDrawer ? "xmark" : "line.3.horizontal")
-                        .font(.system(size: 22, weight: .medium))
-                        .foregroundColor(currentTheme?.accent ?? .white)
-                        .rotationEffect(.degrees(showDrawer ? 90 : 0))
-                        .padding(10)
-                        .background(
-                            Circle()
-                                .fill(currentTheme?.buttonBackground ?? .black.opacity(0.4))
-                                .overlay(
-                                    Circle()
-                                        .stroke((currentTheme?.accent ?? .white).opacity(0.3), lineWidth: 0.6)
-                                )
-                                .shadow(color: (currentTheme?.accent ?? .white).opacity(0.2), radius: 5, y: 2)
-                        )
-                        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: showDrawer)
-                }
 
+            HStack {
+                menuButton
                 Spacer()
-
-                // 🧑 Benutzername
-                VStack(spacing: 2) {
-                    Text(profileManager.name.isEmpty ? "Gast" : profileManager.name)
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundColor(currentTheme?.text ?? .white)
-                }
-
+                username
                 Spacer()
-
-                // Profil Button (öffnet ProfilView)
-                NavigationLink(destination: ProfileView()
-                    .environmentObject(profileManager)
-                    .environmentObject(themeManager)) {
-                    Image(systemName: "person.crop.circle.fill")
-                        .font(.system(size: 26))
-                        .foregroundColor(currentTheme?.accent ?? .white)
-                        .padding(8)
-                        .background(
-                            Circle()
-                                .fill(currentTheme?.buttonBackground ?? Color.white.opacity(0.08))
-                                .shadow(color: (currentTheme?.accent ?? .white).opacity(0.25), radius: 5, y: 2)
-                        )
-                }
+                missionButton
+                profileButton
             }
         }
     }
+}
 
-    // MARK: - Safe Area Helper
-    func safeTopInset() -> CGFloat {
-        UIApplication.shared.connectedScenes
-            .compactMap { ($0 as? UIWindowScene)?.keyWindow?.safeAreaInsets.top }
-            .first ?? 0
+private extension HomeView {
+
+    var menuButton: some View {
+        Button {
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                showDrawer.toggle()
+            }
+        } label: {
+            Image(systemName: showDrawer ? "xmark" : "line.3.horizontal")
+                .font(.system(size: 22, weight: .medium))
+                .foregroundColor(theme?.accent ?? .white)
+                .padding(10)
+                .background(Circle().fill(theme?.buttonBackground ?? .black.opacity(0.4)))
+        }
+    }
+
+    var username: some View {
+        Text(profileManager.name.isEmpty ? "Gast" : profileManager.name)
+            .font(.system(size: 18, weight: .semibold))
+            .foregroundColor(theme?.text ?? .white)
+    }
+
+    var missionButton: some View {
+        NavigationLink {
+            MissionView()
+                .environmentObject(missionManager)
+                .environmentObject(themeManager)
+        } label: {
+            Image(systemName: "book.closed.fill")
+                .font(.system(size: 24))
+                .foregroundColor(theme?.accent ?? .white)
+        }
+    }
+
+    var profileButton: some View {
+        NavigationLink {
+            ProfileView()
+                .environmentObject(profileManager)
+                .environmentObject(themeManager)
+        } label: {
+            Image(systemName: "person.crop.circle.fill")
+                .font(.system(size: 26))
+                .foregroundColor(theme?.accent ?? .white)
+        }
     }
 }
+
+private extension HomeView {
+
+    var topBarBackground: some View {
+        theme?.background.view()
+            .blur(radius: 15)
+            .opacity(0.5)
+            .overlay(Color.black.opacity(0.2))
+    }
+
+    var backgroundView: some View {
+        Group {
+            if let bg = theme?.background.view() {
+                bg
+            } else {
+                LinearGradient(
+                    colors: [.black, .blue.opacity(0.8)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            }
+        }
+        .ignoresSafeArea()
+    }
+}
+
 
 // MARK: - Preview
 #Preview {
@@ -185,6 +167,7 @@ private extension HomeView {
         .environmentObject(ThemeManager())
         .environmentObject(ProfileManager())
         .environmentObject(AccountLevelManager())
+        .environmentObject(PurchaseManager())
         .environmentObject(MissionManager())
         .environmentObject(LearningEventManager())
         .preferredColorScheme(.dark)

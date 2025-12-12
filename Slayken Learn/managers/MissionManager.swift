@@ -11,85 +11,136 @@ final class MissionManager: ObservableObject {
     private let storageKeyProgress = "mission_progress"
     private let storageKeyCompleted = "mission_completed"
     private let storageKeyLastDailyReset = "mission_lastDailyReset"
+    private let storageKeyLastWeeklyReset = "mission_lastWeeklyReset"
 
     init() {
         loadMissions()
         loadProgress()
         autoDailyReset()
+        autoWeeklyReset()
     }
 
     // MARK: - Mission Triggering
     func trigger(_ event: MissionEventType, account: AccountLevelManager) {
+
         switch event {
 
         case .appOpened:
             increaseProgress(for: "mission_daily_2", account: account)
-        
+            increaseProgress(for: "mission_weekly_2", account: account)
+
         case .lessonCompleted:
             increaseProgress(for: "mission_daily_1", account: account)
             increaseProgress(for: "mission_weekly_1", account: account)
+            increaseProgress(for: "mission_progression_4", account: account)
+
+        case .lessonRepeated:
+            increaseProgress(for: "mission_weekly_4", account: account)
+
+        case .lessonShared:
+            increaseProgress(for: "mission_daily_3", account: account)
+
+        case .categoryOpened:
+            increaseProgress(for: "mission_daily_5", account: account)
+
+        case .learningMinutes(let minutes):
+            addProgress(minutes, for: "mission_daily_4", account: account)
+
+        case .xpGained(let xp):
+            addProgress(xp, for: "mission_weekly_3", account: account)
+            addProgress(xp, for: "mission_progression_3", account: account)
 
         case .levelChanged(let newLevel):
-            if newLevel >= 5 {
-                increaseProgress(for: "mission_progression_1", account: account)
-            }
+            setProgress(newLevel, for: "mission_progression_1", account: account)
+            setProgress(newLevel, for: "mission_progression_2", account: account)
         }
     }
 
-    // MARK: - Increase Progress
+    // MARK: - Progress Helpers
     private func increaseProgress(for missionID: String, account: AccountLevelManager) {
+        addProgress(1, for: missionID, account: account)
+    }
+
+    private func addProgress(_ amount: Int, for missionID: String, account: AccountLevelManager) {
         guard !completed.contains(missionID) else { return }
 
-        progress[missionID, default: 0] += 1
+        progress[missionID, default: 0] += amount
+        evaluateMission(missionID, account: account)
+    }
+
+    private func setProgress(_ value: Int, for missionID: String, account: AccountLevelManager) {
+        guard !completed.contains(missionID) else { return }
+
+        progress[missionID] = value
+        evaluateMission(missionID, account: account)
+    }
+
+    private func evaluateMission(_ missionID: String, account: AccountLevelManager) {
         saveProgress()
 
-        // check completion
-        if let mission = missions.first(where: { $0.id == missionID }),
-           progress[missionID] ?? 0 >= mission.target {
+        guard let mission = missions.first(where: { $0.id == missionID }) else { return }
 
+        if (progress[missionID] ?? 0) >= mission.target {
             completed.insert(missionID)
             saveCompleted()
-
             account.addXP(mission.xpReward)
         }
     }
 
-    // MARK: - Load JSON
+    // MARK: - JSON
     private func loadMissions() {
-        if let url = Bundle.main.url(forResource: "mission", withExtension: "json"),
-           let data = try? Data(contentsOf: url),
-           let decoded = try? JSONDecoder().decode([Mission].self, from: data) {
-            missions = decoded
-        }
+        guard
+            let url = Bundle.main.url(forResource: "mission", withExtension: "json"),
+            let data = try? Data(contentsOf: url),
+            let decoded = try? JSONDecoder().decode([Mission].self, from: data)
+        else { return }
+
+        missions = decoded
     }
 
     // MARK: - Daily Reset
     private func autoDailyReset() {
-        let todayString = formattedDate(Date())
+        let today = formattedDate(Date())
+        let last = UserDefaults.standard.string(forKey: storageKeyLastDailyReset)
 
-        let lastReset = UserDefaults.standard.string(forKey: storageKeyLastDailyReset)
+        guard last != today else { return }
 
-        if lastReset != todayString {
-            resetDailiesInternally()
-            UserDefaults.standard.set(todayString, forKey: storageKeyLastDailyReset)
-        }
+        reset(category: "daily")
+        UserDefaults.standard.set(today, forKey: storageKeyLastDailyReset)
     }
 
-    private func resetDailiesInternally() {
+    // MARK: - Weekly Reset
+    private func autoWeeklyReset() {
+        let week = formattedWeek(Date())
+        let last = UserDefaults.standard.string(forKey: storageKeyLastWeeklyReset)
+
+        guard last != week else { return }
+
+        reset(category: "weekly")
+        UserDefaults.standard.set(week, forKey: storageKeyLastWeeklyReset)
+    }
+
+    private func reset(category: String) {
         missions
-            .filter { $0.category == "daily" }
-            .forEach { mission in
-                progress[mission.id] = 0
-                completed.remove(mission.id)
+            .filter { $0.category == category }
+            .forEach {
+                progress[$0.id] = 0
+                completed.remove($0.id)
             }
         saveProgress()
         saveCompleted()
     }
 
     private func formattedDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: date)
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        return f.string(from: date)
+    }
+
+    private func formattedWeek(_ date: Date) -> String {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-ww"
+        return f.string(from: date)
     }
 
     // MARK: - Persistence

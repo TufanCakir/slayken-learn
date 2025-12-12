@@ -17,9 +17,7 @@ struct AccountHeaderView: View {
             Text("Level \(accountManager.level)")
                 .font(.system(size: 30, weight: .heavy))
                 .foregroundColor(accent)
-                .shadow(color: accent.opacity(0.6), radius: 8)
                 .scaleEffect(pulse ? 1.04 : 1.0)
-                .animation(.easeInOut(duration: 1.6).repeatForever(), value: pulse)
 
             // XP PROGRESS
             ProgressView(value: accountManager.progress)
@@ -27,7 +25,6 @@ struct AccountHeaderView: View {
                 .frame(height: 8)
                 .padding(.horizontal, 30)
                 .clipShape(Capsule())
-                .shadow(color: accent.opacity(0.4), radius: 8)
 
             // XP TEXT
             Text("\(accountManager.xp) / \(accountManager.nextLevelXP) XP")

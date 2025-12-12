@@ -19,19 +19,19 @@ struct Slayken_LearnApp: App {
     @StateObject private var learningEventManager = LearningEventManager()
 
     // MARK: - Onboarding State (persistiert)
-    @AppStorage("didShowOnboarding") private var didShowOnboarding = false
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
 
     var body: some Scene {
         WindowGroup {
             Group {
-                if !didShowOnboarding {
-                    OnboardingView(showOnboarding: $didShowOnboarding)
-                } else {
+                if hasCompletedOnboarding {
                     RootTabView()
-                        .onAppear {
-                            // ✅ Daily Mission: App geöffnet
-                            missionManager.trigger(.appOpened, account: accountManager)
+                } else {
+                    OnboardingView(
+                        onFinish: {
+                            hasCompletedOnboarding = true
                         }
+                    )
                 }
             }
             // MARK: - Environment

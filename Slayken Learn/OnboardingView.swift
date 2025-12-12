@@ -4,9 +4,9 @@ struct OnboardingView: View {
 
     @EnvironmentObject private var themeManager: ThemeManager
     @EnvironmentObject private var profileManager: ProfileManager
-
+    
+    let onFinish: () -> Void
     @State private var pageIndex = 0
-    @Binding var showOnboarding: Bool
 
     private var currentTheme: SlaykenTheme? { themeManager.currentTheme }
 
@@ -52,18 +52,16 @@ struct OnboardingView: View {
                 Spacer()
 
                 // MARK: - Weiter / Los geht's Button
-                Button(action: {
-                    if pageIndex < 2 {
-                        withAnimation(.easeInOut) {
-                            pageIndex += 1
-                        }
-                    } else {
-                        withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
-                            showOnboarding = false
-                        }
-                    }
-                }) {
-                    Text(pageIndex < 2 ? "Weiter" : "Los geht’s!")
+                Button {
+                          if pageIndex < 2 {
+                              pageIndex += 1
+                          } else {
+                              withAnimation {
+                                  onFinish()
+                              }
+                          }
+                      } label: {
+                          Text(pageIndex < 2 ? "Weiter" : "Los geht’s!")
                         .font(.system(size: 20, weight: .bold))
                         .foregroundColor(.black)
                         .padding(.vertical, 14)
